@@ -1,0 +1,11 @@
+**/work
+**/.*
+**/blat*
+**/!.gitignore
+**/*.sif
+**/*references
+**/results
+**/transcriptome
+**/data
+!.gitignore
+
