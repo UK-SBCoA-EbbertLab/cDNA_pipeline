@@ -1,0 +1,176 @@
+Bootstrap: docker
+From: tensorflow/tensorflow:latest-gpu
+
+%post
+
+	## Make Shell Noninteractive ##
+        DEBIAN_FRONTEND=noninteractive
+		
+	## Install basic packages and get update
+        apt-get update && apt-get -y install wget git time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev libcurl4-openssl-dev libxml2-dev
+
+
+        ## Set timezone and language for container ##
+        ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+	
+	export LANGUAGE=en_US.UTF-8
+	export LANG=en_US.UTF-8
+	export LC_ALL=en_US.UTF-8
+	sudo locale-gen en_US.UTF-8
+
+	echo 'export LANGUAGE="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
+	echo 'export LANG="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
+	echo 'export LC_ALL="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
+
+	
+
+    	## Install miniconda ##
+	cd /
+	wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    	bash Miniconda3-latest-Linux-x86_64.sh -bfp /conda
+	export PATH="/conda/bin:$PATH"
+    	echo 'export PATH="/conda/bin:$PATH"' >> $SINGULARITY_ENVIRONMENT
+	conda config --add channels defaults
+	conda config --add channels bioconda
+	conda config --add channels conda-forge
+
+
+	## Install pychopper ##
+        conda install -c bioconda "hmmer>=3.0"
+        pip install git+https://github.com/nanoporetech/pychopper.git
+
+
+	## Install Stringtie ##
+	cd /
+	git clone https://github.com/gpertea/stringtie
+	cd stringtie
+	make release
+        echo 'export PATH="/stringtie:$PATH"' >> $SINGULARITY_ENVIRONMENT
+
+	## Install R ##
+	sudo apt install -y dirmngr gnupg apt-transport-https ca-certificates software-properties-common
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+	sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'
+	sudo apt install -y r-base
+
+        ## Install R Packages ##
+        R --slave -e 'install.packages("BiocManager")'
+	R --slave -e 'BiocManager::install("bambu")'
+        R --slave -e 'BiocManager::install("AnnotationDbi")'
+        R --slave -e 'BiocManager::install("Biostrings")'
+        R --slave -e 'BiocManager::install("rmarkdown")'
+        R --slave -e 'BiocManager::install("BiocFileCache")'
+        R --slave -e 'BiocManager::install("ggplot2")'
+        R --slave -e 'BiocManager::install("ComplexHeatmap")'
+        R --slave -e 'BiocManager::install("circlize")'
+        R --slave -e 'BiocManager::install("ggbio")'
+        R --slave -e 'BiocManager::install("gridExtra")'
+        R --slave -e 'BiocManager::install("knitr")'
+        R --slave -e 'BiocManager::install("testthat")'
+        R --slave -e 'BiocManager::install("BSgenome.Hsapiens.NCBI.GRCh38")'
+        R --slave -e 'BiocManager::install("TxDb.Hsapiens.UCSC.hg38.knownGene")'
+        R --slave -e 'BiocManager::install("ExperimentHub")'
+        R --slave -e 'BiocManager::install("DESeq2")'
+        R --slave -e 'BiocManager::install("NanoporeRNASeq")'
+        R --slave -e 'BiocManager::install("BSgenome")'
+        R --slave -e 'BiocManager::install("apeglm")'
+        R --slave -e 'BiocManager::install("utils")'
+        R --slave -e 'BiocManager::install("DEXSeq")'
+	R --slave -e 'BiocManager::install("SummarizedExperiment")'
+	R --slave -e 'BiocManager::install("tximport")'
+
+
+    	## Install guppy basecaller ##
+	export PLATFORM=$(lsb_release -cs)
+    	wget -O- https://mirror.oxfordnanoportal.com/apt/ont-repo.pub | sudo apt-key add -
+	echo "deb http://mirror.oxfordnanoportal.com/apt ${PLATFORM}-stable non-free" | sudo tee /etc/apt/sources.list.d/nanoporetech.sources.list
+    	apt-get update
+    	apt install -y ont-guppy 
+
+
+	## Install PycoQC ##
+	pip install pycoQC
+
+	## Install MultiQC ##
+	pip install multiqc
+
+	## Install RseQC ##
+	pip install RSeQC
+
+	## Install PacBio SMRTtools, but delete minimap2 so we can install latest version through conda
+        cd /
+        wget https://downloads.pacbcloud.com/public/software/installers/smrtlink_10.1.0.119588.zip
+        unzip smrtlink_10.1.0.119588.zip
+        rm smrtlink_10.1.0.119588.zip
+        ./smrtlink_10.1.0.119588.run --rootdir /smrtlink --smrttools-only
+        rm smrtlink_10.1.0.119588.run
+        rm /smrtlink/smrtcmds/bin/minimap2 ## Delete minimap2 installled through SMRTtools
+        echo 'export PATH="/smrtlink/smrtcmds/bin:$PATH"' >> $SINGULARITY_ENVIRONMENT
+
+
+   	## Install Latest Minimap2 Latest Version Through Conda ##
+    	conda install -c bioconda minimap2
+
+	## Install GFFcompare ##
+	cd /
+  	git clone https://github.com/gpertea/gffcompare
+  	cd gffcompare
+  	make release
+	echo 'export PATH="/gffcompare:$PATH"' >> $SINGULARITY_ENVIRONMENT
+
+%test
+		
+	## Check if installations are on path and/or display their versions ##
+    	conda --version
+	STAR --version
+	stringtie --version
+	python --version
+	pip --version
+	guppy_basecaller --version # Guppy
+	which hmmer
+	which cdna_classifier.py # Pychopper 
+	R --version
+	pycoQC --version
+	multiqc --version
+	bam2fq.py --version # RseQC
+	samtools --version
+	gffcompare --version
+	nvcc --version #Cuda
+	
+	## Check if bambu R package is working ##
+	R --slave -e 'library("bambu")'
+	
+	
+%labels
+	author Bernardo Aguzzoli Heberle
+	version v0.0.1
+
+%help
+	This is the singularity container used to run the nextflow pipelines found at (github.com/XXX). 
+
+	Software included in the container are:
+
+	conda==4.10.3
+	pip==21.1.3
+	python==3.9.5
+	R==4.1.1
+	pychopper==2.6.0
+   	hmmer==3.3.2
+	bambu==2.0.1
+	RseQC==2.6.4
+	pycoQC==2.5.2
+	multiqc==1.11
+	gffcompare==0.12.6
+	guppy==5.0.16
+	cuda==11.2.152  (From docker tensorflow/tensorflow latest image pulled on 10/13/2021: sha256:773d5ce09e4ce003db02740c6a372a8a9f43be2bac23544d8f452bfec5347c53)
+	samtools==1.14
+	bedtools==2.30.0
+
+        NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
+        TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND:
+
+	singularity pull XXX	
+
+	
+	For more information about the use of this singularity container access: github.com/XXX
+
