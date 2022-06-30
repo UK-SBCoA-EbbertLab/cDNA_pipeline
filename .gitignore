@@ -7,5 +7,6 @@
 **/results
 **/transcriptome
 **/data
+**/real_workflows
 !.gitignore
 
