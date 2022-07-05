@@ -24,7 +24,7 @@
 ### 5) Go into the `workflows/nextflow.config` file and make any necessary changes:
 
 - Alter slurm job manager parameters and singularity file path to suit your needs and PI affiliation. I don't recommend changing the memory/cpu/time allocated 
-for the job manager. Particularly, make sure the --account slurm job parameter is set to `coa_mteb223_uksr`.
+for the job manager. Particularly, make sure the `--account` slurm job parameters are set to `coa_mteb223_uksr`.
         
 - DO NOT change the paths to the files specified by the `params.xxx` variables. Those can be set at the time of executing the pipeline.
 
