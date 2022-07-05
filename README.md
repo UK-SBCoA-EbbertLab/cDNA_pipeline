@@ -6,7 +6,7 @@
 
 - On the MCC it can be found under `/project/mteb223_uksr/sequencing_resources/tools/bin/nextflow`
           
-- Make sure to run `module load ccs/java/jdk1.8.0_202` on load Java. Nextflow needs Java to work. I added this command to my `~/.bash_profile` to make life easier.
+- Make sure to run `module load ccs/java/jdk1.8.0_202` on the MCC load Java. Nextflow needs Java to work. I added this command to my `~/.bash_profile` to make life easier.
           
 ### 2) Get the singularity image used for this pipeline:
 
