@@ -1,6 +1,6 @@
 # cDNA_pipeline
 
-## System requirements:
+## Getting Started
 
 ### 1) Have a functioning version of Nextflow in your Path.
 
