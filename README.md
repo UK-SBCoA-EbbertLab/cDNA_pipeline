@@ -17,7 +17,7 @@
           
 ### 3) Clone this github repo using the command below
 
-- `git clone https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline`
+          git clone https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
 
 
 ### 4) Put the singularity ".sif" file in the `singularity_container` folder. You can use a softlink if preferred.
