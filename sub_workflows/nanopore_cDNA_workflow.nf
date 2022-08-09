@@ -1,7 +1,7 @@
 // Import Modules
 include {MAKE_FAI} from '../modules/make_fai'
 include {MAKE_INDEX_cDNA} from '../modules/make_index'
-include {CHM13_GTF} from '../modules/chm13_gff3_to_gtf'
+include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCHOPPER} from '../modules/pychopper'
 include {SEQ_SUMMARY} from '../modules/fix_sequencing_summary'
 include {MINIMAP2_cDNA} from '../modules/minimap2'
@@ -31,8 +31,17 @@ workflow NANOPORE_cDNA {
 
         if (params.is_chm13 == true)
         {
-            CHM13_GTF(annotation, ercc)
-            annotation = CHM13_GTF.out.collect()
+            if (params.ercc == "None") 
+            { 
+                CHM13_GTF(annotation)
+                annotation = CHM13_GTF.out.collect()
+            } 
+            
+            else 
+            {
+                CHM13_GTF_ERCC(annotation, ercc)
+                annotation = CHM13_GTF_ERCC.out.collect()
+            }
         }
         
         BAMBU_PREP(MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, ref, annotation, MAKE_FAI.out)

@@ -30,7 +30,7 @@ if (params.ercc != "None") {
     ercc = Channel.fromPath(params.ercc)
     }
 else {
-    ercc = Channel.from(params.ercc)
+    ercc = params.ercc
     }
 
 // Make sure ONT sequencing summary and fastq files are in the same order

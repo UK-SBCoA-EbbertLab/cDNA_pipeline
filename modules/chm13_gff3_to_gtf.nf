@@ -1,4 +1,4 @@
-process CHM13_GTF {
+process CHM13_GTF_ERCC {
 
     publishDir "results/${params.out_dir}/transcriptome/"
 
@@ -9,12 +9,31 @@ process CHM13_GTF {
         path ercc
 
     output:
-        path('CHM13_v.2.0_ERCC.gtf')
+        path('CHM13_v2.0_ERCC.gtf')
 
     script:
         """
         gff_to_gtf.py $gff CHM13_v2.0.gtf
 
-        cat CHM13_v2.0.gtf $ercc > CHM13_v.2.0_ERCC.gtf
+        cat CHM13_v2.0.gtf $ercc > CHM13_v2.0_ERCC.gtf
         """
 }
+
+process CHM13_GTF {
+
+    publishDir "results/${params.out_dir}/transcriptome/"
+
+    label 'medium'
+
+    input:
+        path gff
+
+    output:
+        path('CHM13_v2.0.gtf')
+
+    script:
+        """
+        gff_to_gtf.py $gff CHM13_v2.0.gtf
+        """
+}
+

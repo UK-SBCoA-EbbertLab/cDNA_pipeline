@@ -9,6 +9,8 @@ From: tensorflow/tensorflow:latest-gpu
 	## Install basic packages and get update
         apt-get update && apt-get -y install wget git time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev libcurl4-openssl-dev libxml2-dev
 
+	## Install sshfs
+	apt-get -y install sshfs
 
         ## Set timezone and language for container ##
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime

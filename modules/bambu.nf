@@ -1,6 +1,6 @@
 process BAMBU_PREP {
 
-    label 'medium_large'
+    label 'large'
 
     input:
         path(bam)
