@@ -4,6 +4,7 @@ include {MAKE_INDEX_cDNA} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCHOPPER} from '../modules/pychopper'
 include {SEQ_SUMMARY} from '../modules/fix_sequencing_summary'
+include {PYCOQC} from '../modules/pycoqc'
 include {MINIMAP2_cDNA} from '../modules/minimap2'
 include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP; BAMBU_DISCOVERY} from '../modules/bambu'
@@ -27,8 +28,10 @@ workflow NANOPORE_cDNA {
         MAKE_FAI(ref)
         MAKE_INDEX_cDNA(ref)
         PYCHOPPER(ont_reads_fq, ont_reads_txt, cdna_kit)
+        SEQ_SUMMARY(PYCHOPPER.out.id, PYCHOPPER.out.fastq, PYCHOPPER.out.txt)
         MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq, PYCHOPPER.out.txt, MAKE_INDEX_cDNA.out)
-
+        PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam_all, MINIMAP2_cDNA.out.bai_all)
+        
         if (params.is_chm13 == true)
         {
             if (params.ercc == "None") 

@@ -2,7 +2,7 @@ process SEQ_SUMMARY {
 
     publishDir "results/${params.out_dir}/pychopper/"
 
-    label "huge"
+    label "large"
 
     input:
         val(id)
