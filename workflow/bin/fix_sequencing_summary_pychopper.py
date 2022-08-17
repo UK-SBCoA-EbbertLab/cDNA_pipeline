@@ -30,16 +30,14 @@ for line in Lines:
 df_txt = pd.read_csv(txt_filename, delimiter='\t')
 
 ## Remove useless columns
-df_txt = df_txt.drop(df_txt.columns.difference(["read_id", "run_id",
-                                                "channel", "start_time", "sequence_length_template",
-                                                "mean_qscore_template"]), axis=1, inplace=False)
+df_txt = df_txt[["read_id", "run_id", "channel", "start_time", "sequence_length_template", "mean_qscore_template"]].copy()
 
 ## Remove points where the txt files were joined (Headers in the middle of the data)
 df_txt = df_txt.loc[df_txt["channel"]!="channel"]
 df_txt[["channel", "start_time", "sequence_length_template",
         "mean_qscore_template"]] = df_txt[["channel", "start_time", "sequence_length_template",
                                        "mean_qscore_template"]].apply(pd.to_numeric, errors="ignore")
-df_txt.dropna(inplace=True)
+df_txt.dropna(inplace=True, axis=0)
 
 ## Only keep reads in the sequencing summary that were kept after pychopper filtering
 df_txt = df_txt.loc[df_txt["read_id"].isin(fastq_read_ids)]
