@@ -14,6 +14,7 @@ process PYCHOPPER {
         path "${id}_pychop.fq", emit: fastq
         path "$txt", emit: txt
         path "$fastq", emit: original_fastq
+        path "*pychopper.stats", emit: multiQC
 
     script:
         """

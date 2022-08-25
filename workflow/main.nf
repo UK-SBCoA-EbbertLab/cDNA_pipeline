@@ -20,6 +20,7 @@ include {BASECALLER} from '../sub_workflows/basecall_workflow'
 ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple(file.baseName, file) }
 ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
 ref = file(params.ref)
+housekeeping = file(params.housekeeping)
 annotation = file(params.annotation)
 fast5_dir = Channel.fromPath(params.fast5_dir)
 basecall_config = Channel.from(params.basecall_config)
@@ -41,7 +42,7 @@ workflow {
 
 
     if (params.ont_reads_fq != "None"){
-        NANOPORE_cDNA(ref, annotation, ont_reads_txt, ont_reads_fq, ercc, cdna_kit)
+        NANOPORE_cDNA(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit)
     }
 
     if (params.fast5_dir != "None"){

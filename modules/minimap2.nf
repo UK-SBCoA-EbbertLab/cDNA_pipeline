@@ -15,6 +15,7 @@ process MINIMAP2_cDNA {
         path("${id}_all_sorted.bam.bai"), emit: bai_all
         path("${id}_mapped_filtered_sorted.bam"), emit: bam_mapped
         path("${id}_mapped_filtered_sorted.bam.bai"), emit: bai_mapped
+        path("*all*stat"), emit: QC_out
 
     script:
         """
@@ -56,6 +57,7 @@ process MINIMAP2_QC {
         path("$txt"), emit: txt
         path("${id}_all_sorted.bam"), emit: bam
         path("${id}_all_sorted.bam.bai"), emit: bai
+        path("*all*stat"), emit: multiQC
 
     script:
         """
@@ -67,6 +69,8 @@ process MINIMAP2_QC {
 
         samtools sort -@ -12 "${id}_all.bam" -o "${id}_all_sorted.bam"
         samtools index "${id}_all_sorted.bam"
+        samtols flagstat "${id}_all_sorted.bam" > "${id}_all_sorted.flagstat"
+        samtols idxstats "${id}_all_sorted.bam" > "${id}_all_sorted.idxstat"
 
         rm "${id}_all.bam"
         """

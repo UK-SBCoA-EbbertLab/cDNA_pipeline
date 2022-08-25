@@ -11,7 +11,7 @@ process PYCOQC {
         path(total_bai)
 
     output:
-        path "*", emit: all_output
+        path "*", emit: multiQC
 
     script:
         """
