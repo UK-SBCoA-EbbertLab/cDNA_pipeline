@@ -1,21 +1,22 @@
 process SEQ_SUMMARY {
 
-    publishDir "results/${params.out_dir}/pychopper/"
-
-    label "large"
+    label "huge"
 
     input:
         val(id)
-        path(fastq)
-        path(sequencing_summary)
+        path(seq_summary)
+        path(total_bam)
+        path(total_bai)
 
     output:
         val "$id", emit: id
-        path "$fastq", emit: fastq
-        path "${id}_sequencing_summary_pychop.txt", emit: txt
+        path "${id}_sequencing_summary_fixed.txt", emit: txt
+        path "$total_bam", emit: bam
+        path "$total_bai", emit: bai
+
 
     script:
         """
-        fix_sequencing_summary_pychopper.py $fastq $sequencing_summary "${id}_sequencing_summary_pychop.txt"
+        fix_sequencing_summary.py $seq_summary "${id}_sequencing_summary_fixed.txt"
         """
 }

@@ -13,7 +13,7 @@ process PYCHOPPER {
         val "$id", emit: id
         path "${id}_pychop.fq", emit: fastq
         path "$txt", emit: txt
-        path "*pychopper*", emit: multiqc
+        path "$fastq", emit: original_fastq
 
     script:
         """

@@ -7,7 +7,6 @@ process MINIMAP2_cDNA {
     input:
         val(id)
         path(fastq)
-        path(txt)
         path(index)
 
     output:
@@ -16,12 +15,9 @@ process MINIMAP2_cDNA {
         path("${id}_all_sorted.bam.bai"), emit: bai_all
         path("${id}_mapped_filtered_sorted.bam"), emit: bam_mapped
         path("${id}_mapped_filtered_sorted.bam.bai"), emit: bai_mapped
-        path("*stat"), emit: multiqc
-        path("$txt"), emit: txt
 
     script:
         """
-        echo id
         minimap2 -t 16 -ax splice \
             -uf \
             $index \
@@ -43,3 +39,36 @@ process MINIMAP2_cDNA {
         """
 
 }
+
+
+process MINIMAP2_QC {
+
+    label 'large'
+
+    input:
+        val(id)
+        path(fastq)
+        path(txt)
+        path(index)
+
+    output:
+        val("$id"), emit: id
+        path("$txt"), emit: txt
+        path("${id}_all_sorted.bam"), emit: bam
+        path("${id}_all_sorted.bam.bai"), emit: bai
+
+    script:
+        """
+        minimap2 -t 16 -ax splice \
+            -uf \
+            $index \
+            $fastq > "${id}_all.bam" \
+
+
+        samtools sort -@ -12 "${id}_all.bam" -o "${id}_all_sorted.bam"
+        samtools index "${id}_all_sorted.bam"
+
+        rm "${id}_all.bam"
+        """
+}
+
