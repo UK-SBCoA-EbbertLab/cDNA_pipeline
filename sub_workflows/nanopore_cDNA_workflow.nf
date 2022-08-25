@@ -3,7 +3,6 @@ include {MAKE_FAI} from '../modules/make_fai'
 include {MAKE_INDEX_cDNA} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCHOPPER} from '../modules/pychopper'
-include {SEQ_SUMMARY} from '../modules/fix_sequencing_summary'
 include {PYCOQC} from '../modules/pycoqc'
 include {MINIMAP2_cDNA; MINIMAP2_QC} from '../modules/minimap2'
 include {BAMBU_PREP; BAMBU_DISCOVERY} from '../modules/bambu'
@@ -29,8 +28,7 @@ workflow NANOPORE_cDNA {
         PYCHOPPER(ont_reads_fq, ont_reads_txt, cdna_kit)
         MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out)
         MINIMAP2_QC(PYCHOPPER.out.id, PYCHOPPER.out.original_fastq, PYCHOPPER.out.txt, MAKE_INDEX_cDNA.out)
-        SEQ_SUMMARY(MINIMAP2_QC.out.id, MINIMAP2_QC.out.txt, MINIMAP2_QC.out.bam, MINIMAP2_QC.out.bai)
-        PYCOQC(SEQ_SUMMARY.out.txt.collect(), SEQ_SUMMARY.out.bam.collect(), SEQ_SUMMARY.out.bai.collect())
+        PYCOQC(MINIMAP2_QC.out.id, MINIMAP2_QC.out.txt, MINIMAP2_QC.out.bam, MINIMAP2_QC.out.bai)
         
         if (params.is_chm13 == true)
         {
