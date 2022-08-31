@@ -1,6 +1,6 @@
 process PYCOQC {
 
-    publishDir "results/${params.out_dir}/pycoQC/", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/QC/pycoqc/", mode: 'copy', overwrite: true, pattern: "*pycoqc*"
 
     label 'huge'
 
@@ -11,13 +11,13 @@ process PYCOQC {
         path(total_bai)
 
     output:
-        path "*", emit: multiQC
+        path "*pycoqc*", emit: multiQC
 
     script:
         """
-        fix_sequencing_summary.py $seq_summary "${id}_sequencing_summary_pycoqc.txt"
+        fix_sequencing_summary.py $seq_summary "${id}_sequencing_summary_pyco.txt"
 
-        pycoQC -f "${id}_sequencing_summary_pycoqc.txt" \
+        pycoQC -f "${id}_sequencing_summary_pyco.txt" \
             -v \
             -a $total_bam \
             -o "./${id}_pycoqc.html" \

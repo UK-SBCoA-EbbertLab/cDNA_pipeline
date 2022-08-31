@@ -11,6 +11,6 @@ gtf_file <- args[3]
 bambuAnnotations <- prepareAnnotations(gtf_file)
 
 se_novel <- bambu(rcFile=rc_files, annotations=bambuAnnotations, genome=fa_file,
-                  ncore=8, lowMemory=TRUE, opt.discovery = list(NDR=0.01, min.readFractionByGene=0.001), discovery=TRUE, quant=TRUE)
+                  ncore=8, lowMemory=TRUE, discovery=FALSE, quant=TRUE)
 
-writeBambuOutput(se_novel, path = "./bambu_discovery/")
+writeBambuOutput(se_novel, path = "./bambu_quant/")

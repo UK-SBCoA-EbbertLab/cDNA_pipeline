@@ -1,6 +1,6 @@
 process CHM13_GTF_ERCC {
 
-    publishDir "results/${params.out_dir}/transcriptome/"
+    publishDir "results/${params.out_dir}/CHM13_gtf/", mode: "copy", overwrite: true
 
     label 'medium'
 
@@ -21,7 +21,7 @@ process CHM13_GTF_ERCC {
 
 process CHM13_GTF {
 
-    publishDir "results/${params.out_dir}/transcriptome/"
+    publishDir "results/${params.out_dir}/CHM13_gtf/", mode: "copy", overwrite: true
 
     label 'medium'
 

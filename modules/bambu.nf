@@ -1,4 +1,6 @@
-process BAMBU_PREP {
+process BAMBU_PREP_DISCOVERY {
+
+    publishDir "results/${params.out_dir}/", mode: "copy", overwrite: true
 
     label 'large'
 
@@ -10,15 +12,41 @@ process BAMBU_PREP {
         path(fai)
 
     output:
-        path("bambu_prep/*.rds")
+        path("bambu_prep_discovery/*.rds")
 
     script:
         """
-        mkdir -p bambu_prep
+        mkdir -p bambu_prep_discovery
 
-        bambu_prep.R $bam $ref $gtf
+        bambu_prep_discovery.R $bam $ref $gtf
         """
 }
+
+process BAMBU_PREP_QUANT {
+
+    publishDir "results/${params.out_dir}/", mode: "copy", overwrite: true
+
+    label 'large'
+
+    input:
+        path(bam)
+        path(bai)
+        path(ref)
+        path(gtf)
+        path(fai)
+
+    output:
+        path("bambu_prep_quant/*.rds")
+
+    script:
+        """
+        mkdir -p bambu_prep_quant
+
+        bambu_prep_quant.R $bam $ref $gtf
+        """
+}
+
+
 
 process BAMBU_DISCOVERY {
 
@@ -48,4 +76,35 @@ process BAMBU_DISCOVERY {
         bambu_discovery.R $rc_files2 "!{ref}" "!{gtf}"
         '''
 }
+
+
+process BAMBU_QUANT {
+
+    publishDir "results/${params.out_dir}/", mode: "copy", overwrite: true
+
+    label 'medium'
+
+    input:
+        path(rc_files)
+        path(ref)
+        path(gtf)
+        path(fai)
+        
+
+    output:
+        path("./bambu_quant/extended_annotations.gtf"), emit:gtf
+        path("bambu_quant/*"), emit: outty
+
+    shell:
+        '''
+        mkdir bambu_quant
+
+        dummy="!{rc_files}"
+
+        rc_files2="$(tr ' ' ',' <<<$dummy)"
+    
+        bambu_quant.R $rc_files2 "!{ref}" "!{gtf}"
+        '''
+}
+
 

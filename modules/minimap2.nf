@@ -44,6 +44,8 @@ process MINIMAP2_cDNA {
 
 process MINIMAP2_QC {
 
+    publishDir "results/${params.out_dir}/QC/minimap2/", mode: 'copy', overwrite: true, pattern: "*all*stat"
+
     label 'large'
 
     input:
@@ -69,8 +71,8 @@ process MINIMAP2_QC {
 
         samtools sort -@ -12 "${id}_all.bam" -o "${id}_all_sorted.bam"
         samtools index "${id}_all_sorted.bam"
-        samtols flagstat "${id}_all_sorted.bam" > "${id}_all_sorted.flagstat"
-        samtols idxstats "${id}_all_sorted.bam" > "${id}_all_sorted.idxstat"
+        samtools flagstat "${id}_all_sorted.bam" > "${id}_all_sorted.flagstat"
+        samtools idxstats "${id}_all_sorted.bam" > "${id}_all_sorted.idxstat"
 
         rm "${id}_all.bam"
         """

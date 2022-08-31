@@ -9,9 +9,6 @@ From: tensorflow/tensorflow:latest-gpu
 	## Install basic packages and get update
         apt-get update && apt-get -y install wget git time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev libcurl4-openssl-dev libxml2-dev
 
-	## Install sshfs
-	apt-get -y install sshfs
-
         ## Set timezone and language for container ##
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
 	
@@ -99,6 +96,15 @@ From: tensorflow/tensorflow:latest-gpu
 	## Install RseQC ##
 	pip install RSeQC
 
+	## Install gffread ##
+        cd /
+        git clone https://github.com/gpertea/gffread
+        cd gffread
+        make release
+        echo 'export PATH="/gffread:$PATH"' >> $SINGULARITY_ENVIRONMENT
+        cd /
+
+
 	## Install PacBio SMRTtools, but delete minimap2 so we can install latest version through conda
         cd /
         wget https://downloads.pacbcloud.com/public/software/installers/smrtlink_10.1.0.119588.zip
@@ -129,6 +135,7 @@ From: tensorflow/tensorflow:latest-gpu
 	python --version
 	pip --version
 	guppy_basecaller --version # Guppy
+	gffread --version
 	which hmmer
 	which cdna_classifier.py # Pychopper 
 	R --version

@@ -3,13 +3,23 @@ nextflow.enable.dsl=2
 
 
 log.info """
- RNA-SEQ ONT CORRECTION AND DISCOVERY PIPELINE
- ===============================================
- nanopore fastq files                   : ${params.ont_reads_fq}
- nanopore sequencing summary files      : ${params.ont_reads_txt}
- reference genome                       : ${params.ref}
- reference annotation                   : ${params.annotation}
- """
+                OXFORD NANOPORE cDNA SEQUENCING PIPELINE 
+ ===========================================================================
+ nanopore fastq files                           : ${params.ont_reads_fq}
+ nanopore sequencing summary files              : ${params.ont_reads_txt}
+ reference genome                               : ${params.ref}
+ reference annotation                           : ${params.annotation}
+ housekeeping genes 3' bias assessment          : ${params.housekeeping}
+ nanopore library prep kit                      : ${params.cdna_kit}
+ multiqc configuration file                     : ${multiqc_config}
+
+ reference genome is CHM13                      : ${params.is_chm13}
+ transcript discovery status                    : ${params.is_discovery}
+
+ nanopore fast5 files (basecall only)           : ${params.fast5_dir}
+ nanopore basecall config (basecall only)       : ${params.basecall_config}
+ nanopore basecall id (basecall only)           : ${params.basecall_id}
+ ""
 
 
 // Import Workflows
@@ -26,6 +36,7 @@ fast5_dir = Channel.fromPath(params.fast5_dir)
 basecall_config = Channel.from(params.basecall_config)
 basecall_id = Channel.from(params.basecall_id)
 cdna_kit = Channel.value(params.cdna_kit)
+multiqc_config = Channel.fromPath(params.multiqc_config)
 
 if (params.ercc != "None") {
     ercc = Channel.fromPath(params.ercc)
@@ -42,7 +53,7 @@ workflow {
 
 
     if (params.ont_reads_fq != "None"){
-        NANOPORE_cDNA(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit)
+        NANOPORE_cDNA(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, multiqc_config)
     }
 
     if (params.fast5_dir != "None"){

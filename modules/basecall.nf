@@ -18,7 +18,7 @@ process BASECALL {
 
 process GATHER_BASECALL {
 
-    publishDir "results/${params.out_dir}/basecall_output/"
+    publishDir "results/${params.out_dir}/basecall_output/", mode: "copy", overwrite: true
 
     label 'local'
 

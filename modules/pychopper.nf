@@ -1,6 +1,7 @@
 process PYCHOPPER {
 
     publishDir "results/${params.out_dir}/pychopper/"
+    publishDir "results/${params.out_dir}/QC/pychopper/", mode: 'copy', overwrite: true, pattern: "*pychopper.stats"
 
     label "large"
 

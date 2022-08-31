@@ -1,6 +1,6 @@
 process MAKE_GTF {
 
-    publishDir "results/${params.out_dir}/annotations/", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/annotations/"
 
     label 'medium'
 

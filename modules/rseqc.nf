@@ -1,6 +1,6 @@
 process RSEQC {
 
-    publishDir "results/${params.out_dir}/RseQC/", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/QC/RseQC/", mode: "copy", overwrite: true
  
     label "large"
 
