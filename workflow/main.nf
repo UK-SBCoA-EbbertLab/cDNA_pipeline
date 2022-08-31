@@ -11,7 +11,7 @@ log.info """
  reference annotation                           : ${params.annotation}
  housekeeping genes 3' bias assessment          : ${params.housekeeping}
  nanopore library prep kit                      : ${params.cdna_kit}
- multiqc configuration file                     : ${multiqc_config}
+ multiqc configuration file                     : ${params.multiqc_config}
 
  reference genome is CHM13                      : ${params.is_chm13}
  transcript discovery status                    : ${params.is_discovery}
@@ -19,7 +19,7 @@ log.info """
  nanopore fast5 files (basecall only)           : ${params.fast5_dir}
  nanopore basecall config (basecall only)       : ${params.basecall_config}
  nanopore basecall id (basecall only)           : ${params.basecall_id}
- ""
+ """
 
 
 // Import Workflows
