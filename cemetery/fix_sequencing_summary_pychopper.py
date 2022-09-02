@@ -22,9 +22,11 @@ for line in Lines:
     line_content = line.strip()
 
         ## Get read_id from fastq_file
-    if ((line_content[0] == "@") & (line_content[-8:-2] == "strand")):
-        read_id = line_content.split("|")[1].split(' ')[0]
+    if (line_content[0] == "@"):
+        read_id = line_content.split("@")[1].split(' ')[0]
         fastq_read_ids.append(read_id)
+
+print(fastq_read_ids)
 
 ## Read txt sequencing sammary file in
 df_txt = pd.read_csv(txt_filename, delimiter='\t')

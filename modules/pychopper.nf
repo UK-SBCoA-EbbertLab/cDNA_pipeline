@@ -19,7 +19,7 @@ process PYCHOPPER {
 
     script:
         """
-        cdna_classifier.py -t 20 \
+        pychopper -t 20 \
             -k $cdna_kit \
             -r "${id}_pychopper_report.pdf" \
             -u "${id}_pychopper.unclassified.fq" \
