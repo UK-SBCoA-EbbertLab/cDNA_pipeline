@@ -13,8 +13,6 @@ include {MAKE_TRANSCRIPTOME} from '../modules/make_transcriptome'
 include {MULTIQC_GRCh38 ; MULTIQC_CHM13} from '../modules/multiqc'
 
 
-// TODO: MAKE QUALITY CONTROL WORK (RSEQC + PYCOQC + MULTIQC) ONCE WE HAVE FINAL DATA
-
 workflow NANOPORE_cDNA {
 
     take:
@@ -77,4 +75,5 @@ workflow NANOPORE_cDNA {
 
         STRINGTIE_ONT_cDNA(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, new_annotation)
         MAKE_TRANSCRIPTOME(ref, MAKE_FAI.out, new_annotation)
+        
 }
