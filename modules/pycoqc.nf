@@ -2,7 +2,7 @@ process PYCOQC {
 
     publishDir "results/${params.out_dir}/QC/pycoqc/", mode: 'copy', overwrite: true, pattern: "*pycoqc*"
 
-    label 'medium'
+    label 'huge'
 
     input:
         val(id)

@@ -52,7 +52,7 @@ process BAMBU_DISCOVERY {
 
     publishDir "results/${params.out_dir}/", mode: "copy", overwrite: true
 
-    label 'medium'
+    label 'medium_large'
 
     input:
         path(rc_files)
