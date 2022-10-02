@@ -24,6 +24,7 @@ workflow NANOPORE_cDNA {
         ercc
         cdna_kit
         multiqc_config
+        NDR
 
     main:
         MAKE_FAI(ref)
@@ -58,8 +59,8 @@ workflow NANOPORE_cDNA {
         
         if (params.is_discovery == true)
         {
-            BAMBU_PREP_DISCOVERY(MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, ref, annotation, MAKE_FAI.out)
-            BAMBU_DISCOVERY(BAMBU_PREP_DISCOVERY.out.collect(), ref, annotation, MAKE_FAI.out)
+            BAMBU_PREP_DISCOVERY(MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, ref, annotation, MAKE_FAI.out, NDR)
+            BAMBU_DISCOVERY(BAMBU_PREP_DISCOVERY.out.collect(), ref, annotation, MAKE_FAI.out, NDR)
             new_annotation = BAMBU_DISCOVERY.out.gtf
             GFFCOMPARE(new_annotation, annotation)
 
