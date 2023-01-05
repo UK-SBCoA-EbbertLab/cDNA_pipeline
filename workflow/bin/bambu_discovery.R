@@ -8,11 +8,12 @@ rc_files <- unlist(strsplit(args[1], ","))
 fa_file <- args[2]
 gtf_file <- args[3]
 NDR_input <- as.double(args[4])
+track_reads_input <- args[5] == "True"
 
 bambuAnnotations <- prepareAnnotations(gtf_file)
 
-se_novel <- bambu(rcFile=rc_files, annotations=bambuAnnotations, genome=fa_file,
-                  lowMemory=TRUE, NDR=NDR_input, discovery=TRUE, quant=TRUE, trackReads=TRUE)
+se_novel <- bambu(reads=rc_files, annotations=bambuAnnotations, genome=fa_file,
+                  lowMemory=TRUE, ncore=8, NDR=NDR_input, discovery=TRUE, quant=TRUE, trackReads=track_reads_input)
 
 writeBambuOutput(se_novel, path = "./bambu_discovery/")
 
