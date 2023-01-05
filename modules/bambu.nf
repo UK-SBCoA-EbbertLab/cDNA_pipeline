@@ -11,6 +11,7 @@ process BAMBU_PREP_DISCOVERY {
         path(gtf)
         path(fai)
         val(NDR)
+        val(track_reads)
 
     output:
         path("bambu_prep_discovery/*.rds")
@@ -19,7 +20,7 @@ process BAMBU_PREP_DISCOVERY {
         """
         mkdir -p bambu_prep_discovery
 
-        bambu_prep_discovery.R $bam $ref $gtf $NDR
+        bambu_prep_discovery.R $bam $ref $gtf $NDR $track_reads
         """
 }
 
@@ -61,6 +62,7 @@ process BAMBU_DISCOVERY {
         path(gtf)
         path(fai)
         val(NDR)
+        val(track_reads)
         
 
     output:
@@ -75,7 +77,7 @@ process BAMBU_DISCOVERY {
 
         rc_files2="$(tr ' ' ',' <<<$dummy)"
     
-        bambu_discovery.R $rc_files2 "!{ref}" "!{gtf}" "!{NDR}"
+        bambu_discovery.R $rc_files2 "!{ref}" "!{gtf}" "!{NDR}" "!{track_reads}"
         '''
 }
 

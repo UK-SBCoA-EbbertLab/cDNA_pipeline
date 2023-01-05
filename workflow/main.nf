@@ -38,6 +38,7 @@ basecall_id = Channel.from(params.basecall_id)
 cdna_kit = Channel.value(params.cdna_kit)
 multiqc_config = Channel.fromPath(params.multiqc_config)
 NDR = Channel.value(params.NDR)
+track_reads = Channel.value(params.track_reads)
 
 if (params.ercc != "None") {
     ercc = Channel.fromPath(params.ercc)
@@ -54,7 +55,7 @@ workflow {
 
 
     if (params.ont_reads_fq != "None"){
-        NANOPORE_cDNA(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, multiqc_config, NDR)
+        NANOPORE_cDNA(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, multiqc_config, NDR, track_reads)
     }
 
     if (params.fast5_dir != "None"){
