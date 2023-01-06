@@ -19,6 +19,9 @@ log.info """
  nanopore fast5 files (basecall only)           : ${params.fast5_dir}
  nanopore basecall config (basecall only)       : ${params.basecall_config}
  nanopore basecall id (basecall only)           : ${params.basecall_id}
+
+ NDR Value for Bambu (Novel Discovery Rate)     : ${params.NDR}
+ Track read_ids with bambu?                     : ${params.bambu_track_reads}
  """
 
 
@@ -38,7 +41,8 @@ basecall_id = Channel.from(params.basecall_id)
 cdna_kit = Channel.value(params.cdna_kit)
 multiqc_config = Channel.fromPath(params.multiqc_config)
 NDR = Channel.value(params.NDR)
-track_reads = Channel.value(params.track_reads)
+track_reads = Channel.value(params.bambu_track_reads)
+
 
 if (params.ercc != "None") {
     ercc = Channel.fromPath(params.ercc)

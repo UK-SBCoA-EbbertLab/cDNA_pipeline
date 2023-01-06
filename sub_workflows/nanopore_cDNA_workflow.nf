@@ -25,6 +25,7 @@ workflow NANOPORE_cDNA {
         cdna_kit
         multiqc_config
         NDR
+        track_reads
 
     main:
         MAKE_FAI(ref)
@@ -59,6 +60,7 @@ workflow NANOPORE_cDNA {
         
         if (params.is_discovery == true)
         {
+
             BAMBU_PREP_DISCOVERY(MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, ref, annotation, MAKE_FAI.out, NDR, track_reads)
             BAMBU_DISCOVERY(BAMBU_PREP_DISCOVERY.out.collect(), ref, annotation, MAKE_FAI.out, NDR, track_reads)
             new_annotation = BAMBU_DISCOVERY.out.gtf
@@ -68,6 +70,7 @@ workflow NANOPORE_cDNA {
 
         else
         {
+            
             BAMBU_PREP_QUANT(MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, ref, annotation, MAKE_FAI.out)
             BAMBU_QUANT(BAMBU_PREP_QUANT.out.collect(), ref, annotation, MAKE_FAI.out)
             new_annotation = BAMBU_QUANT.out.gtf

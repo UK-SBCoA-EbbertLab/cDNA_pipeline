@@ -110,5 +110,3 @@ process BAMBU_QUANT {
         bambu_quant.R $rc_files2 "!{ref}" "!{gtf}"
         '''
 }
-
-
