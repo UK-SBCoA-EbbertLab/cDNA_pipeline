@@ -8,7 +8,7 @@ bam <- args[1]
 fa_file <- args[2]
 gtf_file <- args[3]
 NDR_input <- as.double(args[4])
-track_reads_input <- args[5] == "True"
+track_reads_input <- args[5] == "true"
 
 bambuAnnotations <- prepareAnnotations(gtf_file)
 
