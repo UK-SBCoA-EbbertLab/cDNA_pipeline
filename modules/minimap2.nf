@@ -8,14 +8,17 @@ process MINIMAP2_cDNA {
         val(id)
         path(fastq)
         path(index)
+        path(txt)
 
     output:
         val("$id"), emit: id
+        path("$fastq"), emit: fastq
         path("${id}_all_sorted.bam"), emit: bam_all
         path("${id}_all_sorted.bam.bai"), emit: bai_all
         path("${id}_mapped_filtered_sorted.bam"), emit: bam_mapped
         path("${id}_mapped_filtered_sorted.bam.bai"), emit: bai_mapped
         path("*all*stat"), emit: QC_out
+        path("$txt"), emit: txt
 
     script:
         """
@@ -39,42 +42,5 @@ process MINIMAP2_cDNA {
         rm "${id}_all.bam"
         """
 
-}
-
-
-process MINIMAP2_QC {
-
-    publishDir "results/${params.out_dir}/QC/minimap2/", mode: 'copy', overwrite: true, pattern: "*all*stat"
-
-    label 'large'
-
-    input:
-        val(id)
-        path(fastq)
-        path(txt)
-        path(index)
-
-    output:
-        val("$id"), emit: id
-        path("$txt"), emit: txt
-        path("${id}_all_sorted.bam"), emit: bam
-        path("${id}_all_sorted.bam.bai"), emit: bai
-        path("*all*stat"), emit: multiQC
-
-    script:
-        """
-        minimap2 -t 16 -ax splice \
-            -uf \
-            $index \
-            $fastq > "${id}_all.bam" \
-
-
-        samtools sort -@ -12 "${id}_all.bam" -o "${id}_all_sorted.bam"
-        samtools index "${id}_all_sorted.bam"
-        samtools flagstat "${id}_all_sorted.bam" > "${id}_all_sorted.flagstat"
-        samtools idxstats "${id}_all_sorted.bam" > "${id}_all_sorted.idxstat"
-
-        rm "${id}_all.bam"
-        """
 }
 

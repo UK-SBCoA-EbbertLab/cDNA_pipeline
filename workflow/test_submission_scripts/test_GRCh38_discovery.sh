@@ -9,7 +9,7 @@ nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/test_data/*.fa
     --multiqc_config "../../references/multiqc_config.yaml" \
     --cdna_kit "PCS111" \
     --out_dir "./test_discovery/" \
-    --NDR "1.00" \
+    --NDR "0.05" \
     --is_discovery "True" \
     --bambu_track_reads "True" \
     --is_chm13 "False" -resume -bg

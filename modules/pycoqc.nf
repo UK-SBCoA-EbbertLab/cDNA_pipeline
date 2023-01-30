@@ -6,6 +6,7 @@ process PYCOQC {
 
     input:
         val(id)
+        path(fastq)
         path(seq_summary)
         path(total_bam)
         path(total_bai)
@@ -15,7 +16,8 @@ process PYCOQC {
 
     script:
         """
-        fix_sequencing_summary.py $seq_summary "${id}_sequencing_summary_pyco.txt"
+        fix_sequencing_summary_pychopper.py $fastq $seq_summary "${id}_sequencing_summary_pyco.txt"
+
 
         pycoQC -f "${id}_sequencing_summary_pyco.txt" \
             -v \

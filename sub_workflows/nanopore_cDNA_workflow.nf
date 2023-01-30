@@ -4,7 +4,7 @@ include {MAKE_INDEX_cDNA} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCHOPPER} from '../modules/pychopper'
 include {PYCOQC} from '../modules/pycoqc'
-include {MINIMAP2_cDNA; MINIMAP2_QC} from '../modules/minimap2'
+include {MINIMAP2_cDNA} from '../modules/minimap2'
 include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP_DISCOVERY; BAMBU_PREP_QUANT; BAMBU_DISCOVERY; BAMBU_QUANT} from '../modules/bambu'
 include {STRINGTIE_ONT_cDNA} from '../modules/stringtie'
@@ -31,13 +31,12 @@ workflow NANOPORE_cDNA {
         MAKE_FAI(ref)
         MAKE_INDEX_cDNA(ref)
         PYCHOPPER(ont_reads_fq, ont_reads_txt, cdna_kit)
-        MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out)
-        MINIMAP2_QC(PYCHOPPER.out.id, PYCHOPPER.out.original_fastq, PYCHOPPER.out.txt, MAKE_INDEX_cDNA.out)
-        PYCOQC(MINIMAP2_QC.out.id, MINIMAP2_QC.out.txt, MINIMAP2_QC.out.bam, MINIMAP2_QC.out.bai)
+        MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out, PYCHOPPER.out.txt)
+        PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam_all, MINIMAP2_cDNA.out.bai_all)
 
         if (params.is_chm13 == true)
         {
-            MULTIQC_CHM13(MINIMAP2_QC.out.multiQC.collect(), PYCOQC.out.multiQC.collect(), PYCHOPPER.out.multiQC.collect(), multiqc_config)
+            MULTIQC_CHM13(MINIMAP2_cDNA.out.QC_out.collect(), PYCOQC.out.multiQC.collect(), PYCHOPPER.out.multiQC.collect(), multiqc_config)
 
             if (params.ercc == "None") 
             { 
@@ -55,7 +54,7 @@ workflow NANOPORE_cDNA {
         else
         {
             RSEQC(MINIMAP2_cDNA.out.bam_mapped.collect(), MINIMAP2_cDNA.out.bai_mapped.collect(), housekeeping)
-            MULTIQC_GRCh38(MINIMAP2_QC.out.multiQC.collect(), PYCOQC.out.multiQC.collect(), PYCHOPPER.out.multiQC.collect(), RSEQC.out.multiQC.collect(), multiqc_config)
+            MULTIQC_GRCh38(MINIMAP2_cDNA.out.QC_out.collect(), PYCOQC.out.multiQC.collect(), PYCHOPPER.out.multiQC.collect(), RSEQC.out.multiQC.collect(), multiqc_config)
         }
         
         if (params.is_discovery == true)
