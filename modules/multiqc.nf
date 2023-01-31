@@ -13,11 +13,11 @@ process MULTIQC_GRCh38 {
     
     output: 
        path "*"
+       path "$QC_1"
 
     script:
         """    
         multiqc -c $multiqc_config -n multiQC_report.html .
-        echo "hi"
         """
 }
 
@@ -35,6 +35,7 @@ process MULTIQC_CHM13 {
     
     output: 
         path "*"
+        path "$QC_1"
 
     script:
         """    
