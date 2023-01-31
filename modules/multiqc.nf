@@ -13,7 +13,6 @@ process MULTIQC_GRCh38 {
     
     output: 
        path "*"
-       path "$QC_1"
 
     script:
         """    
@@ -35,7 +34,6 @@ process MULTIQC_CHM13 {
     
     output: 
         path "*"
-        path "$QC_1"
 
     script:
         """    
