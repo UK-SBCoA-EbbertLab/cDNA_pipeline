@@ -68,9 +68,10 @@ df_read_converter["pychopper_sequence_length_template"] = np.asarray(read_length
 
 ## Merge with original txt and substitute old columns
 df_txt_final = df_txt.merge(df_read_converter, on="read_id", how="outer")
-df_txt_final["pychopper_read_id"].fillna(df["read_id"], inplace=True)
-df_txt_final["read_id"] = df_read_converter["pychopper_read_id"].copy()
-df_txt_final["sequence_length_template"] = df_read_converter["pychopper_sequence_length_template"].copy()
+df_txt_final["pychopper_read_id"].fillna(df_txt_final["read_id"], inplace=True)
+df_txt_final["pychopper_sequence_length_template"].fillna(df_txt_final["sequence_length_template"], inplace=True)
+df_txt_final["read_id"] = df_txt_final["pychopper_read_id"].copy()
+df_txt_final["sequence_length_template"] = df_txt_final["pychopper_sequence_length_template"].copy()
 df_txt_final.drop(columns=["pychopper_read_id", "pychopper_sequence_length_template"], inplace=True)
 
 
