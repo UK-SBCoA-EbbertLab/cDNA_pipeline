@@ -13,5 +13,5 @@ track_reads_input <- args[5] == "true"
 bambuAnnotations <- prepareAnnotations(gtf_file)
 
 se <- bambu(reads = bam, annotations = bambuAnnotations, genome = fa_file, rcOutDir = "./bambu_prep_discovery/", trackReads=track_reads_input,
-                        NDR=1, lowMemory=FALSE, quant=FALSE, discovery=TRUE, yieldSize = 5000000)
+                        lowMemory=FALSE, quant=FALSE, discovery=FALSE, yieldSize = 5000000)
 

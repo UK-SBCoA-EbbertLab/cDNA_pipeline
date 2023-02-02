@@ -10,6 +10,5 @@ nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/uky_aged_data/
     --cdna_kit "PCS111" \
     --out_dir "./uky_aged_stringent/" \
     --bambu_track_reads "True" \
-    --NDR "0.05" \
     --is_discovery "True" \
     --is_chm13 "False" -resume -bg
