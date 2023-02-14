@@ -22,6 +22,7 @@ process PYCOQC {
         pycoQC -f "${id}_sequencing_summary_pyco.txt" \
             -v \
             -a $total_bam \
+            --min_pass_qual 9 \
             -o "./${id}_pycoqc.html" \
             -j "./${id}_pycoqc.json"
         """
