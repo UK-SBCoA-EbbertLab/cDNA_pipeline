@@ -20,6 +20,7 @@ process PYCHOPPER {
     script:
         """
         pychopper -t 50 \
+            -Q 9 \
             -k $cdna_kit \
             -r "${id}_pychopper_report.pdf" \
             -u "${id}_pychopper.unclassified.fq" \
