@@ -29,7 +29,7 @@ for line in Lines:
         
         ## Get original and pychopper read ids
         pychopper_read_id = line_content.split('@')[1].split(' ')[0]
-        original_read_id = line_content.split("parent_read_id=")[1].split(" ")[0]
+        original_read_id = line_content.split("|")[1].split(" ")[0]
         
         ## Append ids to their respective lists
         original_read_ids_list.append(original_read_id)
