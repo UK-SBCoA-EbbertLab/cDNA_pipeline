@@ -1,23 +1,21 @@
 process RSEQC {
 
-    publishDir "results/${params.out_dir}/QC/RseQC/", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/multiQC_input/RseQC/", mode: "copy", overwrite: true, pattern: "*geneBody*"
+
  
     label "large"
 
     input:
-        path(bam_nanopore)
-        path(bai_nanopore)
+        val(id)
+        path(bam)
+        path(bai)
         path(housekeeping)
 
     output:
-        path "*", emit: multiQC
+        path "*geneBody*", emit: multiQC
 
-    shell:
-        '''
-        concatenated_bams="!{bam_nanopore}"
-
-        final_bams="$(tr ' ', ',' <<<$concatenated_bams)"
-
-        geneBody_coverage.py -i $final_bams -r "!{housekeeping}" -o "geneBody_coverage.py"
-        '''
+    script:
+        """
+        geneBody_coverage.py -i $bam -r $housekeeping -o "${id}_geneBody_coverage"
+        """
 }

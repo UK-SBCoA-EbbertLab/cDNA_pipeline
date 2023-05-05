@@ -4,7 +4,7 @@ include {MAKE_INDEX_cDNA} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCHOPPER} from '../modules/pychopper'
 include {PYCOQC} from '../modules/pycoqc'
-include {MINIMAP2_cDNA} from '../modules/minimap2'
+include {MINIMAP2_cDNA; FILTER_BAM} from '../modules/minimap2'
 include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP_DISCOVERY; BAMBU_PREP_QUANT; BAMBU_DISCOVERY; BAMBU_QUANT} from '../modules/bambu'
 include {STRINGTIE_ONT_cDNA} from '../modules/stringtie'
@@ -26,13 +26,15 @@ workflow NANOPORE_cDNA {
         multiqc_config
         NDR
         track_reads
+        mapq
 
     main:
         MAKE_FAI(ref)
         MAKE_INDEX_cDNA(ref)
         PYCHOPPER(ont_reads_fq, ont_reads_txt, cdna_kit)
         MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out, PYCHOPPER.out.txt)
-        PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam_all, MINIMAP2_cDNA.out.bai_all)
+        FILTER_BAM(MINIMAP2_cDNA.out.id, mapq, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai)
+        PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai)
 
         if (params.is_chm13 == true)
         {
@@ -53,14 +55,14 @@ workflow NANOPORE_cDNA {
 
         else
         {
-            RSEQC(MINIMAP2_cDNA.out.bam_mapped.collect(), MINIMAP2_cDNA.out.bai_mapped.collect(), housekeeping)
+            RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam, FILTER_BAM.out.bai, housekeeping)
             MULTIQC_GRCh38(MINIMAP2_cDNA.out.QC_out.collect(), PYCOQC.out.multiQC.collect(), PYCHOPPER.out.multiQC.collect(), RSEQC.out.multiQC.collect(), multiqc_config)
         }
         
         if (params.is_discovery == true)
         {
 
-            BAMBU_PREP_DISCOVERY(MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, ref, annotation, MAKE_FAI.out, NDR, track_reads)
+            BAMBU_PREP_DISCOVERY(FILTER_BAM.out.bam, FILTER_BAM.out.bai, ref, annotation, MAKE_FAI.out, NDR, track_reads)
             BAMBU_DISCOVERY(BAMBU_PREP_DISCOVERY.out.collect(), ref, annotation, MAKE_FAI.out, NDR, track_reads)
             new_annotation = BAMBU_DISCOVERY.out.gtf
             GFFCOMPARE(new_annotation, annotation)
@@ -70,13 +72,12 @@ workflow NANOPORE_cDNA {
         else
         {
             
-            BAMBU_PREP_QUANT(MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, ref, annotation, MAKE_FAI.out)
+            BAMBU_PREP_QUANT(FILTER_BAM.out.bam, FILTER_BAM.out.bai, ref, annotation, MAKE_FAI.out)
             BAMBU_QUANT(BAMBU_PREP_QUANT.out.collect(), ref, annotation, MAKE_FAI.out)
             new_annotation = BAMBU_QUANT.out.gtf
 
         }
 
-        STRINGTIE_ONT_cDNA(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.bam_mapped, MINIMAP2_cDNA.out.bai_mapped, new_annotation)
         MAKE_TRANSCRIPTOME(ref, MAKE_FAI.out, new_annotation)
         
 }

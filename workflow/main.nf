@@ -22,6 +22,8 @@ log.info """
 
  NDR Value for Bambu (Novel Discovery Rate)     : ${params.NDR}
  Track read_ids with bambu?                     : ${params.bambu_track_reads}
+
+ MAPQ value for filtering bam file              : ${params.mapq}
  """
 
 
@@ -42,6 +44,7 @@ cdna_kit = Channel.value(params.cdna_kit)
 multiqc_config = Channel.fromPath(params.multiqc_config)
 NDR = Channel.value(params.NDR)
 track_reads = Channel.value(params.bambu_track_reads)
+mapq = Channel.value(params.mapq)
 
 
 if (params.ercc != "None") {
@@ -59,7 +62,7 @@ workflow {
 
 
     if (params.ont_reads_fq != "None"){
-        NANOPORE_cDNA(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, multiqc_config, NDR, track_reads)
+        NANOPORE_cDNA(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, multiqc_config, NDR, track_reads, mapq)
     }
 
     if (params.fast5_dir != "None"){
