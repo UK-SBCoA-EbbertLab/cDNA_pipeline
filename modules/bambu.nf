@@ -1,54 +1,31 @@
-process BAMBU_PREP_DISCOVERY {
+process BAMBU_PREP {
 
     publishDir "results/${params.out_dir}/", mode: "copy", overwrite: true
 
     label 'large'
 
     input:
+        val(id)
+        val(mapq)
         path(bam)
         path(bai)
         path(ref)
         path(gtf)
         path(fai)
-        val(NDR)
         val(track_reads)
 
     output:
-        path("bambu_prep_discovery/*.rds")
+        path("bambu_prep/*.rds")
 
     script:
         """
-        mkdir -p bambu_prep_discovery
+        mkdir -p bambu_prep
 
-        bambu_prep_discovery.R $bam $ref $gtf $NDR $track_reads
+        bambu_prep.R $bam $ref $gtf $track_reads
+
+        mv ./bambu_prep/*.rds "./bambu_prep/${id}_mapq_${mapq}.rds"
         """
 }
-
-process BAMBU_PREP_QUANT {
-
-    publishDir "results/${params.out_dir}/", mode: "copy", overwrite: true
-
-    label 'large'
-
-    input:
-        path(bam)
-        path(bai)
-        path(ref)
-        path(gtf)
-        path(fai)
-
-    output:
-        path("bambu_prep_quant/*.rds")
-
-    script:
-        """
-        mkdir -p bambu_prep_quant
-
-        bambu_prep_quant.R $bam $ref $gtf
-        """
-}
-
-
 
 process BAMBU_DISCOVERY {
 

@@ -9,15 +9,15 @@ process MINIMAP2_cDNA {
         val(id)
         path(fastq)
         path(index)
-        path(txt)
+        val(txt)
 
     output:
         val("$id"), emit: id
         path("$fastq"), emit: fastq
-        path("${id}_all_sorted.bam"), emit: bam
-        path("${id}_all_sorted.bam.bai"), emit: bai
-        path("*all*stat"), emit: QC_out
-        path("$txt"), emit: txt
+        path("${id}.bam"), emit: bam
+        path("${id}.bam.bai"), emit: bai
+        path("${id}*stat"), emit: QC_out
+        val("$txt"), emit: txt
 
     script:
         """
@@ -27,18 +27,19 @@ process MINIMAP2_cDNA {
             $fastq > "${id}_all.bam" \
      
 
-        samtools sort -@ -12 "${id}_all.bam" -o "${id}_all_sorted.bam" 
-        samtools index "${id}_all_sorted.bam"
-        samtools flagstat "${id}_all_sorted.bam" > "${id}_all_sorted.flagstat"
-        samtools idxstats "${id}_all_sorted.bam" > "${id}_all_sorted.idxstat"
+        samtools sort -@ -12 "${id}_all.bam" -o "${id}.bam" 
+        samtools index "${id}.bam"
+        samtools flagstat "${id}.bam" > "${id}.flagstat"
+        samtools idxstats "${id}.bam" > "${id}.idxstat"
     
+        rm "${id}_all.bam"
         """
 
 }
 
 process FILTER_BAM {
 
-publishDir "results/${params.out_dir}/QC/filtering_bam/", pattern: "*sorted.*stat"
+publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*sorted.*stat"
     
     label 'medium_small'
 
@@ -50,18 +51,51 @@ publishDir "results/${params.out_dir}/QC/filtering_bam/", pattern: "*sorted.*sta
 
     output:
         val("$id"), emit: id
-        path("${id}_filtered_mapq_${mapq}_sorted.bam"), emit: bam
-        path("${id}_filtered_mapq_${mapq}_sorted.bam.bai"), emit: bai
+        path("${id}_filtered_mapq_${mapq}.bam"), emit: bam
+        path("${id}_filtered_mapq_${mapq}.bam.bai"), emit: bai
         path("*sorted.*stat"), emit: QC
 
     script:
         """
         
         samtools view -b -q $mapq -F 2304 -@ 12 $bam > 'intermediate.bam'
-        samtools sort -@ 12 "intermediate.bam" -o '${id}_filtered_mapq_${mapq}_sorted.bam'
-        samtools index '${id}_filtered_mapq_${mapq}_sorted.bam'
-        samtools flagstat "${id}_filtered_mapq_${mapq}_sorted.bam" > "${id}_filtered_mapq_${mapq}_sorted.flagstat"
-        samtools idxstats "${id}_filtered_mapq_${mapq}_sorted.bam" > "${id}_filtered_mapq_${mapq}_sorted.idxstat"
+        samtools sort -@ 12 "intermediate.bam" -o '${id}_filtered_mapq_${mapq}.bam'
+        samtools index '${id}_filtered_mapq_${mapq}.bam'
+        samtools flagstat "${id}_filtered_mapq_${mapq}.bam" > "${id}_filtered_mapq_${mapq}.flagstat"
+        samtools idxstats "${id}_filtered_mapq_${mapq}.bam" > "${id}_filtered_mapq_${mapq}.idxstat"
+
+        rm "intermediate.bam"
+        """
+
+}
+
+
+
+process FILTER_BAM_ONLY {
+
+publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*sorted.*stat"
+
+    label 'medium_small'
+
+    input:
+        tuple val(id), path(bam)
+        val(bai)
+        val(mapq)
+
+    output:
+        val("$id"), emit: id
+        path("${id}_filtered_mapq_${mapq}.bam"), emit: bam
+        path("${id}_filtered_mapq_${mapq}.bam.bai"), emit: bai
+        path("*sorted.*stat"), emit: QC
+
+    script:
+        """
+
+        samtools view -b -q $mapq -F 2304 -@ 12 $bam > 'intermediate.bam'
+        samtools sort -@ 12 "intermediate.bam" -o '${id}_filtered_mapq_${mapq}.bam'
+        samtools index '${id}_filtered_mapq_${mapq}.bam'
+        samtools flagstat "${id}_filtered_mapq_${mapq}.bam" > "${id}_filtered_mapq_${mapq}.flagstat"
+        samtools idxstats "${id}_filtered_mapq_${mapq}.bam" > "${id}_filtered_mapq_${mapq}.idxstat"
 
         rm "intermediate.bam"
         """

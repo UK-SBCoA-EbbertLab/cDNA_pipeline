@@ -1,14 +1,11 @@
 process MULTIQC_GRCh38 {
 
-    publishDir "results/${params.out_dir}/QC/multiqc", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/multiqc_output", mode: "copy", overwrite: true
 
     label 'tiny'
 
     input:
-        path(QC_1)
-        path(QC_2)
-        path(QC_3)
-        path(QC_4)
+        path(multiqc_input)
         path(multiqc_config)
     
     output: 
@@ -22,14 +19,12 @@ process MULTIQC_GRCh38 {
 
 process MULTIQC_CHM13 {
 
-    publishDir "results/${params.out_dir}/QC/multiqc", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/multiqc_output", mode: "copy", overwrite: true
 
     label 'tiny'
 
     input:
-        path(QC_1)
-        path(QC_2)
-        path(QC_3)
+        path(multiqc_input)
         path(multiqc_config)
     
     output: 

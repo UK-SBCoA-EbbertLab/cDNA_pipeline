@@ -1,7 +1,7 @@
 // Import Modules
 include {BASECALL; GATHER_BASECALL} from '../modules/basecall'
 
-workflow BASECALLER {
+workflow NANOPORE_cDNA_STEP_1 {
         
     take:
         fast5_dir

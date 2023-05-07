@@ -6,13 +6,13 @@ process PYCHOPPER {
 
     input:
         tuple val(id), path(fastq)
-        path(txt)
+        val(txt)
         val(cdna_kit)
 
     output:
         val "$id", emit: id
         path "${id}_pychop.fq", emit: fastq
-        path "$txt", emit: txt
+        val "$txt", emit: txt
         path "$fastq", emit: original_fastq
         path "*pychopper.stats", emit: multiQC
 

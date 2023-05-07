@@ -3,7 +3,7 @@ process RSEQC {
     publishDir "results/${params.out_dir}/multiQC_input/RseQC/", mode: "copy", overwrite: true, pattern: "*geneBody*"
 
  
-    label "large"
+    label "medium_large"
 
     input:
         val(id)
