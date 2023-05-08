@@ -51,7 +51,9 @@ for the job manager.
 
           --step              <"2". Performs step 2>
 
-          --ont_reads_fastq   <path to fastq sequencing data, can submit multiple at once using pattern "/path/*.fastq".  If you don't specify this parameter the pipeline will not run. An exception is if you specify a  ".bam" file input, see Pipeline parameters for STEP 2 from BAM below. Default: "None">
+          --ont_reads_fastq   <path to fastq sequencing data, can submit multiple at once using pattern "/path/*.fastq".  If you don't specify this
+                              parameter the pipeline will not run. An exception is if you specify a  ".bam" file input, see Pipeline parameters for
+                              STEP 2 from BAM below. Default: "None">
           
           --ont_reads_txt     <path to sequencing summary files, can submit multiple at once. Make sure they follow same naming pattern as fastq                                    files. If a fastq file is named "sample_1.fastq" then its sequencing summary file should be "sample_1.txt" 
                                or "sample_1_sequencing_summary.txt". If you don't specify this parameter pipeline will run, but skip PycoQC 
