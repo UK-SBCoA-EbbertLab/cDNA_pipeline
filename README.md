@@ -123,7 +123,7 @@ for the job manager.
           
           --track_reads       <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file                                   from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
             
-          --multiqc_input    <path to directory containing multiqc input data from pipeline step 2. Default: "None">
+          --multiqc_input    <path to directory containing multiqc input data from pipeline step 2. Use path and add **. Example: /path/multiqc_input/** Default: "None">
           
           --multiqc_config   <path to multiqc ".yaml" config file. Default: "None". PS: You can find an example of a multiqc config file that works for this pipeline under /cDNA_pipeline/workflow/bin/multiqc_config.yaml>
 
@@ -189,5 +189,34 @@ for the job manager.
               --track_reads "False" \
               --mapq "0" \
               --housekeeping "../../references/hg38.HouseKeepingGenes.bed"
-    
-#### Notice that for GRCh38 the `--ercc` is always set to "None" as there the user can easily concatenate both the GRCh38 reference and the annotation to the ERCC reference and annotation.          
+ 
+ 
+#### Notice that for GRCh38 the `--ercc` is not needed as the user can easily concatenate both the GRCh38 reference and the annotation to the ERCC reference and annotation prior to running the analysis.     
+
+
+### Example for step 2 from BAM: GRCh38 with ERCCs
+
+          nextflow ../main.nf --bam "./results/GRCh38_ERCC_test/mapping_cDNA/*.bam" \
+              --bai "./results/GRCh38_ERCC_test/mapping_cDNA/*.bai" \
+              --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
+              --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
+              --out_dir "./GRCh38_ERCC_test_mapq10_track_reads/" \
+              --cdna_kit "PCS111" \
+              --is_chm13 "False" \
+              --track_reads "True" \
+              --mapq "10" 
+              
+### Example for step 3: GRCh38 with ERCCs
+
+          nextflow ../main.nf --step 3 \i
+              --bambu_rds "./results/GRCh38_ERCC_test/bambu_prep/*.rds" \
+              --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
+              --fai "./results/GRCh38_ERCC_test/fai/*.fai \
+              --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
+              --is_discovery "True" \
+              --track_reads "False" \
+              --NDR "auto" \
+              --multiqc_input "./results/GRCh38_ERCC_test/multiQC_input/**" \
+              --multiqc_config "../../references/multiqc_config.yaml" \
+              --out_dir "./GRCh38_ERCC_test/" \
+              --is_chm13 "False"       
