@@ -129,57 +129,65 @@ for the job manager.
 
 ## Examples of the submissions
 
-### Basecalling 
+### Example for Step 1: Basecalling 
        nextflow ../main.nf \
               --fast5_dir "../ont_data/test_data/fast5_directory/" \
               --basecall_config "dna_r9.4.1_450bps_hac_prom" \
-              --basecall_id "test_sample_1" \
+              --basecall_id "test_sample_1" 
 
-### CHM13 without ERCCs
+### Example for step 2: CHM13 without ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.fastq" \
-              --ont_reads_txt "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.txt" \
+          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+              --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/chm13v2.0.fa" \
               --annotation "../../references/CHM13.v2.0.gff3" \
               --ercc "None" \
               --out_dir "./CHM13_test/" \
               --cdna_kit "PCS111" \
-              --is_chm13 "True"
+              --is_chm13 "True" \
+              --track_reads "False" \
+              --mapq "0" 
 
-### CHM13 with ERCCs
+### Example for step 2: CHM13 with ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.fastq" \
-              --ont_reads_txt "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.txt" \
+          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+              --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/chm13v2.0_ERCC.fa" \
               --annotation "../../references/CHM13.v2.0.gff3" \
               --ercc "../../references/ERCC92.gtf" \
               --out_dir "./CHM13_ERCC_test/" \
               --cdna_kit "PCS111" \
-              --is_chm13 "True"  -resume
+              --is_chm13 "True" \
+              --track_reads "False" \
+              --mapq "0" 
     
 #### Notice that for CHM13 you need to concatenate CHM13 and the ERCC reference prior to submitting the pipeline, but the annotations are entered separately and concatenated by the program itself after converting CHM13 annotation to ".gtf" format.
 
-### GRCh38 without ERCCs
+### Example for step 2: GRCh38 without ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.fastq" \
-              --ont_reads_txt "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.txt" \
+          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+              --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/Homo_sapiens.GRCh38.dna.primary_assembly.fa" \
               --annotation "../../references/Homo_sapiens.GRCh38.106.gtf" \
               --out_dir "./GRCh38_test/" \
-              --ercc "None" \
               --cdna_kit "PCS111" \
-              --is_chm13 "False"  -resume
+              --is_chm13 "False" \
+              --track_reads "False" \
+              --mapq "0" \
+              --housekeeping "../../references/hg38.HouseKeepingGenes.bed"
 
 
-### GRCh38 with ERCCs
+### Example for step 2: GRCh38 with ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.fastq" \
-              --ont_reads_txt "/mnt/gpfs3_amd/condo/mteb223/bag222/data/cdna_comparison_project/2019_ont_data/test_data/*.txt" \
+          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+              --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
               --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
               --out_dir "./GRCh38_ERCC_test/" \
-              --ercc "None" \
               --cdna_kit "PCS111" \
-              --is_chm13 "False"  -resume
+              --is_chm13 "False" \
+              --track_reads "False" \
+              --mapq "0" \
+              --housekeeping "../../references/hg38.HouseKeepingGenes.bed"
     
 #### Notice that for GRCh38 the `--ercc` is always set to "None" as there the user can easily concatenate both the GRCh38 reference and the annotation to the ERCC reference and annotation.          
