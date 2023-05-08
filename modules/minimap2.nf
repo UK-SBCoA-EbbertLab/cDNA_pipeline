@@ -1,7 +1,7 @@
 process MINIMAP2_cDNA {
 
-    publishDir "results/${params.out_dir}/mapping_cDNA/", pattern: "*sorted*.ba*", mode: "copy", overwrite: true
-    publishDir "results/${params.out_dir}/multiQC_input/minimap2/", pattern: "*sorted.*stat", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/mapping_cDNA/", pattern: "*.ba*", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/multiQC_input/minimap2/", pattern: "*.*stat", mode: "copy", overwrite: true
 
     label 'large'
 
@@ -39,7 +39,7 @@ process MINIMAP2_cDNA {
 
 process FILTER_BAM {
 
-publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*sorted.*stat"
+publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
     
     label 'medium_small'
 
@@ -73,7 +73,7 @@ publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*sorted.*stat"
 
 process FILTER_BAM_ONLY {
 
-publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*sorted.*stat"
+publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
 
     label 'medium_small'
 
