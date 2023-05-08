@@ -45,7 +45,7 @@ for the job manager.
 
 
 
-## Pipeline parameters for STEP 2
+## Pipeline parameters for STEP 2 (Pre-processing)
 
           --ont_reads_fastq   <path to fastq sequencing data, can submit multiple at once using pattern "/path/*.fastq". If you don't specify this parameter
                                the pipeline will not run. An exception is if you specify a ".bam" file input, see Pipeline parameters for STEP 2 from BAM below.
@@ -84,7 +84,12 @@ for the job manager.
             --mapq            <Integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with MAPQ < 10. 
                                set it to 0 if don't want to filter out any reads. Default: 0>
   
-  
+ 
+
+
+##  Pipeline parameters for STEP 2 from BAM (Pre-processing)
+
+
 ## Pipeline parameters for STEP 3
   
 
