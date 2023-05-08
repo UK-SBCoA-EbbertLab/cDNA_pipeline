@@ -53,7 +53,7 @@ publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
         val("$id"), emit: id
         path("${id}_filtered_mapq_${mapq}.bam"), emit: bam
         path("${id}_filtered_mapq_${mapq}.bam.bai"), emit: bai
-        path("*sorted.*stat"), emit: QC
+        path("*.*stat"), emit: QC
 
     script:
         """
@@ -86,7 +86,7 @@ publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
         val("$id"), emit: id
         path("${id}_filtered_mapq_${mapq}.bam"), emit: bam
         path("${id}_filtered_mapq_${mapq}.bam.bai"), emit: bai
-        path("*sorted.*stat"), emit: QC
+        path("*.*stat"), emit: QC
 
     script:
         """
