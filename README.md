@@ -37,7 +37,7 @@ for the job manager.
 
 ## Pipeline parameters for STEP 1 (Basecalling)
 
-          --step                        <"1". Performs step 2>
+          --step                        <"1". Performs step 1>
           
           --fast5_dir                   <path to directory containing fast5 files. example: /sequencing_run/basecaling/fast5/">
           
