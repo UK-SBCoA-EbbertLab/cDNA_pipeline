@@ -8,7 +8,6 @@ nextflow ../main.nf --bambu_rds "./results/test_discovery/bambu_prep/*.rds" \
     --is_discovery "True" \
     --bambu_track_reads "True" \
     --NDR "auto" \
-    --fai "./results/test_discovery/fai/Homo_sapiens.GRCh38_ERCC.fa.fai" \
     --multiqc_input "./results/test_discovery/multiQC_input/**" \
     --multiqc_config "../../references/multiqc_config.yaml" \
     --fai "./results/test_discovery/fai/*.fai" \
