@@ -33,10 +33,6 @@
 
 [GFFcompare](https://ccb.jhu.edu/software/stringtie/gffcompare.shtml)
 
-[StringTie](https://github.com/gpertea/stringtie)
-
-[FLAIR](https://github.com/BrooksLabUCSC/flair)
-
 [Bambu](https://github.com/GoekeLab/bambu)
 
 
@@ -51,14 +47,6 @@
 
 [Bambu](https://github.com/GoekeLab/bambu)
 
-
-## Python Packages
-
-[numpy](https://numpy.org/)
-
-[pandas](https://pandas.pydata.org/)
-
-[regex](https://docs.python.org/3/library/re.html)
 
 
 ## Other
