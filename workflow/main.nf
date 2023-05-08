@@ -21,7 +21,7 @@ log.info """
  nanopore basecall id (basecall only)                           : ${params.basecall_id}
 
  NDR Value for Bambu (Novel Discovery Rate)                     : ${params.NDR}
- Track read_ids with bambu?                                     : ${params.bambu_track_reads}
+ Track read_ids with bambu?                                     : ${params.track_reads}
 
  MAPQ value for filtering bam file                              : ${params.mapq}
 
