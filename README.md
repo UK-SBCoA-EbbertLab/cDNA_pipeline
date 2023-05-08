@@ -101,46 +101,64 @@ for the job manager.
           
           --bai               <path to ".bai" alignment index files, using this will supersed any ".fastq" input>
           
-          --ref               <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file. Default:                                     "None">
+          --ref               <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file.
+                              Default: "None">
   
-          --annotation        <path to reference annotation ".gtf" file for GRCh38 or ".gff3" for CHM13. If using GRCh38 and ERCC concatenate the two                                ".gtf" files prior to running the pipeline. If using ERCC with CHM13 make sure to set --is_chm13 to "True" and set                                    --ercc to the path of your ERCC ".gtf" file. Default: "None">
+          --annotation        <path to reference annotation ".gtf" file for GRCh38 or ".gff3" for CHM13. If using GRCh38 and ERCC concatenate the two
+                              ".gtf" files prior to running the pipeline. If using ERCC with CHM13 make sure to set --is_chm13 to "True" and set
+                              --ercc to the path of your ERCC ".gtf" file. Default: "None">
   
-          --out_dir           <name of output directory for pipeline submission. Will appear under "results/<out_dir>" on the directory the pipeline                                 was submitted from. Default: "output_directory/">
+          --out_dir           <name of output directory for pipeline submission. Will appear under "results/<out_dir>" on the directory the pipeline
+                              was submitted from. Default: "output_directory/">
   
           --ercc              <path to ERCC annotation file. Only needed if using CHM13 reference + GFF3 annotation file and adding ERCC.
-                               Otherwise do not specify this parameter. Default: "None">
+                              Otherwise do not specify this parameter. Default: "None">
   
-          --cdna_kit          <option for pychopper trimming using adapters from the specific cDNA library version, current options are "PCS109",                                    "PCS110", "PCS111". Default: "PCS111">
+          --cdna_kit          <option for pychopper trimming using adapters from the specific cDNA library version, current options are "PCS109",
+                              "PCS110", "PCS111". Default: "PCS111">
   
-          --is_chm13          <logical, set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and                                     converts to ".gtf". Default: "False">
+          --is_chm13          <logical, set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and
+                              converts to ".gtf". Default: "False">
           
-           --track_reads      <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file                                   from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
+           --track_reads      <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
+                              from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
             
-            --mapq            <integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with 
-                               MAPQ < 10. Set it to 0 if don't want to filter out any reads. Default: 0>
+            --mapq            <integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with
+                              MAPQ < 10. Set it to 0 if don't want to filter out any reads. Default: 0>
 
 ## Pipeline parameters for STEP 3
   
           --bambu_rds         <path to individually pre-processed bambu RDS objects (output from step 1). Default: "None"
           
-          --ref               <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file. Default:                                     "None">
+          --ref               <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file.
+                              Default:"None">
           
           --fai               <path to reference index ".fai" file>
   
-          --annotation        <path to reference annotation ".gtf" file for GRCh38 or ".gff3" for CHM13. If using GRCh38 and ERCC concatenate the two                                ".gtf" files prior to running the pipeline. If using ERCC with CHM13 make sure to set --is_chm13 to "True" and set                                    --ercc to the path of your ERCC ".gtf" file. Default: "None">
+          --annotation        <path to reference annotation ".gtf" file for GRCh38 or ".gff3" for CHM13. If using GRCh38 and ERCC concatenate the two
+                              ".gtf" files prior to running the pipeline. If using ERCC with CHM13 make sure to set --is_chm13 to "True" and set
+                              --ercc to the path of your ERCC ".gtf" file. Default: "None">
   
-          --out_dir           <name of output directory for pipeline submission. Will appear under "results/<out_dir>" on the directory the pipeline                                 was submitted from. Default: "output_directory/">
+          --out_dir           <name of output directory for pipeline submission. Will appear under "results/<out_dir>" on the directory the pipeline
+                              was submitted from. Default: "output_directory/">
           
-          --is_discovery      <Logical, if "True" perform transcript discovery and quantification with Bambu, else if "False" perform only quantification based on the given GTF annotation>
+          --is_discovery      <Logical, if "True" perform transcript discovery and quantification with Bambu, else if "False" perform only
+                              quantification based on the given GTF annotation>
   
-          --NDR               <NDR parameter for performing transcript discovery with Bambu. Values can range from 0-1, the closer to 0 the more stringent the transcript discovery is. Meaning you will discover less transcripts but be more certain that they are real. "auto" option lets Bambu determine which NDR threshold to use based on the data. Authors of the tool recommend "auto" for most situations. Default: "auto">
+          --NDR               <NDR parameter for performing transcript discovery with Bambu. Values can range from 0-1, the closer to 0 the more
+                              stringent the transcript discovery is. Meaning you will discover less transcripts but be more certain that they are
+                              real. "auto" option lets Bambu determine which NDR threshold to use based on the data. Authors of the tool recommend
+                              "auto" for most situations. Default: "auto">
   
           
-          --track_reads       <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file                                   from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
+          --track_reads       <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
+                              from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
             
-          --multiqc_input    <path to directory containing multiqc input data from pipeline step 2. Use path and add **. Example: /path/multiqc_input/** Default: "None">
+          --multiqc_input    <path to directory containing multiqc input data from pipeline step 2. Use path and add **.
+                              Example: /path/multiqc_input/** Default: "None">
           
-          --multiqc_config   <path to multiqc ".yaml" config file. Default: "None". PS: You can find an example of a multiqc config file that works for this pipeline under /cDNA_pipeline/workflow/bin/multiqc_config.yaml>
+          --multiqc_config   <path to multiqc ".yaml" config file. Default: "None". PS: You can find an example of a multiqc config file that works
+                              for this pipeline under /cDNA_pipeline/workflow/bin/multiqc_config.yaml>
 
 ## Examples of the submissions
 
