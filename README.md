@@ -23,7 +23,7 @@ for the job manager.
         
 
           
-### 6) Make sure you have all the sequencing files and reference genomes/assemblies files and annotation files you will need to run the pipeline.
+### 5) Make sure you have all the sequencing files and reference genomes/assemblies files and annotation files you will need to run the pipeline.
           
 - ".fastq" -- Nanopore cDNA sequencing files or ".bam" alignment files.
 
@@ -31,15 +31,18 @@ for the job manager.
 
 - refecence/assembly ".fa" file.
 
-- annotation ".gtf" file is preffered. Only use ".gff3" if using CHM13. Pipeline has an option to handle this.
+- annotation ".gtf" file is preffered. Only use ".gff3" if using CHM13. Pipeline has an option to handle this, see `Pipeline parameters for STEP 2`.
           
 
 
-## Pipeline parameters
+## Pipeline parameters for STEP 1 (Basecalling)
 
-          --ont_reads_fastq   <path to fastq sequencing data, can submit multiple at once>
+
+## Pipeline parameters for STEP 2
+
+          --ont_reads_fastq   <path to fastq sequencing data, can submit multiple at once using pattern "/path/*.fastq". User must s>
           
-          --ont_reads_txt     <path to sequencing summary files, can submit multiple at once. Make sure they follow same naming pattern as fastq files. To ommit enter "None">
+          --ont_reads_txt     <path to sequencing summary files, can submit multiple at once. Make sure they follow same naming pattern as fastq files>
           
           --ref               <path to reference/assembly ".fa" file, if using ERCC make sure to concatenate>
   
@@ -54,9 +57,11 @@ for the job manager.
           --is_chm13          <set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and converts to ".gtf">
   
   
+## Pipeline parameters for STEP 3
+  
 
 
-## Examples of the submission of the pipeline can be seen found here `workflow/test_workflows/`, see them below:
+## Examples of the submissions
 
 
 ### CHM13 without ERCCs
