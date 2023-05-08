@@ -4,9 +4,7 @@
 
 ### 1) Have a functioning version of Nextflow in your Path.
 
-- On the MCC it can be found under `/project/mteb223_uksr/sequencing_resources/tools/bin/nextflow`
-          
-- Make sure to run `module load ccs/java/jdk1.8.0_202` on the MCC load Java. Nextflow needs Java to work. I added this command to my `~/.bash_profile` to make life easier.
+- Information on how to install NextFlow can be found [here](https://www.nextflow.io/docs/latest/getstarted.html).
           
 ### 2) Get the singularity image used for this pipeline:
 
