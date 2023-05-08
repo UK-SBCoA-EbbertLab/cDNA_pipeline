@@ -48,29 +48,41 @@ for the job manager.
 ## Pipeline parameters for STEP 2
 
           --ont_reads_fastq   <path to fastq sequencing data, can submit multiple at once using pattern "/path/*.fastq". If you don't specify this parameter
-                               the pipeline will not run. An exception is if you specify a ".bam" file input, see Pipeline parameters for STEP 2 from BAM below>
+                               the pipeline will not run. An exception is if you specify a ".bam" file input, see Pipeline parameters for STEP 2 from BAM below.
+                               Default: "None">
           
           --ont_reads_txt     <path to sequencing summary files, can submit multiple at once. Make sure they follow same naming pattern as fastq files.
                                if a fastq file is named "sample_1.fastq" then its sequencing summary file should be "sample_1.txt" or "sample_1_sequencing_summary.txt".
-                               If you don't specify this parameter pipeline will run, but skip PycoQC quality control step>
+                               If you don't specify this parameter pipeline will run, but skip PycoQC quality control step. Default: "None">
           
-          --ref               <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file>
+          --ref               <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file. Default: "None">
   
           --annotation        <path to reference annotation ".gtf" file for GRCh38 or ".gff3" for CHM13. If using GRCh38 and ERCC concatenate the two ".gtf" files 
                                prior to running the pipeline. If using ERCC with CHM13 make sure to set --is_chm13 to "True" and set --ercc to the path of your
-                               ERCC ".gtf" file>
+                               ERCC ".gtf" file. Default: "None">
   
-          --out_dir           <name of output directory for pipeline submission. Will appear under "results/<out_dir>" on the directory the pipeline was submitted from>
+          --out_dir           <name of output directory for pipeline submission. Will appear under "results/<out_dir>" on the directory the pipeline was submitted from
+                               Default: "output_directory/">
   
           --ercc              <path to ERCC annotation file. Only needed if using CHM13 reference + GFF3 annotation file and adding ERCC.
-                               Otherwise do not specify this parameter>
+                               Otherwise do not specify this parameter. Default: "None">
   
-          --cdna_kit          <option for pychopper trimming using adapters from the specific cDNA library version, current options are "PCS109", "PCS110", "PCS111">
+          --cdna_kit          <option for pychopper trimming using adapters from the specific cDNA library version, current options are "PCS109", "PCS110", "PCS111".
+                               Default: "PCS111">
   
-          --is_chm13          <set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and converts to ".gtf">
+          --is_chm13          <logical, set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and converts to ".gtf".
+                               Default: "False">
           
           --housekeeping      <path to bed file containing coordinates for housekeeping genes used by RSeQC quality control tool. Currently only supported if 
-                               --is_chm13 is set to "False". You can find the bed file with housekeeping gene coordinates for GRCh38 [here](https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38.HouseKeepingGenes.bed.gz/download)> ```
+                               --is_chm13 is set to "False". You can find the bed file with housekeeping gene coordinates for GRCh38 here: 
+                               https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38.HouseKeepingGenes.bed.gz/download
+                               Default: "None">
+                               
+           --track_reads      <Logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file from Bambu.
+                               Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
+            
+            --mapq            <Integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with MAPQ < 10. 
+                               set it to 0 if don't want to filter out any reads. Default: 0>
   
   
 ## Pipeline parameters for STEP 3
