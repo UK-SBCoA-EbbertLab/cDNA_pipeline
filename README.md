@@ -37,6 +37,13 @@ for the job manager.
 
 ## Pipeline parameters for STEP 1 (Basecalling)
 
+          --fast5_dir   <path to directory containing fast5 files. example: /sequencing_run/basecaling/fast5/"
+          
+          --basecall_config     <configuration name for basecalling setting. Example for PCS111 R9.4.1 PromethION flow cell: `dna_r9.4.1_450bps_hac_prom`>
+          
+          --basecall_id         <Sample ID for the output fastq file that is being basecalled>
+
+
 
 ## Pipeline parameters for STEP 2
 
