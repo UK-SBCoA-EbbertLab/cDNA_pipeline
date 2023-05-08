@@ -16,7 +16,7 @@
           git clone https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
 
 
-### 4) Go into the `../workflows/nextflow.config` file and make any necessary changes:
+### 4) Go into the `./workflows/nextflow.config` file and make any necessary changes:
 
 - Alter slurm job manager (or other job manager) parameters to suit your local environment. I don't recommend changing the memory/cpu/time allocated 
 for the job manager.
