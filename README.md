@@ -130,14 +130,15 @@ for the job manager.
 ## Examples of the submissions
 
 ### Example for Step 1: Basecalling 
-       nextflow ../main.nf \
+       nextflow ../main.nf --step 1 \
               --fast5_dir "../ont_data/test_data/fast5_directory/" \
               --basecall_config "dna_r9.4.1_450bps_hac_prom" \
               --basecall_id "test_sample_1" 
 
 ### Example for step 2: CHM13 without ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+          nextflow ../main.nf --step 2 \
+              --ont_reads_fq "../ont_data/test_data/*.fastq" \
               --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/chm13v2.0.fa" \
               --annotation "../../references/CHM13.v2.0.gff3" \
@@ -150,7 +151,8 @@ for the job manager.
 
 ### Example for step 2: CHM13 with ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+          nextflow ../main.nf --step 2 \
+              --ont_reads_fq "../ont_data/test_data/*.fastq" \
               --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/chm13v2.0_ERCC.fa" \
               --annotation "../../references/CHM13.v2.0.gff3" \
@@ -165,7 +167,8 @@ for the job manager.
 
 ### Example for step 2: GRCh38 without ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+          nextflow ../main.nf --step 2 \ 
+              --ont_reads_fq "../ont_data/test_data/*.fastq" \
               --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/Homo_sapiens.GRCh38.dna.primary_assembly.fa" \
               --annotation "../../references/Homo_sapiens.GRCh38.106.gtf" \
@@ -179,7 +182,8 @@ for the job manager.
 
 ### Example for step 2: GRCh38 with ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "../ont_data/test_data/*.fastq" \
+          nextflow ../main.nf --step 2 \ 
+              --ont_reads_fq "../ont_data/test_data/*.fastq" \
               --ont_reads_txt "../ont_data/test_data/*.txt" \
               --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
               --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
@@ -196,7 +200,8 @@ for the job manager.
 
 ### Example for step 2 from BAM: GRCh38 with ERCCs
 
-          nextflow ../main.nf --bam "./results/GRCh38_ERCC_test/mapping_cDNA/*.bam" \
+          nextflow ../main.nf --step 2 \ 
+              --bam "./results/GRCh38_ERCC_test/mapping_cDNA/*.bam" \
               --bai "./results/GRCh38_ERCC_test/mapping_cDNA/*.bai" \
               --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
               --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
@@ -208,7 +213,7 @@ for the job manager.
               
 ### Example for step 3: GRCh38 with ERCCs
 
-          nextflow ../main.nf --step 3 \i
+          nextflow ../main.nf --step 3 \
               --bambu_rds "./results/GRCh38_ERCC_test/bambu_prep/*.rds" \
               --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
               --fai "./results/GRCh38_ERCC_test/fai/*.fai \
