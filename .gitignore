@@ -8,5 +8,6 @@
 **/transcriptome
 **/data
 **/real_workflows
+**/submission_scripts
 !.gitignore
 
