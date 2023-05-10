@@ -15,13 +15,13 @@ bambuAnnotations <- prepareAnnotations(gtf_file)
 
 if (NDR_input == "auto") {
     se_novel <- bambu(reads=rc_files, annotations=bambuAnnotations, genome=fa_file,
-                  lowMemory=FALSE, ncore=12, discovery=TRUE, quant=TRUE, trackReads=track_reads_input)
+                  lowMemory=FALSE, ncore=1, discovery=TRUE, quant=TRUE, trackReads=track_reads_input)
 } else {
 
     NDR_input <- as.double(NDR_input)
 
     se_novel <- bambu(reads=rc_files, annotations=bambuAnnotations, genome=fa_file,
-        lowMemory=FALSE, ncore=12, NDR=NDR_input, discovery=TRUE, quant=TRUE, trackReads=track_reads_input)
+        lowMemory=FALSE, ncore=1, NDR=NDR_input, discovery=TRUE, quant=TRUE, trackReads=track_reads_input)
 }
 
 writeBambuOutput(se_novel, path = "./bambu_discovery/")
