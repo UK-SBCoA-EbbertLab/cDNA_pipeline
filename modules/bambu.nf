@@ -2,7 +2,7 @@ process BAMBU_PREP {
 
     publishDir "results/${params.out_dir}/", mode: "copy", overwrite: true
 
-    label 'large'
+    label 'bambu_prep_job'
 
     input:
         val(id)
