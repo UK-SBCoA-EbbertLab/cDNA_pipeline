@@ -60,7 +60,7 @@ process MINIMAP2_dRNA {
     script:
         """
         minimap2 -t 16 -ax splice \
-            -uf -k14 \
+            -k14 -uf \
             $index \
             $fastq > "${id}_all.bam" \
 

@@ -1,8 +1,8 @@
 // Import Modules
 include {MAKE_FAI} from '../modules/make_fai'
-include {MAKE_INDEX_cDNA} from '../modules/make_index'
+include {MAKE_INDEX_dRNA} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
-include {PYCOQC} from '../modules/pycoqc'
+include {PYCOQC_dRNA} from '../modules/pycoqc'
 include {MINIMAP2_dRNA; FILTER_BAM} from '../modules/minimap2'
 include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
@@ -23,12 +23,12 @@ workflow NANOPORE_dRNA_STEP_2 {
 
     main:
         MAKE_FAI(ref)
-        MAKE_INDEX_cDNA(ref)
-        MINIMAP2_dRNA(ont_reads_fq,  MAKE_INDEX_cDNA.out, ont_reads_txt)
+        MAKE_INDEX_dRNA(ref)
+        MINIMAP2_dRNA(ont_reads_fq,  MAKE_INDEX_dRNA.out, ont_reads_txt)
         FILTER_BAM(MINIMAP2_dRNA.out.id, mapq, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
         
         if (params.ont_reads_txt != "None") {
-            PYCOQC(MINIMAP2_dRNA.out.id, MINIMAP2_dRNA.out.fastq, MINIMAP2_dRNA.out.txt, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
+            PYCOQC_dRNA(MINIMAP2_dRNA.out.id, MINIMAP2_dRNA.out.fastq, MINIMAP2_dRNA.out.txt, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
         }
 
         if (params.is_chm13 == true)

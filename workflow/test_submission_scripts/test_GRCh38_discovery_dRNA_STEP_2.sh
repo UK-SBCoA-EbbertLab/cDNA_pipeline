@@ -6,8 +6,7 @@ nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/2023-06-06_bra
     --ref "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38_ERCC.fa" \
     --annotation "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
     --housekeeping "../../../../cDNA_pipeline/references/hg38.HouseKeepingGenes.bed" \
-    --cdna_kit "PCS111" \
-    --out_dir "./test_discovery/" \
+    --out_dir "./test_discovery_dRNA_propper_mapping_no_strand/" \
     --is_discovery "True" \
     --bambu_track_reads "True" \
     --is_dRNA "True" \
