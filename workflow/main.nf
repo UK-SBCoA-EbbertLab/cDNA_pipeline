@@ -29,15 +29,18 @@ log.info """
 
  Path to pre-processed bambu RDS files                          : ${params.bambu_rds}
  Path to QC files that go into MultiQC report                   : ${params.multiqc_input}   
+
+ Is this a direct RNAseq dataset?                               : ${params.is_dRNA}
  ==============================================================================================================
  """
 
 
 // Import Workflows
-include {NANOPORE_cDNA_STEP_1} from '../sub_workflows/nanopore_cDNA_workflow_STEP_1'
+include {NANOPORE_STEP_1} from '../sub_workflows/nanopore_workflow_STEP_1'
 include {NANOPORE_cDNA_STEP_2} from '../sub_workflows/nanopore_cDNA_workflow_STEP_2'
-include {NANOPORE_cDNA_STEP_2_BAM} from '../sub_workflows/nanopore_cDNA_workflow_STEP_2_BAM'
-include {NANOPORE_cDNA_STEP_3} from '../sub_workflows/nanopore_cDNA_workflow_STEP_3'
+include {NANOPORE_dRNA_STEP_2} from '../sub_workflows/nanopore_dRNA_workflow_STEP_2'
+include {NANOPORE_STEP_2_BAM} from '../sub_workflows/nanopore_workflow_STEP_2_BAM'
+include {NANOPORE_STEP_3} from '../sub_workflows/nanopore_workflow_STEP_3'
 
 
 // Define initial files and channels
@@ -93,23 +96,33 @@ if ((params.bam != "None") && (params.bai != "None")) {
 workflow {
 
     if (params.step == 1){
-        NANOPORE_cDNA_STEP_1(fast5_dir, basecall_config, basecall_id)
+        NANOPORE_STEP_1(fast5_dir, basecall_config, basecall_id)
     }
 
     else if ((params.step == 2) && (params.bam == "None")){
+
+        if (params.is_dRNA == "False") {
         
-        NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq)
+            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq)
+        }
+
+        else if (params.is_dRNA = "True") {
+
+            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq)
+
+        }
     }
+
 
     else if ((params.step == 2) && (params.bam != "None")) {
         
-        NANOPORE_cDNA_STEP_2_BAM(ref, annotation, bam, bai, ercc, track_reads, mapq)
+        NANOPORE_STEP_2_BAM(ref, annotation, bam, bai, ercc, track_reads, mapq)
 
     }
 
     else if(params.step == 3){
         
-        NANOPORE_cDNA_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config)
+        NANOPORE_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config)
     }
 
 }
