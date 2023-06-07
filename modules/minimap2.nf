@@ -37,9 +37,48 @@ process MINIMAP2_cDNA {
 
 }
 
+process MINIMAP2_dRNA {
+
+    publishDir "results/${params.out_dir}/mapping_cDNA/", pattern: "*.ba*", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/multiQC_input/minimap2/", pattern: "*.*stat", mode: "copy", overwrite: true
+
+    label 'large'
+
+    input:
+        tuple val(id), path(fastq)
+        path(index)
+        val(txt)
+
+    output:
+        val("$id"), emit: id
+        path("$fastq"), emit: fastq
+        path("${id}.bam"), emit: bam
+        path("${id}.bam.bai"), emit: bai
+        path("${id}*stat"), emit: QC_out
+        val("$txt"), emit: txt
+
+    script:
+        """
+        minimap2 -t 16 -ax splice \
+            -uf -k14 \
+            $index \
+            $fastq > "${id}_all.bam" \
+
+
+        samtools sort -@ -12 "${id}_all.bam" -o "${id}.bam"
+        samtools index "${id}.bam"
+        samtools flagstat "${id}.bam" > "${id}.flagstat"
+        samtools idxstats "${id}.bam" > "${id}.idxstat"
+
+        rm "${id}_all.bam"
+        """
+
+}
+
+
 process FILTER_BAM {
 
-publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
+    publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
     
     label 'medium_small'
 
