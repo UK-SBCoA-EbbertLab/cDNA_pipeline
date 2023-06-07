@@ -89,6 +89,13 @@ for the job manager.
             
             --mapq            <Integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with MAPQ
                               < 10. set it to 0 if don't want to filter out any reads. Default: 0>
+                              
+            --is_dRNA         <Logical, set to "True if you want to run the minimap2 step with the parameters for "noisy" Nanopore directRNAseq reads.
+                               Set to "False" if you want to run it with minimap2 step for PCR amplified Nanopore cDNA reads. If you set this parameter
+                               to "True" you should omit the "--cdna_kit" parameter as that is only used for the Pychopper step of the pipeline and that
+                               step is skipped for directRNAseq. Note that this is the only step in the pipeline that is specific for 
+                               DirectRNAseq, Step 2 from BAM and Step 3 are not modified for dRNA vs cDNA. Step 1 will need the 
+                               specific basecalling configuration for dRNA instead of cDNA if you are running dRNA. Default: "False">
   
  
 
@@ -198,7 +205,7 @@ for the job manager.
     
 #### Notice that for CHM13 you need to concatenate CHM13 and the ERCC reference prior to submitting the pipeline, but the annotations are entered separately and concatenated by the program itself after converting CHM13 annotation to ".gtf" format.
 
-### Example for step 2: GRCh38 without ERCCs
+### Example for step 2 (cDNA): GRCh38 without ERCCs
 
           nextflow ../main.nf --step 2 \ 
               --ont_reads_fq "../ont_data/test_data/*.fastq" \
@@ -213,7 +220,7 @@ for the job manager.
               --housekeeping "../../references/hg38.HouseKeepingGenes.bed"
 
 
-### Example for step 2: GRCh38 with ERCCs
+### Example for step 2 (cDNA): GRCh38 with ERCCs
 
           nextflow ../main.nf --step 2 \ 
               --ont_reads_fq "../ont_data/test_data/*.fastq" \
@@ -226,6 +233,21 @@ for the job manager.
               --track_reads "False" \
               --mapq "0" \
               --housekeeping "../../references/hg38.HouseKeepingGenes.bed"
+              
+### Example for step 2 (dRNA): GRCh38 with ERCCs
+
+          nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/2023-06-06_brain_directRNA_intronic_reads/*.fastq" \
+                    --ont_reads_txt "/scratch/bag222/data/ont_data/2023-06-06_brain_directRNA_intronic_reads/*.txt" \
+                    --ref "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38_ERCC.fa" \
+                    --annotation "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
+                    --housekeeping "../../../../cDNA_pipeline/references/hg38.HouseKeepingGenes.bed" \
+                    --out_dir "./GRCh38_dRNA_EERCC_test/" \
+                    --is_discovery "True" \
+                    --bambu_track_reads "True" \
+                    --is_dRNA "True" \
+                    --mapq "0" \
+                    --step "2" \
+                    --is_chm13 "False"
  
  
 #### Notice that for GRCh38 the `--ercc` is not needed as the user can easily concatenate both the GRCh38 reference and the annotation to the ERCC reference and annotation prior to running the analysis.     
