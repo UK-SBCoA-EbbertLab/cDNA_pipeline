@@ -78,7 +78,7 @@ process MINIMAP2_dRNA {
 
 process FILTER_BAM {
 
-    publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
+    publishDir "results/${params.out_dir}/bam_filtering/", mode: "copy", pattern: "*.*stat"
     
     label 'medium_small'
 
@@ -112,7 +112,7 @@ process FILTER_BAM {
 
 process FILTER_BAM_ONLY {
 
-publishDir "results/${params.out_dir}/bam_filtering/", pattern: "*.*stat"
+    publishDir "results/${params.out_dir}/bam_filtering/", mode: "copy", pattern: "*.*stat"
 
     label 'medium_small'
 

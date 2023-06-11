@@ -1,6 +1,6 @@
 process MULTIQC_GRCh38 {
 
-    publishDir "results/${params.out_dir}/multiqc_output", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/multiQC_output", mode: "copy", overwrite: true
 
     label 'tiny'
 
