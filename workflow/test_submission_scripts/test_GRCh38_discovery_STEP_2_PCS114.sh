@@ -5,7 +5,7 @@ nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/test_data/*.fa
     --ref "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38_ERCC.fa" \
     --annotation "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
     --housekeeping "../../../../cDNA_pipeline/references/hg38.HouseKeepingGenes.bed" \
-    --cdna_kit "PCS111" \
+    --cdna_kit "PCS114" \
     --out_dir "./test_discovery_PCS114/" \
     --is_discovery "True" \
     --bambu_track_reads "True" \

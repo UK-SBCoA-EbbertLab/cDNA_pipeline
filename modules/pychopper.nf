@@ -17,11 +17,12 @@ process PYCHOPPER {
         path "*pychopper.stats", emit: multiQC
 
     script:
+    
+    """
 
     ## Pychopper does not have PCS114 primers yes, need to create them ##
-    if ($cdna_kit == "PCS114")
-        """
-        
+    if [[ "${cdna_kit}" == "PCS114" ]];
+    then 
         ## Create primer config file ##
         echo "+:MySSP,-MyVNP|-:MyVNP,-MySSP" > primer_config.txt
     
@@ -43,12 +44,9 @@ process PYCHOPPER {
             -A "${id}_pychopper.scores" \
             "${fastq}" "${id}_pychop.fq"
 
-
-        """
-
-   ## All other kits just use default settings ##
+    ## All other kits just use default settings ##
     else
-    """
+
         pychopper -t 50 \
             -Q 9 \
             -k $cdna_kit \
