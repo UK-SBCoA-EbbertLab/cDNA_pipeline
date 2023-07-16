@@ -2,9 +2,9 @@
 
 
 nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/test_data/*.fastq" \
-    --ref "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38_ERCC.fa" \
-    --annotation "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
-    --housekeeping "../../../../cDNA_pipeline/references/hg38.HouseKeepingGenes.bed" \
+    --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
+    --annotation "../../references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
+    --housekeeping "../../references/hg38.HouseKeepingGenes.bed" \
     --cdna_kit "PCS114" \
     --out_dir "./test_discovery_PCS114/" \
     --is_discovery "True" \
