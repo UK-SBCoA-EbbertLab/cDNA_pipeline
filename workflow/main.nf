@@ -31,6 +31,8 @@ log.info """
  Path to QC files that go into MultiQC report                   : ${params.multiqc_input}   
 
  Is this a direct RNAseq dataset?                               : ${params.is_dRNA}
+
+ Reference for contamination analysis                           : ${params.contamination_ref}
  ==============================================================================================================
  """
 
@@ -62,6 +64,7 @@ multiqc_input = Channel.fromPath(params.multiqc_input, type: "file")
 fai = file(params.fai)
 bam = Channel.fromPath(params.bam).map { file -> tuple(file.baseName, file) }
 bai = Channel.fromPath(params.bai)
+contamination_ref = Channel.fromPath(params.contamination_ref)
 
 
 if (params.ercc != "None") {
@@ -103,12 +106,12 @@ workflow {
 
         if (params.is_dRNA == "False") {
         
-            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq)
+            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref)
         }
 
         else if (params.is_dRNA = "True") {
 
-            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq)
+            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref)
 
         }
     }

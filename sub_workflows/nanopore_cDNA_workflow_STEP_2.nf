@@ -1,13 +1,15 @@
 // Import Modules
 include {MAKE_FAI} from '../modules/make_fai'
 include {MAKE_INDEX_cDNA} from '../modules/make_index'
+include {MAKE_INDEX_cDNA as MAKE_INDEX_CONTAMINANTS} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCHOPPER} from '../modules/pychopper'
 include {PYCOQC} from '../modules/pycoqc'
 include {MINIMAP2_cDNA; FILTER_BAM} from '../modules/minimap2'
 include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
-
+include {MAP_CONTAMINATION_cDNA} from '../modules/contamination'
+include {MAKE_CONTAMINATION_REPORT} from '../modules/make_contamination_report.nf'
 
 workflow NANOPORE_cDNA_STEP_2 {
 
@@ -21,6 +23,7 @@ workflow NANOPORE_cDNA_STEP_2 {
         cdna_kit
         track_reads
         mapq
+        contamination_ref
 
     main:
         MAKE_FAI(ref)
@@ -29,6 +32,18 @@ workflow NANOPORE_cDNA_STEP_2 {
         MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out, PYCHOPPER.out.txt)
         FILTER_BAM(MINIMAP2_cDNA.out.id, mapq, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai)
         
+        if (params.contamination_ref != "None") {
+
+            MAKE_INDEX_CONTAMINANTS(contamination_ref)
+
+            BAM_AND_INDEX = MINIMAP2_cDNA.out.bam.combine(MAKE_INDEX_CONTAMINANTS.out)
+            
+            MAP_CONTAMINATION_cDNA(MINIMAP2_cDNA.out.id, BAM_AND_INDEX, MINIMAP2_cDNA.out.bai, MINIMAP2_cDNA.out.num_reads)
+
+            MAKE_CONTAMINATION_REPORT(MAP_CONTAMINATION_cDNA.out.id, MAP_CONTAMINATION_cDNA.out.num_reads, MAP_CONTAMINATION_cDNA.out.num_unmapped_reads, MAP_CONTAMINATION_cDNA.out.num_contaminant_reads)
+        }
+
+
         if (params.ont_reads_txt != "None") {
             PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai)
         }

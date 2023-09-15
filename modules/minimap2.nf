@@ -8,7 +8,7 @@ process MINIMAP2_cDNA {
     input:
         val(id)
         path(fastq)
-        path(index)
+        file(index)
         val(txt)
 
     output:
@@ -18,6 +18,7 @@ process MINIMAP2_cDNA {
         path("${id}.bam.bai"), emit: bai
         path("${id}*stat"), emit: QC_out
         val("$txt"), emit: txt
+        val("!NUM_READS"), emit: num_reads
 
     script:
         """
@@ -31,7 +32,9 @@ process MINIMAP2_cDNA {
         samtools index "${id}.bam"
         samtools flagstat "${id}.bam" > "${id}.flagstat"
         samtools idxstats "${id}.bam" > "${id}.idxstat"
-    
+        
+        NUM_READS=\$(samtools view -F 0x40 "${id}.bam" | cut -f1 | sort | uniq | wc -l)
+
         rm "${id}_all.bam"
         """
 
@@ -39,14 +42,14 @@ process MINIMAP2_cDNA {
 
 process MINIMAP2_dRNA {
 
-    publishDir "results/${params.out_dir}/mapping_cDNA/", pattern: "*.ba*", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/mapping_dRNA/", pattern: "*.ba*", mode: "copy", overwrite: true
     publishDir "results/${params.out_dir}/multiQC_input/minimap2/", pattern: "*.*stat", mode: "copy", overwrite: true
 
     label 'large'
 
     input:
         tuple val(id), path(fastq)
-        path(index)
+        file(index)
         val(txt)
 
     output:
@@ -56,6 +59,7 @@ process MINIMAP2_dRNA {
         path("${id}.bam.bai"), emit: bai
         path("${id}*stat"), emit: QC_out
         val("$txt"), emit: txt
+        val("!NUM_READS"), emit: num_reads
 
     script:
         """
@@ -69,6 +73,8 @@ process MINIMAP2_dRNA {
         samtools index "${id}.bam"
         samtools flagstat "${id}.bam" > "${id}.flagstat"
         samtools idxstats "${id}.bam" > "${id}.idxstat"
+
+        NUM_READS=\$(samtools view -F 0x40 "${id}.bam" | cut -f1 | sort | uniq | wc -l)
 
         rm "${id}_all.bam"
         """

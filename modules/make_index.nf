@@ -1,33 +1,33 @@
 process MAKE_INDEX_cDNA {
 
-    label 'small'
+    label 'large'
 
     input:
-        path ref
+        path(ref)
 
     output:
-        path 'ref.mmi'
+        path("${ref}.mmi")
 
 
     script:
         """
-        minimap2 -t 8 -ax splice -uf -d ref.mmi $ref
+        minimap2 -t 8 -ax splice -uf -d "${ref}.mmi" $ref
         """
 }
 
 process MAKE_INDEX_dRNA {
 
-    label 'small'
+    label 'large'
 
     input:
-        path ref
+        path(ref)
 
     output:
-        path 'ref.mmi'
+        path("${ref}.mmi")
 
 
     script:
         """
-        minimap2 -t 8 -k14 -ax splice -uf -d ref.mmi $ref
+        minimap2 -t 8 -k14 -ax splice -uf -d "${ref}.mmi" $ref
         """
 }
