@@ -18,7 +18,7 @@ process MINIMAP2_cDNA {
         path("${id}.bam.bai"), emit: bai
         path("${id}*stat"), emit: QC_out
         val("$txt"), emit: txt
-        val("!NUM_READS"), emit: num_reads
+        env(NUM_READS), emit: num_reads
 
     script:
         """
@@ -59,7 +59,7 @@ process MINIMAP2_dRNA {
         path("${id}.bam.bai"), emit: bai
         path("${id}*stat"), emit: QC_out
         val("$txt"), emit: txt
-        val("!NUM_READS"), emit: num_reads
+        env(NUM_READS), emit: num_reads
 
     script:
         """

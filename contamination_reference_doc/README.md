@@ -13,11 +13,10 @@
 
 ### 5. We checked for any duplicate IDs on the master_contamination_reference.fa file using the command: `cat master_contamination_reference.fa | grep '^>' | sort | uniq -d`
 
-
 ### 6. Duplicate entries were manually removed from the master_contamination_reference.fa, so that there would be only one entry for each sequence ID.
 
+### 7. Spaces were substituted with underscores on sequence names using the following command: `tr ' ' _ < master_contaminant_reference.fasta > test.fasta && mv test.fasta master_contaminant_reference.fasta`
 
-### 7. The final decontamination reference was deposited on Zenodo, under the following link: 
-
+### 8. The final decontamination reference was deposited on Zenodo, under the following link: 
 
 ### All data were retrieved on September 15th 2023,

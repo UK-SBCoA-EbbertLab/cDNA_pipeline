@@ -2,7 +2,7 @@ process MAP_CONTAMINATION_cDNA {
 
     publishDir "results/${params.out_dir}/contamination_report/aligment/${id}", mode: "copy", pattern: "*"
 
-    label 'bambu_prep_job'
+    label 'contamination'
 
     input:
         val(id)
@@ -13,8 +13,8 @@ process MAP_CONTAMINATION_cDNA {
     output:
         val("$id"), emit: id
         val("$num_reads"), emit: num_reads
-        val("!NUM_UNMAPPED_READS"), emit: num_unmapped_reads
-        val("!NUM_CONTAMINANT_READS"), emit: num_contaminant_reads
+        env(NUM_UNMAPPED_READS), emit: num_unmapped_reads
+        env(NUM_CONTAMINANT_READS), emit: num_contaminant_reads
         path("${id}*"), emit: outty
 
     script:
@@ -25,21 +25,23 @@ process MAP_CONTAMINATION_cDNA {
 
         NUM_UNMAPPED_READS=\$(samtools view -F 0x40 "${id}_unmapped.bam" | cut -f1 | sort | uniq | wc -l)
         
-        minimap2 -t 12 -ax splice \
+        minimap2 -t 1 -ax splice \
             --split-prefix /tmp/tmp_name \
             -uf \
             $index \
             "${id}_unmapped_reads.fastq" > "${id}_contaminants_unsorted.bam" 
 
-        samtools view -b -@ 12 -F 256 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
-        samtools sort -@ -12 "${id}_contaminants_unsorted_primary.bam" -o "${id}_contaminants.bam"
-        samtools index "${id}_contaminants.bam"
+        samtools view -b -@ 1 -F 256 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
+        samtools sort -@ 1 "${id}_contaminants_unsorted_primary.bam" -o "${id}_contaminants_sorted_primary.bam"
+        samtools index "${id}_contaminants_sorted_primary.bam"
 
-        samtools idxstat "${id}_contaminants.bam" > "${id}_contaminants.idxstat"
+        samtools idxstat "${id}_contaminants_sorted_primary.bam" > "tmp.tsv"
+        awk '{print \$1,\$3}' "tmp.tsv" > "tmp2.tsv"
+        sort -k2nr "tmp2.tsv" > "${id}_number_of_mapped_reads_per_contaminant.tsv"
 
-        NUM_CONTAMINANT_READS=\$(samtools view -F 0x40 "${id}_contaminants.bam" | cut -f1 | sort | uniq | wc -l)
+        NUM_CONTAMINANT_READS=\$(samtools view -F 0x40 "${id}_contaminants_sorted_primary.bam" | cut -f1 | sort | uniq | wc -l)
 
-        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam"
+        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam" "${id}_contaminants_unsorted_primary.bam" "tmp.tsv" "tmp2.tsv"
         """
 
 }
@@ -48,7 +50,7 @@ process MAP_CONTAMINATION_dRNA {
 
     publishDir "results/${params.out_dir}/contamination_report/aligment/${id}", mode: "copy", pattern: "*"
 
-    label 'bambu_prep_job'
+    label 'contamination'
 
     input:
         val(id)
@@ -59,8 +61,8 @@ process MAP_CONTAMINATION_dRNA {
     output:
         val("$id"), emit: id
         val("$num_reads"), emit: num_reads
-        val("!NUM_UNMAPPED_READS"), emit: num_unmapped_reads
-        val("!NUM_CONTAMINANT_READS"), emit: num_contaminant_reads
+        env(NUM_UNMAPPED_READS), emit: num_unmapped_reads
+        env(NUM_CONTAMINANT_READS), emit: num_contaminant_reads
         path("${id}*"), emit: outty
 
     script:
@@ -71,21 +73,23 @@ process MAP_CONTAMINATION_dRNA {
 
         NUM_UNMAPPED_READS=\$(samtools view -F 0x40 "${id}_unmapped.bam" | cut -f1 | sort | uniq | wc -l)
         
-        minimap2 -t 12 -ax splice \
+        minimap2 -t 1 -ax splice \
             --split-prefix /tmp/tmp_name \
             -k14 -uf \
             $index \
             "${id}_unmapped_reads.fastq" > "${id}_contaminants_unsorted.bam" 
 
-        samtools view -b -@ 12 -F 256 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
-        samtools sort -@ -12 "${id}_contaminants_unsorted_primary.bam" -o "${id}_contaminants.bam"
-        samtools index "${id}_contaminants.bam"
+        samtools view -b -@ 1 -F 256 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
+        samtools sort -@ 1 "${id}_contaminants_unsorted_primary.bam" -o "${id}_contaminants_sorted_primary.bam"
+        samtools index "${id}_contaminants_sorted_primary.bam"
 
-        samtools idxstat "${id}_contaminants.bam" > "${id}_contaminants.idxstat"
+        samtools idxstat "${id}_contaminants_sorted_primary.bam" > "tmp.tsv"
+        awk '{print \$1,\$3}' "tmp.tsv" > "tmp2.tsv"
+        sort -k2nr "tmp2.tsv" > "${id}_number_of_mapped_reads_per_contaminant.tsv"
+        
+        NUM_CONTAMINANT_READS=\$(samtools view -F 0x40 "${id}_contaminants_sorted_primary.bam" | cut -f1 | sort | uniq | wc -l)
 
-        NUM_CONTAMINANT_READS=\$(samtools view -F 0x40 "${id}_contaminants.bam" | cut -f1 | sort | uniq | wc -l)
-
-        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam"
+        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam" "${id}_contaminants_unsorted_primary.bam" "tmp.tsv", "tmp2.tsv"
         """
 
 }

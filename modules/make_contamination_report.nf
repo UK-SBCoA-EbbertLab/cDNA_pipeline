@@ -1,6 +1,6 @@
 process MAKE_CONTAMINATION_REPORT {
 
-    publishDir "results/${params.out_dir}/contamination_report/samtools_stat_files/", mode: "copy", pattern: "*.*stat"
+    publishDir "results/${params.out_dir}/multiQC_input/contamination/", mode: "copy", pattern: "*"
 
     label 'medium'
 
@@ -11,7 +11,7 @@ process MAKE_CONTAMINATION_REPORT {
         val(num_contaminant_reads)
 
     output:
-        path("${id}_test.txt"), emit: stat
+        path("*"), emit: outty
 
     script:
         """
