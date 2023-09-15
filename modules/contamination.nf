@@ -31,7 +31,7 @@ process MAP_CONTAMINATION_cDNA {
             $index \
             "${id}_unmapped_reads.fastq" > "${id}_contaminants_unsorted.bam" 
 
-        samtools view -b -@ 1 -F 256 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
+        samtools view -b -@ 1 -F 260 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
         samtools sort -@ 1 "${id}_contaminants_unsorted_primary.bam" -o "${id}_contaminants_sorted_primary.bam"
         samtools index "${id}_contaminants_sorted_primary.bam"
 
@@ -79,7 +79,7 @@ process MAP_CONTAMINATION_dRNA {
             $index \
             "${id}_unmapped_reads.fastq" > "${id}_contaminants_unsorted.bam" 
 
-        samtools view -b -@ 1 -F 256 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
+        samtools view -b -@ 1 -F 260 "${id}_contaminants_unsorted.bam" > "${id}_contaminants_unsorted_primary.bam"
         samtools sort -@ 1 "${id}_contaminants_unsorted_primary.bam" -o "${id}_contaminants_sorted_primary.bam"
         samtools index "${id}_contaminants_sorted_primary.bam"
 
