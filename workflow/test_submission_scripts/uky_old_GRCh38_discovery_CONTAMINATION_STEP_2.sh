@@ -7,7 +7,7 @@ nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/technical_paper_data/uk
     --annotation "../../references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
     --housekeeping "../../references/hg38.HouseKeepingGenes.bed" \
     --cdna_kit "PCS111" \
-    --out_dir "./test_discovery_PCS111/" \
+    --out_dir "./uky_old_discovery_PCS111/" \
     --is_discovery "True" \
     --bambu_track_reads "True" \
     --mapq "10" \
