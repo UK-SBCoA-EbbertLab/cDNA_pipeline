@@ -1,6 +1,6 @@
 process MAP_CONTAMINATION_cDNA {
 
-    publishDir "results/${params.out_dir}/contamination_report/aligment/${id}", mode: "copy", pattern: "*"
+    publishDir "results/${params.out_dir}/contamination_report/${id}", mode: "copy", pattern: "*"
 
     label 'contamination'
 
@@ -48,7 +48,7 @@ process MAP_CONTAMINATION_cDNA {
 
 process MAP_CONTAMINATION_dRNA {
 
-    publishDir "results/${params.out_dir}/contamination_report/aligment/${id}", mode: "copy", pattern: "*"
+    publishDir "results/${params.out_dir}/contamination_report/${id}", mode: "copy", pattern: "*"
 
     label 'contamination'
 
