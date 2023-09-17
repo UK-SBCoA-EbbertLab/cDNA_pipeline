@@ -17,6 +17,7 @@
 
 ### 7. Spaces were substituted with underscores on sequence names using the following command: `tr ' ' _ < master_contaminant_reference.fasta > test.fasta && mv test.fasta master_contaminant_reference.fasta`
 
-### 8. The final decontamination reference was deposited on Zenodo, under the following link: 
+### 8. The final decontamination reference was deposited on Zenodo, under the following link: https://zenodo.org/record/8350277
+### DOI: 10.5281/zenodo.8350277
 
 ### All data were retrieved on September 15th 2023,
