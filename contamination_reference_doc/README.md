@@ -3,6 +3,7 @@
 
 
 ### 1. We took the blast database files from Decontaminer for BACTERIA, FUNGI, and VIRUSES: https://drive.google.com/drive/u/2/folders/1JSpAi6sghxyCrB5XqDOInF-P12WyxcE-
+### Link to Decontaminer paper, including explanation on how databases were generated: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2684-x
 
 ### 2. We converted each database into fasta files using the command: `blastdbcmd -entry all -db <database label> -out <outfile>`
 
