@@ -9,7 +9,7 @@ include {MINIMAP2_cDNA; FILTER_BAM} from '../modules/minimap2'
 include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
 include {MAP_CONTAMINATION_cDNA} from '../modules/contamination'
-include {MAKE_CONTAMINATION_REPORT} from '../modules/make_contamination_report.nf'
+include {MAKE_CONTAMINATION_REPORT_1 ; MAKE_CONTAMINATION_REPORT_2} from '../modules/make_contamination_report.nf'
 
 workflow NANOPORE_cDNA_STEP_2 {
 
@@ -40,7 +40,9 @@ workflow NANOPORE_cDNA_STEP_2 {
             
             MAP_CONTAMINATION_cDNA(MINIMAP2_cDNA.out.id, BAM_AND_INDEX, MINIMAP2_cDNA.out.bai, MINIMAP2_cDNA.out.num_reads)
 
-            MAKE_CONTAMINATION_REPORT(MAP_CONTAMINATION_cDNA.out.id, MAP_CONTAMINATION_cDNA.out.num_reads, MAP_CONTAMINATION_cDNA.out.num_unmapped_reads, MAP_CONTAMINATION_cDNA.out.num_contaminant_reads)
+            MAKE_CONTAMINATION_REPORT_1(MAP_CONTAMINATION_cDNA.out.id, MAP_CONTAMINATION_cDNA.out.num_reads, MAP_CONTAMINATION_cDNA.out.num_unmapped_reads, MAP_CONTAMINATION_cDNA.out.num_contaminant_reads)
+
+            MAKE_CONTAMINATION_REPORT_2(MAKE_CONTAMINATION_REPORT_1.out.collect())
         }
 
 

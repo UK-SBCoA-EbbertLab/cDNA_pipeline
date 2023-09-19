@@ -8,7 +8,7 @@ include {MINIMAP2_dRNA; FILTER_BAM} from '../modules/minimap2'
 include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
 include {MAP_CONTAMINATION_dRNA} from '../modules/contamination'
-include {MAKE_CONTAMINATION_REPORT} from '../modules/make_contamination_report.nf'
+include {MAKE_CONTAMINATION_REPORT_1 ; MAKE_CONTAMINATION_REPORT_2} from '../modules/make_contamination_report.nf'
 
 workflow NANOPORE_dRNA_STEP_2 {
 
@@ -40,7 +40,9 @@ workflow NANOPORE_dRNA_STEP_2 {
                               
             MAP_CONTAMINATION_dRNA(MINIMAP2_dRNA.out.id, BAM_AND_INDEX, MINIMAP2_dRNA.out.bai, MINIMAP2_dRNA.out.num_reads)
         
-            MAKE_CONTAMINATION_REPORT(MAP_CONTAMINATION_dRNA.out.id, MAP_CONTAMINATION_dRNA.out.num_reads, MAP_CONTAMINATION_dRNA.out.num_unmapped_reads, MAP_CONTAMINATION_dRNA.out.num_contaminant_reads)
+            MAKE_CONTAMINATION_REPORT_1(MAP_CONTAMINATION_dRNA.out.id, MAP_CONTAMINATION_dRNA.out.num_reads, MAP_CONTAMINATION_dRNA.out.num_unmapped_reads, MAP_CONTAMINATION_dRNA.out.num_contaminant_reads)
+
+            MAKE_CONTAMINATION_REPORT_2(MAKE_CONTAMINATION_REPORT_1.out.collect())
         }
         
         if (params.ont_reads_txt != "None") {
