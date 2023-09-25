@@ -1,6 +1,6 @@
 // Import Modules
 include {MAKE_FAI} from '../modules/make_fai'
-include {MAKE_INDEX_dRNA} from '../modules/make_index'
+include {MAKE_INDEX_dRNA ; MAKE_INDEX_dRNA_CONTAMINATION_CHM13} from '../modules/make_index'
 include {MAKE_INDEX_dRNA as MAKE_INDEX_CONTAMINANTS} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCOQC_dRNA} from '../modules/pycoqc'
@@ -35,12 +35,15 @@ workflow NANOPORE_dRNA_STEP_2 {
         if (params.contamination_ref != "None") {
       
             MAKE_INDEX_CONTAMINANTS(contamination_ref)
+
+            MAKE_INDEX_dRNA_CONTAMINATION_CHM13()
                   
-            BAM_AND_INDEX = MINIMAP2_dRNA.out.bam.combine(MAKE_INDEX_CONTAMINANTS.out)
+            BAM_AND_INDEX = MINIMAP2_dRNA.out.bam.combine(MAKE_INDEX_CONTAMINANTS.out).combine(MAKE_INDEX_dRNA_CONTAMINATION_CHM13.out)
                               
             MAP_CONTAMINATION_dRNA(MINIMAP2_dRNA.out.id, BAM_AND_INDEX, MINIMAP2_dRNA.out.bai, MINIMAP2_dRNA.out.num_reads)
         
-            MAKE_CONTAMINATION_REPORT_1(MAP_CONTAMINATION_dRNA.out.id, MAP_CONTAMINATION_dRNA.out.num_reads, MAP_CONTAMINATION_dRNA.out.num_unmapped_reads, MAP_CONTAMINATION_dRNA.out.num_contaminant_reads)
+            MAKE_CONTAMINATION_REPORT_1(MAP_CONTAMINATION_dRNA.out.id, MAP_CONTAMINATION_dRNA.out.num_reads, MAP_CONTAMINATION_dRNA.out.num_unmapped_reads_before_chm13,
+            MAP_CONTAMINATION_dRNA.out.num_unmapped_reads_after_chm13, MAP_CONTAMINATION_dRNA.out.num_contaminant_reads, MAP_CONTAMINATION_dRNA.out.num_unmapped_reads_after_poly_A)
 
             MAKE_CONTAMINATION_REPORT_2(MAKE_CONTAMINATION_REPORT_1.out.collect())
         }

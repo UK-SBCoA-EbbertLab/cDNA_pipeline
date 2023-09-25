@@ -22,7 +22,7 @@ process MINIMAP2_cDNA {
 
     script:
         """
-        minimap2 -t 16 -ax splice \
+        minimap2 -t 50 -ax splice \
             -uf \
             $index \
             $fastq > "${id}_all.bam" \
@@ -63,7 +63,7 @@ process MINIMAP2_dRNA {
 
     script:
         """
-        minimap2 -t 16 -ax splice \
+        minimap2 -t 50 -ax splice \
             -k14 -uf \
             $index \
             $fastq > "${id}_all.bam" \

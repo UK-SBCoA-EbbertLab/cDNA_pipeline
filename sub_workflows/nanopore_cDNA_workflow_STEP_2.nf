@@ -1,6 +1,6 @@
 // Import Modules
 include {MAKE_FAI} from '../modules/make_fai'
-include {MAKE_INDEX_cDNA} from '../modules/make_index'
+include {MAKE_INDEX_cDNA ; MAKE_INDEX_cDNA_CONTAMINATION_CHM13} from '../modules/make_index'
 include {MAKE_INDEX_cDNA as MAKE_INDEX_CONTAMINANTS} from '../modules/make_index'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCHOPPER} from '../modules/pychopper'
@@ -36,11 +36,14 @@ workflow NANOPORE_cDNA_STEP_2 {
 
             MAKE_INDEX_CONTAMINANTS(contamination_ref)
 
-            BAM_AND_INDEX = MINIMAP2_cDNA.out.bam.combine(MAKE_INDEX_CONTAMINANTS.out)
+            MAKE_INDEX_cDNA_CONTAMINATION_CHM13()
+
+            BAM_AND_INDEX = MINIMAP2_cDNA.out.bam.combine(MAKE_INDEX_CONTAMINANTS.out).combine(MAKE_INDEX_cDNA_CONTAMINATION_CHM13.out)
             
             MAP_CONTAMINATION_cDNA(MINIMAP2_cDNA.out.id, BAM_AND_INDEX, MINIMAP2_cDNA.out.bai, MINIMAP2_cDNA.out.num_reads)
 
-            MAKE_CONTAMINATION_REPORT_1(MAP_CONTAMINATION_cDNA.out.id, MAP_CONTAMINATION_cDNA.out.num_reads, MAP_CONTAMINATION_cDNA.out.num_unmapped_reads, MAP_CONTAMINATION_cDNA.out.num_contaminant_reads)
+            MAKE_CONTAMINATION_REPORT_1(MAP_CONTAMINATION_cDNA.out.id, MAP_CONTAMINATION_cDNA.out.num_reads, MAP_CONTAMINATION_cDNA.out.num_unmapped_reads_before_chm13, 
+            MAP_CONTAMINATION_cDNA.out.num_unmapped_reads_after_chm13, MAP_CONTAMINATION_cDNA.out.num_contaminant_reads, MAP_CONTAMINATION_cDNA.out.num_unmapped_reads_after_poly_A)
 
             MAKE_CONTAMINATION_REPORT_2(MAKE_CONTAMINATION_REPORT_1.out.collect())
         }
