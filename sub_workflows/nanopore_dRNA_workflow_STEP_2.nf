@@ -43,7 +43,7 @@ workflow NANOPORE_dRNA_STEP_2 {
             MAP_CONTAMINATION_dRNA(MINIMAP2_dRNA.out.id, BAM_AND_INDEX, MINIMAP2_dRNA.out.bai, MINIMAP2_dRNA.out.num_reads)
         
             MAKE_CONTAMINATION_REPORT_1(MAP_CONTAMINATION_dRNA.out.id, MAP_CONTAMINATION_dRNA.out.num_reads, MAP_CONTAMINATION_dRNA.out.num_unmapped_reads_before_chm13,
-            MAP_CONTAMINATION_dRNA.out.num_unmapped_reads_after_chm13, MAP_CONTAMINATION_dRNA.out.num_contaminant_reads, MAP_CONTAMINATION_dRNA.out.num_unmapped_reads_after_poly_A)
+            MAP_CONTAMINATION_dRNA.out.num_unmapped_reads_after_chm13, MAP_CONTAMINATION_dRNA.out.num_contaminant_reads)
 
             MAKE_CONTAMINATION_REPORT_2(MAKE_CONTAMINATION_REPORT_1.out.collect())
         }

@@ -16,7 +16,6 @@ process MAP_CONTAMINATION_cDNA {
         env(NUM_UNMAPPED_READS_BEFORE_CHM13), emit: num_unmapped_reads_before_chm13
         env(NUM_UNMAPPED_READS_AFTER_CHM13), emit: num_unmapped_reads_after_chm13
         env(NUM_CONTAMINANT_READS), emit: num_contaminant_reads
-        env(NUM_UNMAPPED_READS_AFTER_POLY_A), emit: num_unmapped_reads_after_poly_A
         path("${id}*"), emit: outty
 
     script:
@@ -52,23 +51,7 @@ process MAP_CONTAMINATION_cDNA {
 
         NUM_CONTAMINANT_READS=\$(samtools view -F 0x40 "${id}_contaminants_sorted_primary.bam" | cut -f1 | sort | uniq | wc -l)
 
-
-        samtools view -h -b -f 4 "${id}_contaminants_unsorted.bam" > "${id}_unmapped_last.bam"
-        samtools fastq "${id}_unmapped_last.bam" > "${id}_unmapped_last_reads.fastq"
-
-        echo ">poly_A" >> "polyA_reference.fa"
-        echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" >> "polyA_reference.fa"
-
-        minimap2 -t 50 -ax splice \
-            -uf \
-            "./polyA_reference.fa" \
-            "${id}_unmapped_last_reads.fastq" > "${id}_last_polyA_unsorted.bam"
-
-        samtools view -h -b -f 4 "${id}_last_polyA_unsorted.bam" > "${id}_unmapped_reads_after_poly_A.bam"
-        NUM_UNMAPPED_READS_AFTER_POLY_A=\$(samtools view -F 0x40 "${id}_unmapped_reads_after_poly_A.bam" | cut -f1 | sort | uniq | wc -l)
-
-        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam" "${id}_contaminants_unsorted_primary.bam" "tmp.tsv" "tmp2.tsv" "${id}_chm13.bam" "${id}_unmapped_chm13.bam" \
-        "${id}_unmapped_reads_chm13.fastq" "${id}_unmapped_last.bam" "${id}_unmapped_last_reads.fastq" "${id}_unmapped_reads_after_poly_A.bam" "${id}_last_polyA_unsorted.bam"
+        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam" "${id}_contaminants_unsorted_primary.bam" "tmp.tsv" "tmp2.tsv" "${id}_chm13.bam" "${id}_unmapped_chm13.bam" "${id}_unmapped_reads_chm13.fastq"
         """
 
 }
@@ -91,7 +74,6 @@ process MAP_CONTAMINATION_dRNA {
         env(NUM_UNMAPPED_READS_BEFORE_CHM13), emit: num_unmapped_reads_before_chm13
         env(NUM_UNMAPPED_READS_AFTER_CHM13), emit: num_unmapped_reads_after_chm13
         env(NUM_CONTAMINANT_READS), emit: num_contaminant_reads
-        env(NUM_UNMAPPED_READS_AFTER_POLY_A), emit: num_unmapped_reads_after_poly_A
         path("${id}*"), emit: outty
 
     script:
@@ -127,22 +109,7 @@ process MAP_CONTAMINATION_dRNA {
 
         NUM_CONTAMINANT_READS=\$(samtools view -F 0x40 "${id}_contaminants_sorted_primary.bam" | cut -f1 | sort | uniq | wc -l)
 
-        samtools view -h -b -f 4 "${id}_contaminants_unsorted.bam" > "${id}_unmapped_last.bam"
-        samtools fastq "${id}_unmapped_last.bam" > "${id}_unmapped_last_reads.fastq"
-
-        echo ">poly_A" >> "polyA_reference.fa"
-        echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" >> "polyA_reference.fa"
-
-        minimap2 -t 50 -ax splice \
-            -uf \
-            "./polyA_reference.fa" \
-            "${id}_unmapped_last_reads.fastq" > "${id}_last_polyA_unsorted.bam"
-
-        samtools view -h -b -f 4 "${id}_last_polyA_unsorted.bam" > "${id}_unmapped_reads_after_poly_A.bam"
-        NUM_UNMAPPED_READS_AFTER_POLY_A=\$(samtools view -F 0x40 "${id}_unmapped_reads_after_poly_A.bam" | cut -f1 | sort | uniq | wc -l)
-
-        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam" "${id}_contaminants_unsorted_primary.bam" "tmp.tsv" "tmp2.tsv" "${id}_chm13.bam" "${id}_unmapped_chm13.bam" \
-        "${id}_unmapped_reads_chm13.fastq" "${id}_unmapped_last.bam" "${id}_unmapped_last_reads.fastq" "${id}_unmapped_reads_after_poly_A.bam" "${id}_last_polyA_unsorted.bam"
+        rm "${id}_contaminants_unsorted.bam" "${id}_unmapped.bam" "${id}_contaminants_unsorted_primary.bam" "tmp.tsv" "tmp2.tsv" "${id}_chm13.bam" "${id}_unmapped_chm13.bam" "${id}_unmapped_reads_chm13.fastq"
         """
 
    
