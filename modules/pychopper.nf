@@ -26,7 +26,7 @@ process PYCHOPPER {
         ## Create primer config file ##
         echo "+:MySSP,-MyVNP|-:MyVNP,-MySSP" > primer_config.txt
     
-        ## Create custom primers (using PCS111 here for test, neew to add PCS114 once we have access ##
+        ## Create custom primers for PCS114 ##
         echo ">MyVNP" > custom_pimers.fas
         echo "ACTTGCCTGTCGCTCTATCTTCAGAGGAGAGTCCGCCGCCCGCAAGTTTT" >> custom_pimers.fas
         echo ">MySSP" >> custom_pimers.fas
