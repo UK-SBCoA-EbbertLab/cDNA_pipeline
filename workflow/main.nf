@@ -5,6 +5,8 @@ nextflow.enable.dsl=2
 log.info """
    OXFORD NANOPORE cDNA SEQUENCING PIPELINE - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
  ==============================================================================================================
+ RAW unzipped nanopore fastq.gz file path                       : ${params.path}
+
  nanopore fastq files                                           : ${params.ont_reads_fq}
  nanopore sequencing summary files                              : ${params.ont_reads_txt}
  reference genome                                               : ${params.ref}
@@ -38,7 +40,7 @@ log.info """
 
 
 // Import Workflows
-include {UNZIP_AND_CONCATENATE} from '../sub_workflows/nanopore_unzip_and_concatenate.nf'
+include {NANOPORE_UNZIP_AND_CONCATENATE} from '../sub_workflows/nanopore_unzip_and_concatenate.nf'
 include {NANOPORE_STEP_1} from '../sub_workflows/nanopore_workflow_STEP_1'
 include {NANOPORE_cDNA_STEP_2} from '../sub_workflows/nanopore_cDNA_workflow_STEP_2'
 include {NANOPORE_dRNA_STEP_2} from '../sub_workflows/nanopore_dRNA_workflow_STEP_2'
@@ -47,9 +49,9 @@ include {NANOPORE_STEP_3} from '../sub_workflows/nanopore_workflow_STEP_3'
 
 
 // Define initial files and channels
-path = Channel.fromFilePairs("${params.path}/sample_*/*.fastq.gz", size: -1)
 
-path.view()
+fastq_path = Channel.fromPath("${params.path}/**/*.fastq.gz").map{file -> tuple(file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
+txt_path = Channel.fromPath("${params.path}/**/*uencing_summary*.txt").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[2..-1].join("_"), file)}.groupTuple()
 
 ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple(file.baseName, file) }
 ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
@@ -104,7 +106,8 @@ if ((params.bam != "None") && (params.bai != "None")) {
 workflow {
 
     if (params.path != "None") {
-        CONCATENATE_AND_UNZIP(path)
+        NANOPORE_UNZIP_AND_CONCATENATE(fastq_path, txt_path)
+        NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref)
     }
 
 
@@ -112,7 +115,7 @@ workflow {
         NANOPORE_STEP_1(fast5_dir, basecall_config, basecall_id)
     }
 
-    else if ((params.step == 2) && (params.bam == "None")){
+    else if ((params.step == 2) && (params.bam == "None") && (params.path == "None")){
 
         if (params.is_dRNA == "False") {
         
@@ -127,7 +130,7 @@ workflow {
     }
 
 
-    else if ((params.step == 2) && (params.bam != "None")) {
+    else if ((params.step == 2) && (params.bam != "None") && (params.path == "None")) {
         
         NANOPORE_STEP_2_BAM(ref, annotation, bam, bai, ercc, track_reads, mapq)
 
