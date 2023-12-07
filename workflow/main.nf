@@ -38,6 +38,7 @@ log.info """
 
 
 // Import Workflows
+include {UNZIP_AND_CONCATENATE} from '../sub_workflows/nanopore_unzip_and_concatenate.nf'
 include {NANOPORE_STEP_1} from '../sub_workflows/nanopore_workflow_STEP_1'
 include {NANOPORE_cDNA_STEP_2} from '../sub_workflows/nanopore_cDNA_workflow_STEP_2'
 include {NANOPORE_dRNA_STEP_2} from '../sub_workflows/nanopore_dRNA_workflow_STEP_2'
@@ -46,6 +47,10 @@ include {NANOPORE_STEP_3} from '../sub_workflows/nanopore_workflow_STEP_3'
 
 
 // Define initial files and channels
+path = Channel.fromFilePairs("${params.path}/sample_*/*.fastq.gz", size: -1)
+
+path.view()
+
 ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple(file.baseName, file) }
 ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
 ref = file(params.ref)
@@ -98,7 +103,12 @@ if ((params.bam != "None") && (params.bai != "None")) {
 
 workflow {
 
-    if (params.step == 1){
+    if (params.path != "None") {
+        CONCATENATE_AND_UNZIP(path)
+    }
+
+
+    else if (params.step == 1){
         NANOPORE_STEP_1(fast5_dir, basecall_config, basecall_id)
     }
 
