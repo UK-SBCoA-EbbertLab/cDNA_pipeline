@@ -57,8 +57,25 @@ for the job manager.
           
           --ont_reads_txt               <path to sequencing summary files, can submit multiple at once. Make sure they follow same naming pattern as fastq
                                         files. If a fastq file is named "sample_1.fastq" then its sequencing summary file should be "sample_1.txt"
-                                        or "sample_1_sequencing_summary.txt". If you don't specify this parameter pipeline will run, but skip PycoQC
-                                        quality control step. Default: "None">
+                                        or "sample_1_sequencing_summary.txt". If fastq files and sequencing summary files don't follow the same naming pattern
+                                        they might be paired erroneously, which will lead to erronous results from quality control steps. If you don't specify 
+                                        this parameter pipeline will run, but skip PycoQC quality control step. Default: "None">
+
+          --path                        <path to ONT files as exported by the basecaller from the PromethION, GridION, of MinION devices. It takes a path to one or 
+                                        multiple samples. For example if you had two samples in "/dir1/dir2/sample_1/" and "/dir1/dir2/sample_2/" you would pass 
+                                        "/dir1/dir2/" to have both samples be processed. Using the "path" parameter will make the pipeline unzip all the smaller 
+                                        ".fastq.gz" files for each sample and concatenate them into one ".fastq" file for each sample. This parametes will also
+                                        automatically search for the "sequencing_summary.txt" files for each sample, this file must be present for all samples
+                                        for this parameter to work properly. If you pass this path parameter, you don't have to pass the "ont_reads_txt" and the
+                                        "ont_reads_fastq" parameters, in fact those will get ignored even if you pass them. The goal of this parameter is to
+                                        make it easier on the user so that you don't have to manually unzip and concatenate files. It also automatically 
+                                        matches the naming pattern for the fastq and the sequencing summary file. This parameter assumes that a directory with
+                                        the name of the sample is two directories below the "fastq_pass" directory, for example:
+                                        "/dir1/dir2/sample_1/unique_flowcell_id/fastq_pass/". The pipeline will still work if this is not the case and each
+                                        sample file will still have a unique ID, but the unique sample ID will be preappended with the whatever name the 
+                                        directory two steps below the "fastq_pass" directory is named. For example, if your directory structure is:
+                                        "/dir1/dir2/dir3/unique_flowcell_id/fastq_pass/", your files will be named "dir3_unique_flowcell_id.fastq"
+                                        and "dir3_unique_flowcell_id.txt" (sequencing summary file). Default: "None">
           
           --ref                         <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file.
                                         Default: "None">
@@ -196,6 +213,7 @@ for the job manager.
               --track_reads "False" \
               --mapq "0" 
 
+
 ### Example for step 2: CHM13 with ERCCs
 
           nextflow ../main.nf --step 2 \
@@ -232,6 +250,35 @@ for the job manager.
           nextflow ../main.nf --step 2 \ 
               --ont_reads_fq "../ont_data/test_data/*.fastq" \
               --ont_reads_txt "../ont_data/test_data/*.txt" \
+              --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
+              --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
+              --out_dir "./GRCh38_ERCC_test/" \
+              --cdna_kit "PCS111" \
+              --is_chm13 "False" \
+              --track_reads "False" \
+              --mapq "0" \
+              --housekeeping "../../references/hg38.HouseKeepingGenes.bed"
+
+### Example for step 2 (cDNA): GRCh38 with ERCCs and contamination step
+
+          nextflow ../main.nf --step 2 \ 
+              --ont_reads_fq "../ont_data/test_data/*.fastq" \
+              --ont_reads_txt "../ont_data/test_data/*.txt" \
+              --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
+              --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
+              --out_dir "./GRCh38_ERCC_test/" \
+              --cdna_kit "PCS111" \
+              --is_chm13 "False" \
+              --track_reads "False" \
+              --mapq "0" \
+              --housekeeping "../../references/hg38.HouseKeepingGenes.bed" \
+              --contamination_ref "../../references/contamination_ref.fasta"
+              
+
+### Example for step 2 (cDNA): GRCh38 with ERCCs using path parameter instead of --ont_reads_fq and --ont_reads_txt
+
+          nextflow ../main.nf --step 2 \ 
+              --path "../ont_data/" \
               --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
               --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
               --out_dir "./GRCh38_ERCC_test/" \
