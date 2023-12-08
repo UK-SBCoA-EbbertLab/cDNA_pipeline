@@ -120,6 +120,11 @@ for the job manager.
                                           reference a report will be generated with multiQC showing what percent of reads mapped to a contaminant.
                                           For further detail go into the "contamination_report/" folder under your pipeline execution results
                                           to find out which were the most abundant contaminants in each of your samples.>
+            
+            --quality_score              <Minimum mean base quality from basecalled sequence. For example, when set at 9 all reads with 
+                                          mean base quality below 9 will be filtered out from the fastq file. This is executed by Pychopper,
+                                          therefore it only affects cDNA data analysis. This parameter will always be ignored by dRNA pipeline
+                                          execution. Default: 9>
   
  
 
