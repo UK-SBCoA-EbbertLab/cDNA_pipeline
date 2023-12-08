@@ -23,6 +23,7 @@ workflow NANOPORE_dRNA_STEP_2 {
         track_reads
         mapq
         contamination_ref
+        quality_score
 
     main:
         MAKE_FAI(ref)
@@ -49,7 +50,7 @@ workflow NANOPORE_dRNA_STEP_2 {
         }
         
         if (params.ont_reads_txt != "None") {
-            PYCOQC_dRNA(MINIMAP2_dRNA.out.id, MINIMAP2_dRNA.out.fastq, MINIMAP2_dRNA.out.txt, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
+            PYCOQC_dRNA(MINIMAP2_dRNA.out.id, MINIMAP2_dRNA.out.fastq, MINIMAP2_dRNA.out.txt, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai, quality_score)
         }
 
         if (params.is_chm13 == true)

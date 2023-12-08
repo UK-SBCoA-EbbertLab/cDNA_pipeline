@@ -10,6 +10,7 @@ process PYCOQC {
         path(seq_summary)
         path(total_bam)
         path(total_bai)
+        val(quality_score)
 
     output:
         path "*pycoqc*", emit: multiQC
@@ -22,7 +23,7 @@ process PYCOQC {
         pycoQC -f "${id}_sequencing_summary_pyco.txt" \
             -v \
             -a $total_bam \
-            --min_pass_qual 9 \
+            --min_pass_qual $quality_score \
             -o "./${id}_pycoqc.html" \
             -j "./${id}_pycoqc.json"
         """
@@ -41,6 +42,7 @@ process PYCOQC_dRNA {
         path(seq_summary)
         path(total_bam)
         path(total_bai)
+        val(quality_score)
 
     output:
         path "*pycoqc*", emit: multiQC
@@ -50,7 +52,7 @@ process PYCOQC_dRNA {
         pycoQC -f "${seq_summary}" \
             -v \
             -a $total_bam \
-            --min_pass_qual 9 \
+            --min_pass_qual $quality_score \
             -o "./${id}_pycoqc.html" \
             -j "./${id}_pycoqc.json"
         """

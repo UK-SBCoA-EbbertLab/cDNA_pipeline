@@ -52,7 +52,6 @@ include {NANOPORE_STEP_3} from '../sub_workflows/nanopore_workflow_STEP_3'
 
 fastq_path = Channel.fromPath("${params.path}/**/*.fastq.gz").map{file -> tuple(file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
 txt_path = Channel.fromPath("${params.path}/**/*uencing_summary*.txt").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[2..-1].join("_"), file)}.groupTuple()
-
 ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple(file.baseName, file) }
 ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
 ref = file(params.ref)
@@ -72,6 +71,7 @@ fai = file(params.fai)
 bam = Channel.fromPath(params.bam).map { file -> tuple(file.baseName, file) }
 bai = Channel.fromPath(params.bai)
 contamination_ref = Channel.fromPath(params.contamination_ref)
+quality_score = Channel.value(params.quality_score)
 
 
 if (params.ercc != "None") {
@@ -107,7 +107,16 @@ workflow {
 
     if (params.path != "None") {
         NANOPORE_UNZIP_AND_CONCATENATE(fastq_path, txt_path)
-        NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref)
+
+        if (is_dRNA = "False") {
+
+            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
+        
+        } else {
+        
+            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
+
+        }
     }
 
 
@@ -119,12 +128,12 @@ workflow {
 
         if (params.is_dRNA == "False") {
         
-            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref)
+            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
         }
 
         else if (params.is_dRNA = "True") {
 
-            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref)
+            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
 
         }
     }

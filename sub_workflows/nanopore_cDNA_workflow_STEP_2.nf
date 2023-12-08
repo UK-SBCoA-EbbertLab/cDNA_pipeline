@@ -24,11 +24,12 @@ workflow NANOPORE_cDNA_STEP_2 {
         track_reads
         mapq
         contamination_ref
+        quality_score
 
     main:
         MAKE_FAI(ref)
         MAKE_INDEX_cDNA(ref)
-        PYCHOPPER(ont_reads_fq, ont_reads_txt, cdna_kit)
+        PYCHOPPER(ont_reads_fq, ont_reads_txt, cdna_kit, quality_score)
         MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out, PYCHOPPER.out.txt)
         FILTER_BAM(MINIMAP2_cDNA.out.id, mapq, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai)
         
@@ -50,7 +51,7 @@ workflow NANOPORE_cDNA_STEP_2 {
 
 
         if (params.ont_reads_txt != "None") {
-            PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai)
+            PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai, quality_score)
         }
 
         if (params.is_chm13 == true)

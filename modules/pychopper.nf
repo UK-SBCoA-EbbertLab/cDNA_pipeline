@@ -8,6 +8,7 @@ process PYCHOPPER {
         tuple val(id), path(fastq)
         val(txt)
         val(cdna_kit)
+        val(quality_score)
 
     output:
         val "$id", emit: id
@@ -35,7 +36,7 @@ process PYCHOPPER {
         ## Run pychopper with the custom primers and primer config ##
         pychopper -m edlib -b custom_pimers.fas -c primer_config.txt \
             -t 50 \
-            -Q 9 \
+            -Q $quality_score \
             -r "${id}_pychopper_report.pdf" \
             -u "${id}_pychopper.unclassified.fq" \
             -w "${id}_pychopper.rescued.fq" \
@@ -48,7 +49,7 @@ process PYCHOPPER {
 
         pychopper -m edlib \
             -t 50 \
-            -Q 9 \
+            -Q $quality_score \
             -k $cdna_kit \
             -r "${id}_pychopper_report.pdf" \
             -u "${id}_pychopper.unclassified.fq" \
