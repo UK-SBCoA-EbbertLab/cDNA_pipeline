@@ -25,7 +25,8 @@ for the job manager.
           
 ### 5) Make sure you have all the sequencing files and reference genomes/assemblies files and annotation files you will need to run the pipeline.
           
-- ".fastq" -- Nanopore cDNA sequencing files or ".bam" alignment files.
+- ".fastq" -- Nanopore cDNA sequencing files or ".bam" alignment files. Could also be the small ".fastq.gz" files for each sample, see
+              the `--path` option below if you are processing files as they are outputted from basecalling in an Oxford Nanopore Sequencer. 
 
 - "sequencing_summary.txt" -- These files are not necessary for execution, but if not available the PycoQC quality control step will be skipped.
 
@@ -75,7 +76,10 @@ for the job manager.
                                         sample file will still have a unique ID, but the unique sample ID will be preappended with the whatever name the 
                                         directory two steps below the "fastq_pass" directory is named. For example, if your directory structure is:
                                         "/dir1/dir2/dir3/unique_flowcell_id/fastq_pass/", your files will be named "dir3_unique_flowcell_id.fastq"
-                                        and "dir3_unique_flowcell_id.txt" (sequencing summary file). Default: "None">
+                                        and "dir3_unique_flowcell_id.txt" (sequencing summary file). The ".fastq.gz" files must be in a folder
+                                        named "fastq_pass" and the sequencing_summary.txt file must be in the same directory as the
+                                        "fastq_pass" directory... Not inside the "fastq_pass" directory, but in the same directory as
+                                        the "fastq_pass". Default: "None">
           
           --ref                         <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file.
                                         Default: "None">
