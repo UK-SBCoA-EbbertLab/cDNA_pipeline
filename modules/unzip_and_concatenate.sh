@@ -13,16 +13,12 @@ process UNZIP_AND_CONCATENATE {
     script:
     """
 
-        echo "HELLO"
-
-        find -L . -maxdepth 1 -name "*.fastq.gz" -exec gunzip --keep --force {} \\;
+        find -L . -maxdepth 1 -name "*.fastq.gz" | parallel -j 16 'gunzip --keep --force {}'
         
-        echo "MID"
+        find . -type f -maxdepth 1 -name "*.fastq" ! -name "${id}.fastq" -exec cat {} \\; >> "${id}.fastq"
 
-        find . -type f -maxdepth 1 -name "*.fastq" -exec cat {} \\; >> "${id}.fastq"
+        find . -maxdepth 1 -type f -name "*.fastq" ! -name "${id}.fastq" -exec rm {} \\;
     
-        echo "FINAL"
-
     """
 }
 

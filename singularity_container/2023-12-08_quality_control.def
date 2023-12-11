@@ -72,25 +72,25 @@ From: ubuntu:22.04
 	version v1.0.0
 
 %help
-	This is the singularity container used to run the nextflow pipelines found at (https://github.com/UK-SBCoA-EbbertLab/cDNA-comparison). 
 
 	Software included in the container are:
 
-	conda==22.11.1
-	pip==22.3.1
-	python==3.10.8
+	conda==23.11.1
+	pip==23.3
+	python==3.11.5
 	RseQC==5.0.1
 	pycoQC==2.5.2
-	multiqc==1.13
+	multiqc==1.18
 	fastQC==0.11.9
 	cutadapt==3.5
-	trim galore==0.6.6
-	samtools==1.6
+	trim_galore==0.6.6
+	samtools==1.18
 
         NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
         TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND:  
 
-	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/quality_control:latest
+	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/quality_control:sha256.05c71be73b714f0f45026e975563d315334f45a753a4119987c42d15b92e8d46 
+
 	
-	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA-comparison
+	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
 

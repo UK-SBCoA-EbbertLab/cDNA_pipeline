@@ -73,7 +73,6 @@ bai = Channel.fromPath(params.bai)
 contamination_ref = Channel.fromPath(params.contamination_ref)
 quality_score = Channel.value(params.quality_score)
 
-
 if (params.ercc != "None") {
     ercc = Channel.fromPath(params.ercc)
     }

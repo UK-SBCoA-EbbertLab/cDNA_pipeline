@@ -8,7 +8,7 @@ From: ubuntu:22.04
         DEBIAN_FRONTEND=noninteractive
 
         ## Install basic packages and get update
-        apt-get update && apt-get -y install wget git time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev libcurl4-openssl-dev libxml2-dev
+        apt-get update && apt-get -y install wget locales sudo libarchive-dev gzip pigz parallel
 
         ## Set timezone and language for container ##
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
@@ -26,61 +26,65 @@ From: ubuntu:22.04
     	## Install miniconda ##
 	cd /
 	wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-    	bash Miniconda3-latest-Linux-x86_64.sh -bfp /conda
+        bash Miniconda3-latest-Linux-x86_64.sh -bfp /conda
 	export PATH="/conda/bin:$PATH"
     	echo 'export PATH="/conda/bin:$PATH"' >> $SINGULARITY_ENVIRONMENT
 	conda config --add channels bioconda
 	conda config --add channels conda-forge
-        conda config --add channels epi2melabs
+        conda config --add channels nanoporetech
+
+	## Install Mamba ##
+	conda install -c conda-forge --override-channels mamba
 	
-	## Install StringTie, GFFread, GFFcompare, SamTools, MiniMap2 ##
-        conda install -c bioconda stringtie gffread gffcompare samtools minimap2
+	## Install Python 3.10 ##
+	mamba install python=3.10
+
+	## Install specific pychopper dependency ##
+	mamba install -y -c bioconda parasail-python
 
 	## Install Pychopper ##
-	conda install -c epi2melabs -c conda-forge -c bioconda "epi2melabs::pychopper"
+	mamba install -y -c nanoporetech pychopper
 
-	## Install Flair ##
-        conda install -c conda-forge -c bioconda flair
+	## Install StringTie, GFFread, GFFcompare, SamTools, MiniMap2 ##
+        mamba install -y -c bioconda stringtie gffread gffcompare samtools minimap2 porechop
 
 %test
 		
 	## Check if installations are on path and/or display their versions ##
-    	conda --version
+	conda --version
 	gffread --version
 	python --version
 	pip --version
-	R --version
 	samtools --version
 	minimap2 --version
 	which pychopper
 	gffcompare --version
-	which pychopper
+	which porechop
 	
 %labels
 	author Bernardo Aguzzoli Heberle
-	version v0.0.2
+	version v0.3.0
 
 %help
-	This is the singularity container used to run the nextflow pipelines found at: https://github.com/UK-SBCoA-EbbertLab/brain_cDNA_discovery. 
 
 	Software included in the container are:
 
-	conda==22.11.1
-	pip==22.3.1
-	python==3.10.8
-	R==4.2.0
-	pychopper==2.7.2
-	gffcompare==0.11.2
-	samtools==1.6
-	flair==1.7.0
-	stringtie==2.1.7
+	conda==23.5.2
+	mamba==1.4.9
+	pip==23.1.2
+	python==3.9.16
+	pychopper==2.7.6
+	gffcompare==0.12.6
+	samtools==1.17
+	stringtie==2.2.1
 	gffread==0.12.7
-	minimap2==2.22-r1101
+	minimap2==2.26-r1175
+	porechop==0.2.4
 
         NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
-        TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND:  singularity pull --arch amd64 library://bernardo-a-heberle/cdna_comparison/cdna_pipe:latest
-
-	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/nanopore:latest
+        TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND:  
 	
-	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/brain_cDNA_discovery
+	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/nanopore:sha256.2f1ba1d359e5a58f6e25cf2f0c8376911465d8cf39342aa9d30d0ec47e7d8eb8
+
+	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
 
