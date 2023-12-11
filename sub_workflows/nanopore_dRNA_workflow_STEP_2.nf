@@ -9,7 +9,6 @@ include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
 include {MAP_CONTAMINATION_dRNA} from '../modules/contamination'
 include {MAKE_CONTAMINATION_REPORT_1 ; MAKE_CONTAMINATION_REPORT_2} from '../modules/make_contamination_report.nf'
-include {dRNA_TRIM} from '../modules/dRNA_adapter_trim.nf'
 
 
 workflow NANOPORE_dRNA_STEP_2 {
@@ -30,15 +29,9 @@ workflow NANOPORE_dRNA_STEP_2 {
         MAKE_FAI(ref)
         MAKE_INDEX_dRNA(ref)
 
-        if (params.trim_dRNA == true) {
-            dRNA_TRIM(ont_reads_fq)
-            ont_reads_fq = dRNA_TRIM.out
-        }
-
         MINIMAP2_dRNA(ont_reads_fq,  MAKE_INDEX_dRNA.out, ont_reads_txt)
         FILTER_BAM(MINIMAP2_dRNA.out.id, mapq, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
         
-
 
         if (params.contamination_ref != "None") {
       
