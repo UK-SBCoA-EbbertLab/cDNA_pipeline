@@ -1,17 +1,17 @@
 // Import Modules
-include {BASECALL; GATHER_BASECALL} from '../modules/basecall'
+include {FAST5_to_POD5; BASECALL; GATHER_BASECALL} from '../modules/basecall'
 
 workflow NANOPORE_STEP_1 {
         
     take:
-        fast5_dir
-        config
-        id
+        basecall_dir
+        speed
+        modifications
 
     main:
 
 
-    BASECALL(fast5_dir, config)
-    GATHER_BASECALL(id, BASECALL.out.fastq.collect(), BASECALL.out.txt.collect())
+    BASECALL(basecall_dir, speed, modifications)
+    GATHER_BASECALL(id, BASECALL.out.fastq, BASECALL.out.txt)
 
 }
