@@ -2,24 +2,23 @@ process FAST5_to_POD5 {
 
     publishDir "results/${params.out_dir}/fast5_to_pod5/", mode: "copy", overwrite: true
     
-    label 'normal'
+    label 'large'
 
     input:
-        tuple val(id), path(fast5_dir)
+        tuple val(id), path(fast5)
 
     output:
-        tuple val("${id}"), path("${id}_pod5s/")
+        tuple val("${id}"), path("*.pod5")
 
 
     script:
         """
-        
-        pod5 convert fast5 "./${fast5_dir}/*.fast5" --output "{$id}_pod5s/" --one-to-one "./${fast5_dir}/"
+
+        pod5 convert fast5 *.fast5 --output . --one-to-one . --threads 50
         
         """
 
 }
-
 
 
 process BASECALL {
@@ -32,13 +31,13 @@ process BASECALL {
         val modifications
 
     output:
-        tuple val(id), path('pass/*.fastq'), emit: fastq
-        val '*.txt', emit: txt
+        tuple val("${id}"), path('pass/*.fastq'), emit: fastq
+        val '*quencing_summa*.txt', emit: txt
 
    script:
         """
-
-        dorado basecaller "${speed},{modifications}" $pod5_dir --emit-fastq --no-trim
+        
+        dorado basecaller "${speed}" . | samtools fastq -T "*" > "${id}.fastq"
         
         """
 }

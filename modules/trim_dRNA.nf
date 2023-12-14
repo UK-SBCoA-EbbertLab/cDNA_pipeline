@@ -1,6 +1,6 @@
 process TRIM_dRNA {
 
-    publishDir "results/${params.out_dir}/trimmed_dRNA_files/", mode: 'symlink', overwrite: true, pattern: "*.trimmed.fastq"
+    publishDir "results/${params.out_dir}/trimmed_dRNA_files/", mode: 'symlink', overwrite: true, pattern: "*"
     
     label "medium"
 
@@ -19,7 +19,7 @@ process TRIM_dRNA {
         convert_U_to_T.py $fastq "${id}_fixed.fastq"
 
         ## Trim adapters and primers
-        dorado trim --emit-fastq "${id}_fixed.fastq" > "${id}.trimmed.fastq" 
+        porechop_abi -abi -i "${id}_fixed.fastq" -o "${id}.trimmed.fastq" > "${id}_adapter_data.txt"
 
         ## Delete intermediate data
         rm "${id}_fixed.fastq"

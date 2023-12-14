@@ -3,8 +3,8 @@ nextflow.enable.dsl=2
 
 
 log.info """
-   OXFORD NANOPORE cDNA SEQUENCING PIPELINE - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
- ===========================================================================================================================
+                                    OXFORD NANOPORE cDNA SEQUENCING PIPELINE - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
+ ======================================================================================================================================================================================================
  RAW unzipped nanopore fastq.gz file path                                       : ${params.path}
 
  nanopore fastq files                                                           : ${params.ont_reads_fq}
@@ -18,7 +18,7 @@ log.info """
  reference genome is CHM13                                                      : ${params.is_chm13}
  transcript discovery status                                                    : ${params.is_discovery}
 
- path containing samples and files to be basecalled (basecall only)             : ${params.basecall_dir}
+ path containing samples and files to be basecalled (basecall only)             : ${params.basecall_path}
  nanopore basecall speed (basecall only)                                        : ${params.basecall_speed}
  nanopore basecall modifications  (basecall only)                               : ${params.basecall_mods}
 
@@ -35,7 +35,7 @@ log.info """
  Is this a direct RNAseq dataset?                                               : ${params.is_dRNA}
 
  Reference for contamination analysis                                           : ${params.contamination_ref}
- ===========================================================================================================================
+ =====================================================================================================================================================================================================
  """
 
 
@@ -49,16 +49,14 @@ include {NANOPORE_STEP_3} from '../sub_workflows/nanopore_workflow_STEP_3'
 
 
 // Define initial files and channels
-fastq_path = Channel.fromPath("${params.path}/**/*.fastq.gz").map{file -> tuple(file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
+fastq_path = Channel.fromPath("${params.path}/**/fastq_pass/*.fastq.gz").map{file -> tuple(file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
 txt_path = Channel.fromPath("${params.path}/**/*uencing_summary*.txt").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[2..-1].join("_"), file)}.groupTuple()
 ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple(file.baseName, file) }
 ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
 ref = file(params.ref)
 housekeeping = file(params.housekeeping)
 annotation = file(params.annotation)
-basecall_path = Channel.fromPath("${params.basecall_path}/**/*.{fast5,pod5}").map{file -> tuple(tuple(file.parent.toString().split("/.*_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
-basecall_config = Channel.from(params.basecall_config)
-basecall_id = Channel.from(params.basecall_id)
+basecall_path = Channel.fromPath("${params.basecall_path}/**/*_pass/*.{fast5,pod5}").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_"), file) }.groupTuple()
 cdna_kit = Channel.value(params.cdna_kit)
 multiqc_config = Channel.fromPath(params.multiqc_config)
 NDR = Channel.value(params.NDR)
@@ -121,6 +119,7 @@ workflow {
 
 
     else if (params.step == 1){
+
         NANOPORE_STEP_1(basecall_path, basecall_speed, basecall_mods)
     }
 

@@ -7,29 +7,16 @@ From: ubuntu:22.04
         DEBIAN_FRONTEND=noninteractive
 
         ## Install basic packages and get update
-        apt-get update && apt-get install -y --no-install-recommends \
+        apt-get update && apt-get install -y \
 		locales \
 		libarchive-dev \
 		sudo \
 		wget \
 		curl \
-        	git \
-        	ca-certificates \
-        	build-essential \
-        	nvidia-cuda-toolkit \
-        	libhdf5-dev \
-        	libssl-dev \
-        	libzstd-dev \
-        	cmake \
-        	autoconf \
-        	automake \
-		python3 \
-		pip
+        	git 
+		
 
-	## Install pod5 converter ##
-	pip install pod5
-
-        ## Set timezone and language for container ##
+	## Set timezone and language for container ##
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
 
         export LANGUAGE=en_US.UTF-8
@@ -40,6 +27,24 @@ From: ubuntu:22.04
         echo 'export LANGUAGE="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
         echo 'export LANG="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
         echo 'export LC_ALL="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
+
+
+	## Install miniconda ##
+        cd /
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        bash Miniconda3-latest-Linux-x86_64.sh -bfp /conda
+        export PATH="/conda/bin:$PATH"
+        echo 'export PATH="/conda/bin:$PATH"' >> $SINGULARITY_ENVIRONMENT
+        conda config --add channels bioconda
+        conda config --add channels conda-forge
+
+
+        ## Install samtools ##
+        conda install -c bioconda samtools
+
+        ## Install pod5 converter ##
+        pip install pod5
+
 
 	## Install Dorado ##
 	cd /
@@ -54,6 +59,7 @@ From: ubuntu:22.04
 	## Check if installations are on path and/or display their versions ##
 	dorado --version # Dorado
 	pod5 --version # Pod5 converter	
+	samtools --version # Samtools
 	
 %labels
 	author Bernardo Aguzzoli Heberle
@@ -65,11 +71,12 @@ From: ubuntu:22.04
 
 	dorado==0.5.0+0d932c0
 	pod5==0.3.2
+	samtools==1.9
 
         NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
         TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND:
 
-	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/dorado:sha256.cb7a2872ced6cdbdaf953931867d701bf02f8a89835937dd86f1d0a8904a2306
+	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/dorado:sha256.4e1548994e6e5cad392a0acd812c8fed6f93f88fb3989449c7e18ad77729cb25
 
 	
 	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
