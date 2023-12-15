@@ -7,12 +7,13 @@ log.info """
                             OXFORD NANOPORE cDNA/dRNA SEQUENCING PIPELINE - STEP 1: BASECALLING - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
 ======================================================================================================================================================================================
  path containing samples and files to be basecalled (basecall only)             : ${params.basecall_path}
- nanopore basecall speed (basecall only)                                        : ${params.basecall_speed}
- nanopore basecall modifications  (basecall only)                               : ${params.basecall_mods}
- nanopore basecall config                                                       :
- nanopore basecall read trimming option                                         :
- nanopore basecall quality score threshold for basecalling                      :
- nanopore basecall demultiplexing                                               :
+ basecall speed (basecall only)                                                 : ${params.basecall_speed}
+ basecall modifications  (basecall only)                                        : ${params.basecall_mods}
+ basecall config (If "None" the basecaller will automatically pick one)         : ${params.basecall_config}
+ basecall read trimming option                                                  : ${params.basecall_trim}
+ basecall quality score threshold for basecalling                               : ${params.qscore_thresh}
+ basecall demultiplexing                                                        : ${params.demux}
+ trim barcodes during demultiplexing                                            : ${params.trim_barcode}
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
@@ -29,8 +30,6 @@ log.info """
  nanopore fastq files                                                           : ${params.ont_reads_fq}
  nanopore sequencing summary files                                              : ${params.ont_reads_txt}
 
- quality score threshold for fastq reads (cDNA only)                            : ${params.qscore_thresh}
-
  reference genome                                                               : ${params.ref}
  reference annotation                                                           : ${params.annotation}
  housekeeping genes 3' bias assessment                                          : ${params.housekeeping}
@@ -39,7 +38,6 @@ log.info """
  path to ERCC annotations (CHM13 only)                                          : ${params.err}
 
  quality score threshold for fastq reads (cDNA only)                            : ${params.qscore_thresh}
-
  MAPQ value for filtering bam file                                              : ${params.mapq}
 
  Is this a direct RNAseq dataset?                                               : ${params.is_dRNA}
@@ -136,6 +134,12 @@ contamination_ref = Channel.fromPath(params.contamination_ref)
 quality_score = Channel.value(params.qscore_thresh)
 basecall_speed = Channel.value(params.basecall_speed)
 basecall_mods = Channel.value(params.basecall_mods)
+basecall_config = Channel.value(params.basecall_config)
+basecall_trim = Channel.value(params.basecall_trim)
+basecall_demux = Channel.value(params.basecall_demux)
+basecall_compute = Channel.value(params.basecall_compute)
+trim_barcode = Channel.value(params.trim_barcode)
+
 
 if (params.ercc != "None") {
     ercc = Channel.fromPath(params.ercc)
@@ -168,7 +172,7 @@ if ((params.bam != "None") && (params.bai != "None")) {
 
 workflow {
 
-    if ((params.path != "None") && (params.step == 1)) {
+    if ((params.path != "None") && (params.step == 2)) {
         
         NANOPORE_UNZIP_AND_CONCATENATE(fastq_path, txt_path)
 
@@ -186,7 +190,7 @@ workflow {
 
     else if (params.step == 1){
 
-        NANOPORE_STEP_1(pod5_path, fast5_path, basecall_speed, basecall_mods)
+        NANOPORE_STEP_1(pod5_path, fast5_path, basecall_speed, basecall_mods, basecall_config, basecall_trim, quality_score, trim_barcode)
     }
 
     else if ((params.step == 2) && (params.bam == "None") && (params.path == "None")){

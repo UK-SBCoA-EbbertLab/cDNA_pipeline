@@ -1,6 +1,6 @@
 process FAST5_to_POD5 {
 
-    publishDir "results/${params.out_dir}/fast5_to_pod5/", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/${id}/fast5_to_pod5/", mode: "symlink", overwrite: true
     
     label 'large'
 
@@ -20,51 +20,134 @@ process FAST5_to_POD5 {
 
 }
 
+process BASECALL_CPU {
 
-process BASECALL {
-
-    label 'medium_large'
-
+    publishDir "results/${params.out_dir}/basecalling_output/", mode: "copy", overwrite: true    
+    
+    label 'large'
+    
     input:
         tuple val(id), path(pod5_dir)
         val speed
-        val modifications
+        val mods
+        val config
+        val trim
+        val qscore
 
     output:
-        tuple val("${id}"), path('*.fastq'), emit: fastq
-        val '${id}.txt', emit: txt
+        path("*")
 
    script:
         """
+        echo "MODS: $mods"
+
+        echo "CONFIG: $config"
+
+        if [[ "$config" == "false" ]]; then
+            
+            if [[ "$mods" == "false" ]]; then 
+                dorado basecaller "${speed}" . -x cpu --trim "${trim}" --min-qscore "${qscore}" > "${id}.bam" 
+            else
+                dorado basecaller "${speed},${mods}" . -x cpu --trim "${trim}" --min-qscore "${qscore}" > "${id}.bam"
+            fi
+         
+         else
+            
+            if [[ "$mods" == "false" ]]; then
         
-        dorado basecaller "${speed}" . -x cpu > "${id}.bam"
-        
-        dorado summary "${id}.bam" > "{id}.txt"
-        
+                dorado basecaller "${speed}" . -x cpu --trim "${trim}" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            else
+            
+                dorado basecaller "${speed},${mods}" . -x cpu --trim "${trim}" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            fi
+        fi
+
+
+        dorado summary "${id}.bam" > "${id}.txt"
+
         samtools fastq -T "*" "${id}.bam" > "${id}.fastq"
+        
+        rm "${id}.bam"
         
         """
 }
 
 
-process GATHER_BASECALL {
+process BASECALL_CPU_DEMUX {
 
-    publishDir "results/${params.out_dir}/basecall_output/", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/basecalling_output/", mode: "copy", overwrite: true
 
-    label 'local'
+
+    label 'large'
 
     input:
-        tuple val(id), path(fastq)
-        val txt
+        tuple val(id), path(pod5_dir)
+        val speed
+        val mods
+        val config
+        val trim
+        val qscore
+        val trim_barcode
 
     output:
-        tuple val("$id"), path( '${id}.fastq'), emit: fastq
-        val '*.txt', emit: txt
+        path("*")
 
-    script:
+   script:
         """
-        
-        find . -type f -maxdepth 1 -name "*.fastq" ! -name "${id}.fastq" -exec cat {} \\; >> "${id}.fastq"
-        
+
+        echo "MODS: $mods"
+
+        echo "CONFIG: $config"
+
+        if [[ "$config" == "false" ]]; then
+
+            if [[ "$mods" == "false" ]]; then
+                dorado basecaller "${speed}" . -x cpu --trim "none" --min-qscore "${qscore}" > "${id}.bam"
+            else
+                dorado basecaller "${speed},${mods}" . -x cpu --trim "none" --min-qscore "${qscore}" > "${id}.bam"
+            fi
+
+         else
+
+            if [[ "$mods" == "false" ]]; then
+
+                dorado basecaller "${speed}" . -x cpu --trim "none" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            else
+
+                dorado basecaller "${speed},${mods}" . -x cpu --trim "none" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            fi
+        fi
+       
+        if [[ "$trim_barcode" == "true" ]]; then
+            dorado demux --output-dir "./demux_data/" --no-classify "${id}.bam"
+        else
+            dorado demux --no-trim --output-dir "./demux_data/" --no-classify "${id}.bam"
+        fi
+
+        cd ./demux_data/
+       
+        for file in *; do
+            mv "\$file" "${id}_\${file}"
+        done
+
+        cd ../
+
+        rm "${id}.bam"
+
+        mv ./demux_data/* ./
+
+        rm -r ./demux_data/
+
+        for file in *.bam; do
+            new_id="\${file%%.*}"
+            dorado summary "\$file" > "\${new_id}.fastq"
+            samtools fastq -T "*" "\$file" > "\${new_id}.txt"
+            rm "\$file"
+        done
+
         """
 }
