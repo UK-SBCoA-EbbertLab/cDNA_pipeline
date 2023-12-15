@@ -149,8 +149,9 @@ fastq files because it allows more flexibility in downstream alignment and proce
                                          DirectRNAseq, Step 2 from BAM and Step 3 are not modified for dRNA vs cDNA. Step 1 will need the 
                                          specific basecalling configuration for dRNA instead of cDNA if you are running dRNA. Default: "False">
 
-          --trim_dRNA                   <Logical, set to "True" if you want to trim dRNA adapters using [porechop_ABI](https://github.com/bonsai-team/Porechop_ABI).
-                                        It will automatically find the adapters in your dRNA adapters, see this [link](https://github.com/bonsai-team/Porechop_ABI/issues/19) for caveats.
+          --trim_dRNA                   <Logical, set to "True" if you want to trim dRNA adapters using porechop_ABI.
+                                        It will automatically find the adapters in your dRNA adapters, see this link: 
+                                        https://github.com/bonsai-team/Porechop_ABI/issues/19 for caveats.
                                         Default: "False">
                                         
 
