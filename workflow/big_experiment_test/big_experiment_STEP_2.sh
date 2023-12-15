@@ -6,7 +6,7 @@ nextflow ../main.nf --path "/scratch/bag222/data/ont_data/big_experiment_data/" 
     --annotation "../../references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
     --housekeeping "../../references/hg38.HouseKeepingGenes.bed" \
     --cdna_kit "PCS114" \
-    --out_dir "./banner_batch_1_prelim_PCS114/" \
+    --out_dir "./Banner_Batch_1_120823/" \
     --is_discovery "True" \
     --bambu_track_reads "True" \
     --mapq "10" \

@@ -1,42 +1,106 @@
 // Make this pipeline a nextflow 2 implementation
 nextflow.enable.dsl=2
 
+if (params.step == 1) {
 
 log.info """
-                                    OXFORD NANOPORE cDNA SEQUENCING PIPELINE - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
- ======================================================================================================================================================================================================
+                            OXFORD NANOPORE cDNA/dRNA SEQUENCING PIPELINE - STEP 1: BASECALLING - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
+======================================================================================================================================================================================
+ path containing samples and files to be basecalled (basecall only)             : ${params.basecall_path}
+ nanopore basecall speed (basecall only)                                        : ${params.basecall_speed}
+ nanopore basecall modifications  (basecall only)                               : ${params.basecall_mods}
+ nanopore basecall config                                                       :
+ nanopore basecall read trimming option                                         :
+ nanopore basecall quality score threshold for basecalling                      :
+ nanopore basecall demultiplexing                                               :
+
+ step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
+ Output directory                                                               : ${params.out_dir}
+ =====================================================================================================================================================================================
+ 
+ """
+} else if ((params.step == 2) && (params.bam == "None")) {
+
+log.info """
+            OXFORD NANOPORE cDNA/dRNA SEQUENCING PIPELINE - STEP 2: QC, Alignment, and Bambu pre-processing - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
+======================================================================================================================================================================================
  RAW unzipped nanopore fastq.gz file path                                       : ${params.path}
 
  nanopore fastq files                                                           : ${params.ont_reads_fq}
  nanopore sequencing summary files                                              : ${params.ont_reads_txt}
+
+ quality score threshold for fastq reads (cDNA only)                            : ${params.qscore_thresh}
+
  reference genome                                                               : ${params.ref}
  reference annotation                                                           : ${params.annotation}
  housekeeping genes 3' bias assessment                                          : ${params.housekeeping}
- nanopore library prep kit                                                      : ${params.cdna_kit}
- multiqc configuration file                                                     : ${params.multiqc_config}
-
+ nanopore library prep kit (cDNA only)                                          : ${params.cdna_kit}
  reference genome is CHM13                                                      : ${params.is_chm13}
- transcript discovery status                                                    : ${params.is_discovery}
+ path to ERCC annotations (CHM13 only)                                          : ${params.err}
 
- path containing samples and files to be basecalled (basecall only)             : ${params.basecall_path}
- nanopore basecall speed (basecall only)                                        : ${params.basecall_speed}
- nanopore basecall modifications  (basecall only)                               : ${params.basecall_mods}
-
- NDR Value for Bambu (Novel Discovery Rate)                                     : ${params.NDR}
- Track read_ids with bambu?                                                     : ${params.track_reads}
+ quality score threshold for fastq reads (cDNA only)                            : ${params.qscore_thresh}
 
  MAPQ value for filtering bam file                                              : ${params.mapq}
 
- Step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
-
- Path to pre-processed bambu RDS files                                          : ${params.bambu_rds}
- Path to QC files that go into MultiQC report                                   : ${params.multiqc_input}   
-
  Is this a direct RNAseq dataset?                                               : ${params.is_dRNA}
+ Trim dRNA adapters?                                                            : ${params.trim_dRNA}
 
  Reference for contamination analysis                                           : ${params.contamination_ref}
- =====================================================================================================================================================================================================
- """
+
+ step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
+ Output directory                                                               : ${params.out_dir}
+ =====================================================================================================================================================================================
+ 
+"""
+
+} else if ((params.step == 2) && (params.bam != "None")) {
+
+log.info """
+            OXFORD NANOPORE cDNA/dRNA SEQUENCING PIPELINE - STEP 2 - Filtering BAM  - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
+======================================================================================================================================================================================
+ reference genome                                                               : ${params.ref}
+ reference annotation                                                           : ${params.annotation}
+
+ reference genome is CHM13                                                      : ${params.is_chm13}
+ path to ERCC annotations (CHM13 only)                                          : ${params.err}
+
+
+ MAPQ value for filtering bam file                                              : ${params.mapq}
+
+
+ step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
+ Output directory                                                               : ${params.out_dir}
+ =====================================================================================================================================================================================
+ 
+"""
+
+} else {
+
+log.info """
+                                    OXFORD NANOPORE cDNA SEQUENCING PIPELINE - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
+======================================================================================================================================================================================
+ 
+ reference genome                                                               : ${params.ref}
+ reference annotation                                                           : ${params.annotation}
+ reference genome is CHM13                                                      : ${params.is_chm13}
+
+ multiqc configuration file                                                     : ${params.multiqc_config}
+ 
+ transcript discovery status                                                    : ${params.is_discovery}
+ NDR Value for Bambu (Novel Discovery Rate)                                     : ${params.NDR}
+ Track read_ids with bambu?                                                     : ${params.track_reads}
+ Path to pre-processed bambu RDS files                                          : ${params.bambu_rds}
+
+ step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
+ Output directory                                                               : ${params.out_dir}
+ =====================================================================================================================================================================================
+ 
+
+
+"""
+
+}
+
 
 
 // Import Workflows
@@ -49,14 +113,15 @@ include {NANOPORE_STEP_3} from '../sub_workflows/nanopore_workflow_STEP_3'
 
 
 // Define initial files and channels
-fastq_path = Channel.fromPath("${params.path}/**/fastq_pass/*.fastq.gz").map{file -> tuple(file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
-txt_path = Channel.fromPath("${params.path}/**/*uencing_summary*.txt").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[2..-1].join("_"), file)}.groupTuple()
+fastq_path = Channel.fromPath("${params.path}/**/fastq_pass/*.fastq.gz").map{file -> tuple("sample_" + file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
+txt_path = Channel.fromPath("${params.path}/**/*uencing_summary*.txt").map{file -> tuple("sample_" + file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[2..-1].join("_"), file)}.groupTuple()
 ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple(file.baseName, file) }
 ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
 ref = file(params.ref)
 housekeeping = file(params.housekeeping)
 annotation = file(params.annotation)
-basecall_path = Channel.fromPath("${params.basecall_path}/**/*_pass/*.{fast5,pod5}").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_"), file) }.groupTuple()
+fast5_path = Channel.fromPath("${params.basecall_path}/**/*.fast5").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_"), file) }.groupTuple()
+pod5_path = Channel.fromPath("${params.basecall_path}/**/*.pod5").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_"), file) }.groupTuple()
 cdna_kit = Channel.value(params.cdna_kit)
 multiqc_config = Channel.fromPath(params.multiqc_config)
 NDR = Channel.value(params.NDR)
@@ -68,7 +133,7 @@ fai = file(params.fai)
 bam = Channel.fromPath(params.bam).map { file -> tuple(file.baseName, file) }
 bai = Channel.fromPath(params.bai)
 contamination_ref = Channel.fromPath(params.contamination_ref)
-quality_score = Channel.value(params.quality_score)
+quality_score = Channel.value(params.qscore_thresh)
 basecall_speed = Channel.value(params.basecall_speed)
 basecall_mods = Channel.value(params.basecall_mods)
 
@@ -103,10 +168,11 @@ if ((params.bam != "None") && (params.bai != "None")) {
 
 workflow {
 
-    if (params.path != "None") {
+    if ((params.path != "None") && (params.step == 1)) {
+        
         NANOPORE_UNZIP_AND_CONCATENATE(fastq_path, txt_path)
 
-        if (is_dRNA = "False") {
+        if (params.is_dRNA == "False") {
 
             NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
         
@@ -120,7 +186,7 @@ workflow {
 
     else if (params.step == 1){
 
-        NANOPORE_STEP_1(basecall_path, basecall_speed, basecall_mods)
+        NANOPORE_STEP_1(pod5_path, fast5_path, basecall_speed, basecall_mods)
     }
 
     else if ((params.step == 2) && (params.bam == "None") && (params.path == "None")){

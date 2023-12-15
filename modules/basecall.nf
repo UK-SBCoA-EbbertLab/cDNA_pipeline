@@ -23,7 +23,7 @@ process FAST5_to_POD5 {
 
 process BASECALL {
 
-    label 'gpu'
+    label 'medium_large'
 
     input:
         tuple val(id), path(pod5_dir)
@@ -31,13 +31,17 @@ process BASECALL {
         val modifications
 
     output:
-        tuple val("${id}"), path('pass/*.fastq'), emit: fastq
-        val '*quencing_summa*.txt', emit: txt
+        tuple val("${id}"), path('*.fastq'), emit: fastq
+        val '${id}.txt', emit: txt
 
    script:
         """
         
-        dorado basecaller "${speed}" . | samtools fastq -T "*" > "${id}.fastq"
+        dorado basecaller "${speed}" . -x cpu > "${id}.bam"
+        
+        dorado summary "${id}.bam" > "{id}.txt"
+        
+        samtools fastq -T "*" "${id}.bam" > "${id}.fastq"
         
         """
 }

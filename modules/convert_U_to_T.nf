@@ -1,4 +1,4 @@
-process TRIM_dRNA {
+process CONVERT_U_TO_T {
 
     publishDir "results/${params.out_dir}/trimmed_dRNA_files/", mode: 'symlink', overwrite: true, pattern: "*"
     
@@ -9,15 +9,14 @@ process TRIM_dRNA {
         val(txt)
 
     output:
-        tuple val("$id"), path("${id}.trimmed.fastq"), emit: fastq
+        tuple val("$id"), path("${id}_U_to_T.fastq"), emit: fastq
         val("$txt"), emit: txt
-        path("*adapter_data*.txt"), emit: outty
 
     script:
     """
         
-        ## Trim adapters and primers
-        porechop_abi -abi -i "${fastq}" -o "${id}.trimmed.fastq" > "${id}_adapter_data.txt"
+        ## convert U to T
+        convert_U_to_T.py $fastq "${id}_U_to_T.fastq"
 
     """
 }
