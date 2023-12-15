@@ -38,17 +38,51 @@ for the job manager.
 
 ## Pipeline parameters for STEP 1 (Basecalling)
 
+Many of the parameters for this step are based on dorado basecaller, see their [documentation](https://github.com/nanoporetech/dorado) to understand it better.
+
+PS: I took care to pass the base modification information to the FASTQ headers so that it is still contained even in the fastq files. I prefer outputting
+fastq files because it allows more flexibility in downstream alignment and processing.
+
           --step                        <"1". Performs step 1>
           
-          --fast5_dir                   <path to directory containing fast5 files. example: /sequencing_run/basecaling/fast5/">
+          --basecall_path               <path to base directory containing all fast5 and/or pod5 files you want to basecall.
+                                        It will automatically separate samples based on naming conventions and 
+                                        directory structure. example: /sequencing_run/">
+
+          --basecall_speed              <"fast", "hac", "sup". Default = "hac">
+
+          --basecall_mods               <Comma separated list of base modifications you want to basecall. See dorado docs 
+                                        for more information. Example: "5mCG_5hmCG,5mC_5hmC,6mA". Default: "False">
+
+          --basecall_compute            <"gpu", "cpu". Default: "gpu". Allows users to choose to basecall with 
+                                        CPU or GPU. CPU basecalling is super slow and should only be used for small
+                                        test datasets when GPUs are not available. Also, use --basecall_speed "fast"
+                                        when basecalling with CPU to make it less slow. Default: "gpu">
+
+          --basecall_config             <configuration name for basecalling setting. This is not necessary since dorado 
+                                        is able to automatically determine the appropriate configuration. When set to "None"
+                                        the basecaller will automatically pick the basecall configuration.
+                                        Example: "dna_r9.4.1_e8_hac@v3.3". Default: "None">
+
+          --basecall_trim              <"all", "primers", "adapters", "none". Default: "none". Note that as of December 2023
+                                        dorado always trims the adapters during basecalling for directRNA data>
+
+          --qscore_thresh              <Mean quality score threshold for basecalled reads. Default: 9>
+
           
-          --basecall_config             <configuration name for basecalling setting. Example for PCS111 R9.4.1 PromethION flow cell: `dna_r9.4.1_450bps_hac_prom`>
-          
-          --basecall_id                 <Sample ID for the output fastq file that is being basecalled>
+          --demux                       <"True", "False". Whether you want the data to be demultiplexed
+                                        setting it to "True" will perform demultiplexing>
+
+          --trim_barcodes               <"True", "False". Only relevant is --demux is set to "True". 
+                                        if set to "True" barcodes will be trimmed during demultiplexing
+                                        and will not be present in output "fastq" files>
+
+          --out_dir                    <Name of output directory. Output files/directories will be output to
+                                        "./results/<out_dir>/". Default: "output_directory">
 
 
 
-## Pipeline parameters for STEP 2 (Pre-processing)
+## Pipeline parameters for STEP 2 (QC, Alignment, and Bambu Pre-processing)
 
           --step                        <"2". Performs step 2>
 
@@ -95,7 +129,7 @@ for the job manager.
                                         do not specify this parameter. Default: "None">
   
           --cdna_kit                    <option for pychopper trimming using adapters from the specific cDNA library version, current options are "PCS109",
-                                        "PCS110", "PCS111". Default: "PCS111">
+                                        "PCS110", "PCS111", "PCS114", "LSK114". Default: "PCS111">
   
           --is_chm13                    <logical, set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and
                                         converts to ".gtf". Default: "False">
@@ -105,18 +139,20 @@ for the job manager.
                                         here: https://sourceforge.net/projects/rseqc/files/BED/Human_Homo_sapiens/hg38.HouseKeepingGenes.bed.gz/download
                                         Default: "None">
                                
-           --track_reads                <Logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
-                                        from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
-            
             --mapq                      <Integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with MAPQ
                                         < 10. set it to 0 if don't want to filter out any reads. Default: 0>
                               
-            --is_dRNA                   <Logical, set to "True if you want to run the minimap2 step with the parameters for "noisy" Nanopore directRNAseq reads.
+            --is_dRNA                   <Logical, set to "True" if you want to run the minimap2 step with the parameters for "noisy" Nanopore directRNAseq reads.
                                          Set to "False" if you want to run it with minimap2 step for PCR amplified Nanopore cDNA reads. If you set this parameter
                                          to "True" you should omit the "--cdna_kit" parameter as that is only used for the Pychopper step of the pipeline and that
                                          step is skipped for directRNAseq. Note that this is the only step in the pipeline that is specific for 
                                          DirectRNAseq, Step 2 from BAM and Step 3 are not modified for dRNA vs cDNA. Step 1 will need the 
                                          specific basecalling configuration for dRNA instead of cDNA if you are running dRNA. Default: "False">
+
+          --trim_dRNA                   <Logical, set to "True" if you want to trim dRNA adapters using [porechop_ABI](https://github.com/bonsai-team/Porechop_ABI).
+                                        It will automatically find the adapters in your dRNA adapters, see this [link](https://github.com/bonsai-team/Porechop_ABI/issues/19) for caveats.
+                                        Default: "False">
+                                        
 
             --contamination_ref          <Path to a ".fasta" reference containing any contaminants you wish to align the unmapped reads against. For a 
                                           reference containing the contaminants we use in house got to the "contamination_reference_doc" folder in
@@ -129,6 +165,9 @@ for the job manager.
                                           mean base quality below 9 will be filtered out from the fastq file. This is executed by Pychopper,
                                           therefore it only affects cDNA data analysis. This parameter will always be ignored by dRNA pipeline
                                           execution, there is no quality fileter applied by the pipeline for dRNA. Default: 9>
+
+          --track_reads                  <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
+                                          from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
   
  
 
@@ -154,16 +193,13 @@ for the job manager.
           --ercc              <path to ERCC annotation file. Only needed if using CHM13 reference + GFF3 annotation file and adding ERCC.
                               Otherwise do not specify this parameter. Default: "None">
   
-          --cdna_kit          <option for pychopper trimming using adapters from the specific cDNA library version, current options are "PCS109",
-                              "PCS110", "PCS111". Default: "PCS111">
-  
           --is_chm13          <logical, set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and
                               converts to ".gtf". Default: "False">
           
-           --track_reads      <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
+          --track_reads      <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
                               from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
             
-            --mapq            <integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with
+          --mapq            <integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with
                               MAPQ < 10. Set it to 0 if don't want to filter out any reads. Default: 0>
 
 ## Pipeline parameters for STEP 3
@@ -172,12 +208,17 @@ for the job manager.
           
           --ref               <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file.
                               Default:"None">
-          
-          --fai               <path to reference index ".fai" file>
-  
+
           --annotation        <path to reference annotation ".gtf" file for GRCh38 or ".gff3" for CHM13. If using GRCh38 and ERCC concatenate the two
                               ".gtf" files prior to running the pipeline. If using ERCC with CHM13 make sure to set --is_chm13 to "True" and set
                               --ercc to the path of your ERCC ".gtf" file. Default: "None">
+
+         --is_chm13          <logical, set to "True" if using CHM13 and "False" if not. Fixes CHM13 annotation for compatibility with Bambu and
+                              converts to ".gtf". Default: "False">
+
+          
+          --fai               <path to reference index ".fai" file>
+
   
           --out_dir           <name of output directory for pipeline submission. Will appear under "results/<out_dir>" on the directory the pipeline
                               was submitted from. Default: "output_directory/">
@@ -203,10 +244,14 @@ for the job manager.
 ## Examples of the submissions
 
 ### Example for Step 1: Basecalling 
-       nextflow ../main.nf --step 1 \
-              --fast5_dir "../ont_data/test_data/fast5_directory/" \
-              --basecall_config "dna_r9.4.1_450bps_hac_prom" \
-              --basecall_id "test_sample_1" 
+          nextflow ../main.nf --step 1 --basecall_path ../../test_dRNA_data/basecalling_2/" \
+              --basecall_speed "fast" \
+              --basecall_mods "False" \
+              --basecall_config "False" \
+              --basecall_trim "none" \
+              --basecall_compute "cpu" \
+              --basecall_demux "True" \
+              --outdir "test_basecall_dRNA_1"
 
 ### Example for step 2: CHM13 without ERCCs
 
@@ -343,3 +388,19 @@ for the job manager.
               --multiqc_config "../../references/multiqc_config.yaml" \
               --out_dir "./GRCh38_ERCC_test/" \
               --is_chm13 "False"       
+
+
+### Example of using resume function to continue a halted submission
+
+          nextflow ../main.nf --step 3 \
+              --bambu_rds "./results/GRCh38_ERCC_test/bambu_prep/*.rds" \
+              --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
+              --fai "./results/GRCh38_ERCC_test/fai/*.fai \
+              --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
+              --is_discovery "True" \
+              --track_reads "False" \
+              --NDR "auto" \
+              --multiqc_input "./results/GRCh38_ERCC_test/multiQC_input/**" \
+              --multiqc_config "../../references/multiqc_config.yaml" \
+              --out_dir "./GRCh38_ERCC_test/" \
+              --is_chm13 "False" -resume
