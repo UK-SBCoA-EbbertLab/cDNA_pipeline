@@ -151,3 +151,135 @@ process BASECALL_CPU_DEMUX {
 
         """
 }
+    
+process BASECALL_GPU {
+
+    publishDir "results/${params.out_dir}/basecalling_output/", mode: "copy", overwrite: true    
+    
+    label 'gpu'
+    
+    input:
+        tuple val(id), path(pod5_dir)
+        val speed
+        val mods
+        val config
+        val trim
+        val qscore
+
+    output:
+        path("*")
+
+   script:
+        """
+        echo "MODS: $mods"
+
+        echo "CONFIG: $config"
+
+        if [[ "$config" == "false" ]]; then
+            
+            if [[ "$mods" == "false" ]]; then 
+                dorado basecaller "${speed}" . --trim "${trim}" --min-qscore "${qscore}" > "${id}.bam" 
+            else
+                dorado basecaller "${speed},${mods}" . --trim "${trim}" --min-qscore "${qscore}" > "${id}.bam"
+            fi
+         
+         else
+            
+            if [[ "$mods" == "false" ]]; then
+        
+                dorado basecaller "${speed}" . --trim "${trim}" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            else
+            
+                dorado basecaller "${speed},${mods}" . --trim "${trim}" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            fi
+        fi
+
+
+        dorado summary "${id}.bam" > "${id}.txt"
+
+        samtools fastq -T "*" "${id}.bam" > "${id}.fastq"
+        
+        rm "${id}.bam"
+        
+        """
+}
+
+
+process BASECALL_GPU_DEMUX {
+
+    publishDir "results/${params.out_dir}/basecalling_output/", mode: "copy", overwrite: true
+
+
+    label 'gpu'
+
+    input:
+        tuple val(id), path(pod5_dir)
+        val speed
+        val mods
+        val config
+        val trim
+        val qscore
+        val trim_barcode
+
+    output:
+        path("*")
+
+   script:
+        """
+
+        echo "MODS: $mods"
+
+        echo "CONFIG: $config"
+
+        if [[ "$config" == "false" ]]; then
+
+            if [[ "$mods" == "false" ]]; then
+                dorado basecaller "${speed}" . --trim "none" --min-qscore "${qscore}" > "${id}.bam"
+            else
+                dorado basecaller "${speed},${mods}" . --trim "none" --min-qscore "${qscore}" > "${id}.bam"
+            fi
+
+         else
+
+            if [[ "$mods" == "false" ]]; then
+
+                dorado basecaller "${speed}" . --trim "none" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            else
+
+                dorado basecaller "${speed},${mods}" . --trim "none" --config "${config}" --min-qscore "${qscore}" > "${id}.bam"
+
+            fi
+        fi
+       
+        if [[ "$trim_barcode" == "true" ]]; then
+            dorado demux --output-dir "./demux_data/" --no-classify "${id}.bam"
+        else
+            dorado demux --no-trim --output-dir "./demux_data/" --no-classify "${id}.bam"
+        fi
+
+        cd ./demux_data/
+       
+        for file in *; do
+            mv "\$file" "${id}_\${file}"
+        done
+
+        cd ../
+
+        rm "${id}.bam"
+
+        mv ./demux_data/* ./
+
+        rm -r ./demux_data/
+
+        for file in *.bam; do
+            new_id="\${file%%.*}"
+            dorado summary "\$file" > "\${new_id}.fastq"
+            samtools fastq -T "*" "\$file" > "\${new_id}.txt"
+            rm "\$file"
+        done
+
+        """
+}

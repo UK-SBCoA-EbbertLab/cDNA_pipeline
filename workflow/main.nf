@@ -56,6 +56,9 @@ log.info """
 log.info """
             OXFORD NANOPORE cDNA/dRNA SEQUENCING PIPELINE - STEP 2 - Filtering BAM  - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
 ======================================================================================================================================================================================
+ bam files                                                                      : ${params.bam}
+ bai files                                                                      : ${params.bai}
+
  reference genome                                                               : ${params.ref}
  reference annotation                                                           : ${params.annotation}
 
@@ -83,7 +86,8 @@ log.info """
  reference genome is CHM13                                                      : ${params.is_chm13}
 
  multiqc configuration file                                                     : ${params.multiqc_config}
- 
+ multiqc input path                                                             : ${params.multiqc_input} 
+
  transcript discovery status                                                    : ${params.is_discovery}
  NDR Value for Bambu (Novel Discovery Rate)                                     : ${params.NDR}
  Track read_ids with bambu?                                                     : ${params.track_reads}
