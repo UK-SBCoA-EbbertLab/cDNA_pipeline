@@ -77,7 +77,7 @@ log.info """
 } else {
 
 log.info """
-                                    OXFORD NANOPORE cDNA SEQUENCING PIPELINE - Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
+            OXFORD NANOPORE cDNA/dRNA SEQUENCING PIPELINE - STEP 3: Transcript Quantification and/or Discovery -  Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
 ======================================================================================================================================================================================
  
  reference genome                                                               : ${params.ref}
