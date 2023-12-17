@@ -12,7 +12,7 @@ log.info """
  basecall config (If "None" the basecaller will automatically pick one)         : ${params.basecall_config}
  basecall read trimming option                                                  : ${params.basecall_trim}
  basecall quality score threshold for basecalling                               : ${params.qscore_thresh}
- basecall demultiplexing                                                        : ${params.demux}
+ basecall demultiplexing                                                        : ${params.basecall_demux}
  trim barcodes during demultiplexing                                            : ${params.trim_barcode}
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
@@ -122,8 +122,8 @@ ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
 ref = file(params.ref)
 housekeeping = file(params.housekeeping)
 annotation = file(params.annotation)
-fast5_path = Channel.fromPath("${params.basecall_path}/**.fast5").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_"), file) }.groupTuple()
-pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_"), file) }.groupTuple()
+fast5_path = Channel.fromPath("${params.basecall_path}/**.fast5").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_") + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
+pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple(file.parent.toString().split("/")[-3..-2].join("_") + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
 cdna_kit = Channel.value(params.cdna_kit)
 multiqc_config = Channel.fromPath(params.multiqc_config)
 NDR = Channel.value(params.NDR)
@@ -140,7 +140,6 @@ basecall_speed = Channel.value(params.basecall_speed)
 basecall_mods = Channel.value(params.basecall_mods)
 basecall_config = Channel.value(params.basecall_config)
 basecall_trim = Channel.value(params.basecall_trim)
-basecall_demux = Channel.value(params.basecall_demux)
 basecall_compute = Channel.value(params.basecall_compute)
 trim_barcode = Channel.value(params.trim_barcode)
 

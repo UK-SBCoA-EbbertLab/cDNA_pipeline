@@ -24,7 +24,7 @@ process BASECALL_CPU {
 
     publishDir "results/${params.out_dir}/basecalling_output/", mode: "copy", overwrite: true    
     
-    label 'large'
+    label 'huge'
     
     input:
         tuple val(id), path(pod5_dir)
@@ -80,7 +80,7 @@ process BASECALL_CPU_DEMUX {
     publishDir "results/${params.out_dir}/basecalling_output/", mode: "copy", overwrite: true
 
 
-    label 'large'
+    label 'huge'
 
     input:
         tuple val(id), path(pod5_dir)
@@ -144,8 +144,8 @@ process BASECALL_CPU_DEMUX {
 
         for file in *.bam; do
             new_id="\${file%%.*}"
-            dorado summary "\$file" > "\${new_id}.fastq"
-            samtools fastq -T "*" "\$file" > "\${new_id}.txt"
+            dorado summary "\$file" > "\${new_id}.txt"
+            samtools fastq -T "*" "\$file" > "\${new_id}.fastq"
             rm "\$file"
         done
 
@@ -276,8 +276,8 @@ process BASECALL_GPU_DEMUX {
 
         for file in *.bam; do
             new_id="\${file%%.*}"
-            dorado summary "\$file" > "\${new_id}.fastq"
-            samtools fastq -T "*" "\$file" > "\${new_id}.txt"
+            dorado summary "\$file" > "\${new_id}.txt"
+            samtools fastq -T "*" "\$file" > "\${new_id}.fastq"
             rm "\$file"
         done
 
