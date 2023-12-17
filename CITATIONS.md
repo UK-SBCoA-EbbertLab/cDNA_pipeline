@@ -6,12 +6,17 @@
 
 [Singularity](https://docs.sylabs.io/guides/latest/user-guide/)
 
+## Basecalling
+
+[pod5](https://pypi.org/project/pod5/)
+
+[dorado](https://github.com/nanoporetech/dorado)
 
 ## Pre-processing
 
-[Guppy](https://timkahlke.github.io/LongRead_tutorials/BS_G.html)
-
 [Pychopper](https://github.com/epi2me-labs/pychopper)
+
+[Porechop_ABI](https://github.com/bonsai-team/Porechop_ABI)
 
 
 ## Quality Control
@@ -26,6 +31,7 @@
 ## Mapping
 
 [Minimap2](https://github.com/lh3/minimap2)
+
 
 ## Transcriptomics
 
