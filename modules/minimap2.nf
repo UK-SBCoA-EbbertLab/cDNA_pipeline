@@ -63,6 +63,7 @@ process MINIMAP2_dRNA {
 
     script:
         """
+
         minimap2 -t 50 -ax splice \
             -k14 -uf \
             $index \

@@ -11,6 +11,7 @@ include {MAP_CONTAMINATION_dRNA} from '../modules/contamination'
 include {MAKE_CONTAMINATION_REPORT_1 ; MAKE_CONTAMINATION_REPORT_2} from '../modules/make_contamination_report.nf'
 include {TRIM_dRNA} from '../modules/trim_dRNA.nf'
 include {CONVERT_U_TO_T} from '../modules/convert_U_to_T.nf'
+include {MAKE_NUM_READS_REPORT} from '../modules/num_reads_report.nf'
 
 workflow NANOPORE_dRNA_STEP_2 {
 
@@ -25,11 +26,12 @@ workflow NANOPORE_dRNA_STEP_2 {
         track_reads
         mapq
         contamination_ref
+        quality_score
 
     main:
         MAKE_FAI(ref)
         MAKE_INDEX_dRNA(ref)
-        CONVERT_U_TO_T(ont_reads_fq, ont_reads_txt)
+        CONVERT_U_TO_T(ont_reads_fq, ont_reads_txt, quality_score)
         
         ont_reads_fq = CONVERT_U_TO_T.out.fastq
         ont_reads_txt = CONVERT_U_TO_T.out.txt
@@ -45,6 +47,8 @@ workflow NANOPORE_dRNA_STEP_2 {
         }
        
         MINIMAP2_dRNA(ont_reads_fq,  MAKE_INDEX_dRNA.out, ont_reads_txt)
+
+
         FILTER_BAM(MINIMAP2_dRNA.out.id, mapq, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
         
 
@@ -65,7 +69,8 @@ workflow NANOPORE_dRNA_STEP_2 {
         }
         
         if (params.ont_reads_txt != "None") {
-            PYCOQC_dRNA(MINIMAP2_dRNA.out.id, MINIMAP2_dRNA.out.fastq, MINIMAP2_dRNA.out.txt, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
+            PYCOQC_dRNA(MINIMAP2_dRNA.out.id, MINIMAP2_dRNA.out.fastq, MINIMAP2_dRNA.out.txt, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai,
+                        num_all_fastq_reads, mapq, FILTER_BAM.out.QC)
         }
 
         if (params.is_chm13 == true)
@@ -88,7 +93,8 @@ workflow NANOPORE_dRNA_STEP_2 {
             RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam, FILTER_BAM.out.bai, housekeeping)
         }
         
-        
+        MAKE_NUM_READS_REPORT(PYCOQC_dRNA.out.num_reads_report) 
+
         BAMBU_PREP(FILTER_BAM.out.id, mapq, FILTER_BAM.out.bam, FILTER_BAM.out.bai, ref, annotation, MAKE_FAI.out, track_reads)
 
 }

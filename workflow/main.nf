@@ -35,7 +35,7 @@ log.info """
  housekeeping genes 3' bias assessment                                          : ${params.housekeeping}
  nanopore library prep kit (cDNA only)                                          : ${params.cdna_kit}
  reference genome is CHM13                                                      : ${params.is_chm13}
- path to ERCC annotations (CHM13 only)                                          : ${params.err}
+ path to ERCC annotations (CHM13 only)                                          : ${params.ercc}
 
  quality score threshold for fastq reads (cDNA only)                            : ${params.qscore_thresh}
  MAPQ value for filtering bam file                                              : ${params.mapq}
@@ -205,7 +205,7 @@ workflow {
 
         else if (params.is_dRNA = "True") {
 
-            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref)
+            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
 
         }
     }
