@@ -1,7 +1,7 @@
 # Pipeline output structure and file description
 
 This is a list of all possible outputs, it does not mean that your particular execution of the pipeline will have that output directory. For example, `mapping_cDNA` will only exists for 
-cDNA when the parameter `--is_dRNA` is set to false and `mapping_dRNA` will only exist when the `--is_dRNA` parameter is set to true.
+cDNA when the parameter `--is_dRNA` is set to `false` and `mapping_dRNA` will only exist when the `--is_dRNA` parameter is set to `true`.
 
 
 ## Pipeline Output for STEP 1 (Basecalling):
