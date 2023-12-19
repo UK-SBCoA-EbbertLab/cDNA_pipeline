@@ -75,7 +75,6 @@ process MERGE_QC_REPORT {
     script:
         """
 
-        echo "# format: 'tsv'\n# plot_type: 'linegraph'\n# pconfig:\n\t# ylab: 'Number of reads'" >> "Number_of_Reads_mqc.tsv" 
         echo "Sample_ID\tAll_Reads\tFiltered_Reads\tAligned_Reads\tFiltered_Aligned_Reads\t" >> "Number_of_Reads_mqc.tsv"
         cat $num_reads >> "Number_of_Reads_mqc.tsv"
 

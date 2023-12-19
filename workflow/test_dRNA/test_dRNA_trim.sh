@@ -8,6 +8,7 @@ nextflow ../main.nf --path "/scratch/bag222/data/ont_data/test_dRNA_data/basecal
           --bambu_track_reads "True" \
           --is_dRNA "True" \
           --qscore_thresh "9" \
+          --contamination_ref "../../references/master_contaminant_reference.fasta" \
           --mapq "10" \
           --step "2" \
           --trim_dRNA "True" \

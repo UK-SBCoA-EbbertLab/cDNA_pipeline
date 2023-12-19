@@ -9,6 +9,7 @@ nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/test_data/*.fa
           --bambu_track_reads "True" \
           --is_dRNA "False" \
           --qscore_thresh "9" \
+          --contamination_ref "../../references/master_contaminant_reference.fasta" \
           --mapq "10" \
           --step "2" \
           --is_chm13 "False" -resume
