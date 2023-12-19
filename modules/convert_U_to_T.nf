@@ -1,7 +1,5 @@
 process CONVERT_U_TO_T {
 
-    publishDir "results/${params.out_dir}/trimmed_dRNA_files/", mode: 'symlink', overwrite: true, pattern: "*"
-    
     label "medium"
 
     input:
@@ -21,6 +19,9 @@ process CONVERT_U_TO_T {
 
         ## Filter by mean base quality threshold
         filter_by_mean_base_quality.py "${id}_U_to_T.fastq" "${qscore}" "${id}_U_to_T_qscore_${qscore}.fastq"
+
+        ## Delete intermediate files
+        rm "${id}_U_to_T.fastq"
 
     """
 }

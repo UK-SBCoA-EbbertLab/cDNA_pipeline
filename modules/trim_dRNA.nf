@@ -1,6 +1,6 @@
 process TRIM_dRNA {
 
-    publishDir "results/${params.out_dir}/trimmed_dRNA_files/", mode: 'symlink', overwrite: true, pattern: "*"
+    publishDir "results/${params.out_dir}/dRNA_adapter_trimming_stats/", mode: 'copy', overwrite: true, pattern: "*.txt"
     
     label "medium"
 
