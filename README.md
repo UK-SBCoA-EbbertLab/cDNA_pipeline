@@ -345,15 +345,15 @@ fastq files because it allows more flexibility in downstream alignment and proce
               
 ### Example for step 2 (dRNA): GRCh38 with ERCCs
 
-          nextflow ../main.nf --ont_reads_fq "/scratch/bag222/data/ont_data/2023-06-06_brain_directRNA_intronic_reads/*.fastq" \
-                    --ont_reads_txt "/scratch/bag222/data/ont_data/2023-06-06_brain_directRNA_intronic_reads/*.txt" \
-                    --ref "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38_ERCC.fa" \
-                    --annotation "../../../../cDNA_pipeline/references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
-                    --housekeeping "../../../../cDNA_pipeline/references/hg38.HouseKeepingGenes.bed" \
+          nextflow ../main.nf --ont_reads_fq "../../data/ont_data/2023-06-06_brain_directRNA_intronic_reads/*.fastq" \
+                    --ont_reads_txt "../..//data/ont_data/2023-06-06_brain_directRNA_intronic_reads/*.txt" \
+                    --ref "/../../references/Homo_sapiens.GRCh38_ERCC.fa" \
+                    --annotation "../../references/Homo_sapiens.GRCh38.107_ERCC.gtf" \
+                    --housekeeping "../../references/hg38.HouseKeepingGenes.bed" \
                     --out_dir "./GRCh38_dRNA_EERCC_test/" \
-                    --is_discovery "True" \
                     --bambu_track_reads "True" \
                     --is_dRNA "True" \
+                    --trim_dRNA "True" \
                     --mapq "0" \
                     --step "2" \
                     --is_chm13 "False"
