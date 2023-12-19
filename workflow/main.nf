@@ -179,13 +179,13 @@ workflow {
         
         NANOPORE_UNZIP_AND_CONCATENATE(fastq_path, txt_path)
 
-        if (params.is_dRNA == "False") {
+        if (params.is_dRNA == false) {
 
             NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
         
         } else {
         
-            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref)
+            NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
 
         }
     }
@@ -198,12 +198,12 @@ workflow {
 
     else if ((params.step == 2) && (params.bam == "None") && (params.path == "None")){
 
-        if (params.is_dRNA == "False") {
+        if (params.is_dRNA == false) {
         
             NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
         }
 
-        else if (params.is_dRNA = "True") {
+        else if (params.is_dRNA = true) {
 
             NANOPORE_dRNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
 

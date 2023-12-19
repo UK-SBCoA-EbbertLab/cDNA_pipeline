@@ -10,6 +10,8 @@ include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
 include {MAP_CONTAMINATION_cDNA} from '../modules/contamination'
 include {MAKE_CONTAMINATION_REPORT_1 ; MAKE_CONTAMINATION_REPORT_2} from '../modules/make_contamination_report.nf'
+include {MAKE_QC_REPORT; MERGE_QC_REPORT} from '../modules/num_reads_report.nf'
+
 
 workflow NANOPORE_cDNA_STEP_2 {
 
@@ -51,7 +53,13 @@ workflow NANOPORE_cDNA_STEP_2 {
 
 
         if ((params.ont_reads_txt != "None") || (params.path != "None")) {
-            PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai, quality_score)
+            
+            PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai, quality_score,
+                    mapq, FILTER_BAM.out.QC)
+            
+            MAKE_QC_REPORT(PYCOQC.out.num_reads_report, quality_score)
+
+            MERGE_QC_REPORT(MAKE_QC_REPORT.out.num_reads.collect(), MAKE_QC_REPORT.out.read_length.collect(), MAKE_QC_REPORT.out.qscore_thresh.collect())
         }
 
         if (params.is_chm13 == true)

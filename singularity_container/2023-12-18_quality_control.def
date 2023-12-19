@@ -8,7 +8,7 @@ From: ubuntu:22.04
         DEBIAN_FRONTEND=noninteractive
 
         ## Install basic packages and get update
-        apt-get update && apt-get -y install wget git time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev libcurl4-openssl-dev libxml2-dev
+        apt-get update && apt-get -y install wget git time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev libcurl4-openssl-dev libxml2-dev jq
 
         ## Set timezone and language for container ##
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
@@ -75,21 +75,21 @@ From: ubuntu:22.04
 
 	Software included in the container are:
 
-	conda==23.11.1
+	conda==23.11.0
 	pip==23.3
 	python==3.11.5
 	RseQC==5.0.1
 	pycoQC==2.5.2
-	multiqc==1.18
+	multiqc==1.19
 	fastQC==0.11.9
 	cutadapt==3.5
 	trim_galore==0.6.6
-	samtools==1.18
+	samtools==1.19
 
         NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
         TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND:  
 
-	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/quality_control:sha256.05c71be73b714f0f45026e975563d315334f45a753a4119987c42d15b92e8d46 
+	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/quality_control:sha256.0615a619e6a3ba2d24c37e95dc66dd3524e1b368c2af1eea9fec1229b16da555
 
 	
 	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline

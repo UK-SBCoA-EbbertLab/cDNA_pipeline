@@ -30,7 +30,7 @@ for line in Lines:
         read_id = line_content.split('@')[1].split(' ')[0]
         
         ## Append ids to their respective lists
-        read_ids_list.append(original_read_id)
+        read_ids_list.append(read_id)
         is_read_id = True
 
     
@@ -66,6 +66,7 @@ df_txt_final = df_txt.merge(df_read_converter, on="read_id", how="outer")
 df_txt_final["sequence_length_template_porechop"].fillna(df_txt_final["sequence_length_template"], inplace=True)
 df_txt_final.drop(columns="sequence_length_template", inplace=True)
 df_txt_final.rename(columns={'sequence_length_template_porechop': 'sequence_length_template'}, inplace=True)
+df_txt_final.drop_duplicates(inplace=True)
 
 ## Save new filtered sequencing summary file as a txt file
 df_txt_final.to_csv(output_name, index=False, sep="\t")

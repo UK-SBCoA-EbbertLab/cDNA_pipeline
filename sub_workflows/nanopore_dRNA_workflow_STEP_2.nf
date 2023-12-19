@@ -11,7 +11,7 @@ include {MAP_CONTAMINATION_dRNA} from '../modules/contamination'
 include {MAKE_CONTAMINATION_REPORT_1 ; MAKE_CONTAMINATION_REPORT_2} from '../modules/make_contamination_report.nf'
 include {TRIM_dRNA} from '../modules/trim_dRNA.nf'
 include {CONVERT_U_TO_T} from '../modules/convert_U_to_T.nf'
-include {MAKE_NUM_READS_REPORT} from '../modules/num_reads_report.nf'
+include {MAKE_QC_REPORT; MERGE_QC_REPORT} from '../modules/num_reads_report.nf'
 
 workflow NANOPORE_dRNA_STEP_2 {
 
@@ -33,21 +33,18 @@ workflow NANOPORE_dRNA_STEP_2 {
         MAKE_INDEX_dRNA(ref)
         CONVERT_U_TO_T(ont_reads_fq, ont_reads_txt, quality_score)
         
-        ont_reads_fq = CONVERT_U_TO_T.out.fastq
-        ont_reads_txt = CONVERT_U_TO_T.out.txt
-        
 
-        if (params.trim_dRNA == true) {
-        
-            TRIM_dRNA(ont_reads_fq, ont_reads_txt)
+        if (params.trim_dRNA == true) { 
+            
+            TRIM_dRNA(CONVERT_U_TO_T.out.fastq, CONVERT_U_TO_T.out.txt)
+            MINIMAP2_dRNA(TRIM_dRNA.out.fastq,  MAKE_INDEX_dRNA.out, TRIM_dRNA.out.txt)
 
-            ont_reads_fq = TRIM_dRNA.out.fastq
-            ont_reads_txt = TRIM_dRNA.out.txt
-
+        } else {
+    
+            MINIMAP2_dRNA(CONVERT_U_TO_T.out.fastq,  MAKE_INDEX_dRNA.out, CONVERT_U_TO_T.out.txt)
+    
         }
        
-        MINIMAP2_dRNA(ont_reads_fq,  MAKE_INDEX_dRNA.out, ont_reads_txt)
-
 
         FILTER_BAM(MINIMAP2_dRNA.out.id, mapq, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai)
         
@@ -68,9 +65,14 @@ workflow NANOPORE_dRNA_STEP_2 {
             MAKE_CONTAMINATION_REPORT_2(MAKE_CONTAMINATION_REPORT_1.out.collect())
         }
         
-        if (params.ont_reads_txt != "None") {
+        if ((params.ont_reads_txt != "None") || (params.path != "None")) {
+           
             PYCOQC_dRNA(MINIMAP2_dRNA.out.id, MINIMAP2_dRNA.out.fastq, MINIMAP2_dRNA.out.txt, MINIMAP2_dRNA.out.bam, MINIMAP2_dRNA.out.bai,
-                        num_all_fastq_reads, mapq, FILTER_BAM.out.QC)
+                         quality_score, mapq, FILTER_BAM.out.QC)
+            
+            MAKE_QC_REPORT(PYCOQC_dRNA.out.num_reads_report, quality_score)
+
+            MERGE_QC_REPORT(MAKE_QC_REPORT.out.num_reads.collect(), MAKE_QC_REPORT.out.read_length.collect(), MAKE_QC_REPORT.out.qscore_thresh.collect())
         }
 
         if (params.is_chm13 == true)
@@ -92,9 +94,7 @@ workflow NANOPORE_dRNA_STEP_2 {
         {
             RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam, FILTER_BAM.out.bai, housekeeping)
         }
-        
-        MAKE_NUM_READS_REPORT(PYCOQC_dRNA.out.num_reads_report) 
-
+       
         BAMBU_PREP(FILTER_BAM.out.id, mapq, FILTER_BAM.out.bam, FILTER_BAM.out.bai, ref, annotation, MAKE_FAI.out, track_reads)
 
 }
