@@ -17,28 +17,22 @@ cDNA when the parameter `--is_dRNA` is set to `false` and `mapping_dRNA` will on
 
     2. bambu_prep
 
-    3. concatenated_fastq_and_sequencing_summary_files
+    3. CHM13_gtf
 
-    4. contamination_report
+    4. concatenated_fastq_and_sequencing_summary_files
 
-    5. dRNA_adapter_trimming_stats
+    5. contamination_report
 
-    6. fai
+    6. dRNA_adapter_trimming_stats
 
-    7. mapping_cDNA
+    7. fai
 
-    8. mapping_dRNA
+    8. mapping_cDNA
 
-    9. multiQC_input   
+    9. mapping_dRNA
 
+    10. multiQC_input   
 
-
-## Pipeline Output for STEP 2 from BAM (Pre-processing):
-
-
-    1. bam_filtering
-
-    2. bambu_prep
 
 
 ## Pipeline Output for STEP 3:
