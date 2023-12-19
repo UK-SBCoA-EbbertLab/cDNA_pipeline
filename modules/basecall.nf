@@ -1,6 +1,6 @@
 process FAST5_to_POD5 {
 
-    publishDir "results/${params.out_dir}/${id}/fast5_to_pod5/", mode: "symlink", overwrite: true
+    publishDir "results/${params.out_dir}/fast5_to_pod5/${id}/", mode: "symlink", overwrite: true
     
     label 'large'
 
