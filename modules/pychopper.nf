@@ -6,21 +6,21 @@ process PYCHOPPER {
 
     input:
         tuple val(id), path(fastq)
-        val(txt)
+        val(txt) 
         val(cdna_kit)
         val(quality_score)
 
     output:
         val "$id", emit: id
         path "${id}_pychop.fq", emit: fastq
-        val "$txt", emit: txt
+        val "$txt", emit: txt     
         path "$fastq", emit: original_fastq
         path "*pychopper.stats", emit: multiQC
 
     script:
     
     """
-
+    
     ## Pychopper does not have PCS114 primers yes, need to create them ##
     if [[ "${cdna_kit}" == "PCS114" ]]; then
     

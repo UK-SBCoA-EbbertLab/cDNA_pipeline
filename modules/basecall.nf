@@ -39,9 +39,6 @@ process BASECALL_CPU {
 
    script:
         """
-        echo "MODS: $mods"
-
-        echo "CONFIG: $config"
 
         if [[ "$config" == "false" ]]; then
             
@@ -96,10 +93,6 @@ process BASECALL_CPU_DEMUX {
 
    script:
         """
-
-        echo "MODS: $mods"
-
-        echo "CONFIG: $config"
 
         if [[ "$config" == "false" ]]; then
 
@@ -171,9 +164,6 @@ process BASECALL_GPU {
 
    script:
         """
-        echo "MODS: $mods"
-
-        echo "CONFIG: $config"
 
         if [[ "$config" == "false" ]]; then
             
@@ -228,10 +218,6 @@ process BASECALL_GPU_DEMUX {
 
    script:
         """
-
-        echo "MODS: $mods"
-
-        echo "CONFIG: $config"
 
         if [[ "$config" == "false" ]]; then
 

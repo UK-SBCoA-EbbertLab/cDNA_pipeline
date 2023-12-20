@@ -58,12 +58,12 @@ process MINIMAP2_dRNA {
         path("${id}.bam"), emit: bam
         path("${id}.bam.bai"), emit: bai
         path("${id}*stat"), emit: QC_out
-        val("$txt"), emit: txt
+        val("${txt}"), emit: txt
         env(NUM_READS), emit: num_reads
 
     script:
         """
-
+        
         minimap2 -t 50 -ax splice \
             -k14 -uf \
             $index \

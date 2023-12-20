@@ -4,12 +4,12 @@ process CONVERT_U_TO_T {
 
     input:
         tuple val(id), file(fastq)
-        val(txt)
+        val(txt) 
         val(qscore)
 
     output:
         tuple val("$id"), path("${id}_U_to_T_qscore_${qscore}.fastq"), emit: fastq
-        val("$txt"), emit: txt
+        val "$txt", emit: txt
 
     script:
     """
