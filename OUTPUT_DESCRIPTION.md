@@ -38,14 +38,27 @@ cDNA when the parameter `--is_dRNA` is set to `false` and `mapping_dRNA` will on
     9. mapping_dRNA - <Minimap2 alignment sorted ".bam" and ".bai" files including all alignments 
                         (no MAPQ filter, includes supplementary and secondary alignment)>
 
-    10. multiQC_input   
+    10. multiQC_input:
+        a. RseQC - RseQC 3' bias gene body coverage ".txt" and ".r" files for each sample.
+        b. contamination - Percent_Contaminant_Reads_mqc.tsv with the percent of contaminant reads for each sample.
+        c. minimap2 - Samtools ".flagstat" reports and ".idxstat" reports (no MAPQ filter, includes supplementary and secondary alignment).
+        d. num_reads_report - Three reports, one with number of reads for each sample, other with reads length, and another with
+                                MAPQ and PHRED quality scores used to filter the files.
+        e. pychopper - Pychopper trimming statistics for each sample.
+        f. pycoQC - Individual HTML and JSON files with quality control metrics for each sample.
 
 
 
 ## Pipeline Output for STEP 3:
 
-    1. bambu_discovery
+    1. bambu_discovery - Output from bambu discovery step, includes gene level counts, transcript level counts,
+                         transcript level unique counts, transcript level full-length counts, GTF extended annotations
+                         containining known and new transcript coordinates, and RDS file with bambu object for all
+                         files combined.
 
-    2. bambu_quant
+    2. bambu_quant - Output from bambu discovery step, includes gene level counts, transcript level counts,
+                         transcript level unique counts, transcript level full-length counts, GTF annotations
+                         containining known , and RDS file with bambu object for all files combined.
 
-    3. multiQC_output
+
+    3. multiQC_output - MultiQC output files, most importantly the ".html" report showing summary statistics for all file.
