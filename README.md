@@ -82,6 +82,10 @@ fastq files because it allows more flexibility in downstream alignment and proce
                                         if set to "True" barcodes will be trimmed during demultiplexing
                                         and will not be present in output "fastq" files>
 
+          --prefix                      <Will add a prefix to the beggining of your filenames, good
+                                         when wanting to keep track of batches of data.
+                                         Example: "Batch_1". Default value is "None" which does not add any prefixes>
+
           --out_dir                    <Name of output directory. Output files/directories will be output to
                                         "./results/<out_dir>/". Default: "output_directory">
 
@@ -174,6 +178,10 @@ fastq files because it allows more flexibility in downstream alignment and proce
 
           --track_reads                  <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
                                           from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
+
+          --prefix                      <Will add a prefix to the beggining of your filenames, good
+                                         when wanting to keep track of batches of data.
+                                         Example: "Batch_1". Default value is "None" which does not add any prefixes>
   
  
 
@@ -204,6 +212,10 @@ fastq files because it allows more flexibility in downstream alignment and proce
           
           --track_reads      <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
                               from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
+                              
+          --prefix            <Will add a prefix to the beggining of your filenames, good
+                              when wanting to keep track of batches of data.
+                              Example: "Batch_1". Default value is "None" which does not add any prefixes>
             
           --mapq            <integer, set it to the number you want to be used to filter ".bam" file by mapq. --mapq 10 filters out reads with
                               MAPQ < 10. Set it to 0 if don't want to filter out any reads. Default: 0>
