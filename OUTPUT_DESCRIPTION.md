@@ -6,9 +6,10 @@ cDNA when the parameter `--is_dRNA` is set to `false` and `mapping_dRNA` will on
 
 ## Pipeline Output for STEP 1 (Basecalling):
 
-    1. fast5_to_pod5
+    1. fast5_to_pod5 - One directory per sample that had any fast5 files converted into pod5 files for more efficient basecalling with Dorado.
 
-    2. basecalling_output
+    2. basecalling_output - Dorado basecalling output. One fastq file per sample and one sequencing summary file per sample. Reads for the
+                            same run will  be separated into different fastq files based on barcode where appropriate.
 
 
 ## Pipeline Output for STEP 2 (QC, Alignment, and Bambu Pre-processing):
