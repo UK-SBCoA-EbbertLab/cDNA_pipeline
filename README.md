@@ -26,7 +26,8 @@ for the job manager.
 ### 5) Make sure you have all the sequencing files and reference genomes/assemblies files and annotation files you will need to run the pipeline.
           
 - ".fastq" -- Nanopore cDNA sequencing files or ".bam" alignment files. Could also be the small ".fastq.gz" files for each sample, see
-              the `--path` option below if you are processing files as they are outputted from basecalling in an Oxford Nanopore Sequencer. 
+              the `--path` option below if you are processing files as they are outputted from basecalling in an Oxford Nanopore Sequencer.
+              Could also be ".pod5" or ".fast5" files if you are starting from the basecalling step. 
 
 - "sequencing_summary.txt" -- These files are not necessary for execution, but if not available the PycoQC quality control step will be skipped.
 
