@@ -87,6 +87,7 @@ log.info """
 
  multiqc configuration file                                                     : ${params.multiqc_config}
  multiqc input path                                                             : ${params.multiqc_input} 
+ intermediate qc file paths                                                     : ${params.intermediate_qc}
 
  transcript discovery status                                                    : ${params.is_discovery}
  NDR Value for Bambu (Novel Discovery Rate)                                     : ${params.NDR}
@@ -122,8 +123,8 @@ ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
 ref = file(params.ref)
 housekeeping = file(params.housekeeping)
 annotation = file(params.annotation)
-fast5_path = Channel.fromPath("${params.basecall_path}/**.fast5").map{file -> tuple(file.parent.toString().split("/")[-2].join("_") + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
-pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple(file.parent.toString().split("/")[-2].join("_") + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
+fast5_path = Channel.fromPath("${params.basecall_path}/**.fast5").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
+pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
 cdna_kit = Channel.value(params.cdna_kit)
 multiqc_config = Channel.fromPath(params.multiqc_config)
 NDR = Channel.value(params.NDR)
@@ -142,6 +143,12 @@ basecall_config = Channel.value(params.basecall_config)
 basecall_trim = Channel.value(params.basecall_trim)
 basecall_compute = Channel.value(params.basecall_compute)
 trim_barcode = Channel.value(params.trim_barcode)
+contamination = Channel.fromPath("${params.intermediate_qc}/contamination/*")
+num_reads = Channel.fromPath("${params.intermediate_qc}/number_of_reads/*")
+read_length = Channel.fromPath("${params.intermediate_qc}/read_length/*")
+quality_thresholds = Channel.fromPath("${params.intermediate_qc}/quality_score_thresholds/*")
+
+
 
 
 if (params.ercc != "None") {
@@ -219,7 +226,7 @@ workflow {
 
     else if(params.step == 3){
         
-        NANOPORE_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config)
+        NANOPORE_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config, contamination, num_reads, read_length, quality_thresholds)
     }
 
 }

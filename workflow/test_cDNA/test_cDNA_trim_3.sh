@@ -11,4 +11,5 @@ nextflow ../main.nf --step 3 \
     --multiqc_input "./results/GRCh38_cDNA/multiQC_input/**" \
     --multiqc_config "../../references/multiqc_config.yaml" \
     --out_dir "./GRCh38_cDNA/" \
+    --intermediate_qc "./results/GRCh38_cDNA/intermediate_qc_reports/" \
     --is_chm13 "False"

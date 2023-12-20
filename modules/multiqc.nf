@@ -7,6 +7,8 @@ process MULTIQC_GRCh38 {
     input:
         path(multiqc_input)
         path(multiqc_config)
+        path(contamination)
+        path(reads_reports)
     
     output: 
        path "*"
@@ -26,6 +28,8 @@ process MULTIQC_CHM13 {
     input:
         path(multiqc_input)
         path(multiqc_config)
+        path(contamination)
+        path(reads_reports)
     
     output: 
         path "*"

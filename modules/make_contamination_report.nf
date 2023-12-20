@@ -1,5 +1,7 @@
 process MAKE_CONTAMINATION_REPORT_1 {
 
+    publishDir "results/${params.out_dir}/intermediate_qc_reports/contamination/", mode: "copy", pattern: "*.tsv"   
+
     label 'small'
 
     input:
@@ -40,7 +42,7 @@ process MAKE_CONTAMINATION_REPORT_2 {
         path(report)
 
     output:
-        path("*"), emit: outty
+        path("*")
 
     script:
         """
