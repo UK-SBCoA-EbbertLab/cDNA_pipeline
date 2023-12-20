@@ -235,6 +235,9 @@ fastq files because it allows more flexibility in downstream alignment and proce
           
           --track_reads       <logical, set to "True" if you want Bambu to keep track of read assignments to transcripts in the output ".RDS" file
                               from Bambu. Set to "False" if you don't need to keep track of read assignments (smaller files). Default: "False">
+
+          --intermediate_qc    <path to directory containing intermediate quality control output from pipeline step 2.
+                               Example: "/path/intermediate_qc_reports/" Default: "None">
             
           --multiqc_input    <path to directory containing multiqc input data from pipeline step 2. Use path and add **.
                               Example: /path/multiqc_input/** Default: "None">
@@ -388,6 +391,7 @@ fastq files because it allows more flexibility in downstream alignment and proce
               --multiqc_input "./results/GRCh38_ERCC_test/multiQC_input/**" \
               --multiqc_config "../../references/multiqc_config.yaml" \
               --out_dir "./GRCh38_ERCC_test/" \
+              --intermediate_qc "./results/GRCh38_ERCC_test/intermediate_qc_reports/" \
               --is_chm13 "False"       
 
 
