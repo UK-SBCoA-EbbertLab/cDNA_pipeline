@@ -9,11 +9,17 @@ process CONVERT_U_TO_T {
 
     output:
         tuple val("$id"), path("${id}_U_to_T_qscore_${qscore}.fastq"), emit: fastq
-        val "$txt", emit: txt
+        path "${id}.txt", emit: txt
 
     script:
     """
         
+        if [[ "${txt}" != "None" ]] &&  [[ "${txt}" != "${id}.txt" ]]; then
+            cp "${txt}" "./${id}.txt"
+        else
+            touch "./${id}.txt"
+        fi 
+ 
         ## convert U to T
         convert_U_to_T.py $fastq "${id}_U_to_T.fastq"
 

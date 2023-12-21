@@ -6,20 +6,25 @@ process PYCHOPPER {
 
     input:
         tuple val(id), path(fastq)
-        val(txt) 
+        path(txt)
         val(cdna_kit)
         val(quality_score)
 
     output:
         val "$id", emit: id
         path "${id}_pychop.fq", emit: fastq
-        val "$txt", emit: txt     
+        path "${id}.txt", emit: txt     
         path "$fastq", emit: original_fastq
         path "*pychopper.stats", emit: multiQC
 
     script:
     
     """
+    if [[ "${txt}" != "None" ]] &&  [[ "${txt}" != "${id}.txt" ]]; then
+        cp "${txt}" "./${id}.txt"
+    else
+        touch "./${id}.txt"
+    fi 
     
     ## Pychopper does not have PCS114 primers yes, need to create them ##
     if [[ "${cdna_kit}" == "PCS114" ]]; then
