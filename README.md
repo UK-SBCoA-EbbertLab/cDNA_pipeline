@@ -400,7 +400,7 @@ fastq files because it allows more flexibility in downstream alignment and proce
           nextflow ../main.nf --step 3 \
               --bambu_rds "./results/GRCh38_ERCC_test/bambu_prep/*.rds" \
               --ref "../../references/Homo_sapiens.GRCh38_ERCC.fa" \
-              --fai "./results/GRCh38_ERCC_test/fai/*.fai \
+              --fai "./results/GRCh38_ERCC_test/fai/*.fai" \
               --annotation "../../references/Homo_sapiens.GRCh38.106_ERCC.gtf" \
               --is_discovery "True" \
               --track_reads "False" \
