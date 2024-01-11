@@ -41,7 +41,7 @@ workflow NANOPORE_STEP_1 {
 
         } else {
 
-            BASECALL_GPU(pod5_path, speed, modifications, config, trim, quality_score, trim_barcode)
+            BASECALL_GPU(pod5_path, speed, modifications, config, trim, quality_score)
 
         }
 
