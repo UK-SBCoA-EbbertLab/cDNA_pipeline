@@ -25,7 +25,7 @@ process MAKE_CONTAMINATION_REPORT_1 {
         
         mapped_chm13=$(awk -v var1=$unmapped_reads_before_chm13 -v var2=$unmapped_reads_after_chm13 'BEGIN { print  ( var1 - var2 ) }')
         mapped_to_target=$(awk -v var1=$unmapped_reads_before_chm13 -v var2=$reads 'BEGIN { print  ( var2 - var1 ) }')
-        unmapped=$(awk -v var1=$unmapped_reads_after_chm13 -v var2=$mapped_to_contaminant 'BEGIN { print  ( var2 - var1 ) }')
+        unmapped=$(awk -v var1=$unmapped_reads_after_chm13 -v var2=$mapped_to_contaminant 'BEGIN { print  ( var1 - var2 ) }')
 
         echo "${ID}\t${mapped_to_target}\t${mapped_chm13}\t${mapped_to_contaminant}\t${unmapped}" > "${ID}.tsv"
         '''
