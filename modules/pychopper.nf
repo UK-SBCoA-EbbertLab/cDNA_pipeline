@@ -6,7 +6,7 @@ process PYCHOPPER {
 
     input:
         tuple val(id), path(fastq)
-        path(txt)
+        val(txt)
         val(cdna_kit)
         val(quality_score)
 
@@ -22,7 +22,7 @@ process PYCHOPPER {
     """
     if [[ "${txt}" != "None" ]] &&  [[ "${txt}" != "${id}.txt" ]]; then
         cp "${txt}" "./${id}.txt"
-    else if [[ "${txt}" != "None" ]]; then
+    elif [[ "${txt}" == "None" ]]; then 
         touch "./${id}.txt"
     fi 
     
