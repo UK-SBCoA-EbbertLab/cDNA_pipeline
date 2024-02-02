@@ -75,7 +75,7 @@ workflow NANOPORE_cDNA_STEP_2 {
             }
         }
 
-        else
+        else if ((params.is_chm13 == false) && (params.housekeeping != "None"))
         {
             RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam, FILTER_BAM.out.bai, housekeeping)
         }

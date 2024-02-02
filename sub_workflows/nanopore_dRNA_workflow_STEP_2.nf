@@ -87,8 +87,7 @@ workflow NANOPORE_dRNA_STEP_2 {
                 annotation = CHM13_GTF_ERCC.out.collect()
             }
         }
-
-        else
+        else if ((params.is_chm13 == false) && (params.housekeeping != "None"))
         {
             RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam, FILTER_BAM.out.bai, housekeeping)
         }

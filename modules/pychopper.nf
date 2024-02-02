@@ -22,7 +22,7 @@ process PYCHOPPER {
     """
     if [[ "${txt}" != "None" ]] &&  [[ "${txt}" != "${id}.txt" ]]; then
         cp "${txt}" "./${id}.txt"
-    else
+    else if [[ "${txt}" != "None" ]]; then
         touch "./${id}.txt"
     fi 
     
