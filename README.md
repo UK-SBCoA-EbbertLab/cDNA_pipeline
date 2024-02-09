@@ -171,7 +171,7 @@ fastq files because it allows more flexibility in downstream alignment and proce
                                           For further detail go into the "contamination_report/" folder under your pipeline execution results
                                           to find out which were the most abundant contaminants in each of your samples.>
             
-            --quality_score              <Minimum mean base quality from basecalled sequence. For example, when set at 9 all reads with 
+            --qscore_thresh               <Minimum mean base quality from basecalled sequence. For example, when set at 9 all reads with 
                                           mean base quality below 9 will be filtered out from the fastq file. This is executed by Pychopper,
                                           therefore it only affects cDNA data analysis. This parameter will always be ignored by dRNA pipeline
                                           execution, there is no quality fileter applied by the pipeline for dRNA. Default: 9>
