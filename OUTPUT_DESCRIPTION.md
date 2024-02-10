@@ -61,10 +61,10 @@ cDNA when the parameter `--is_dRNA` is set to `false` and `mapping_dRNA` will on
                          transcript level unique counts, transcript level full-length counts, GTF annotations
                          containining known , and RDS file with bambu object for all files combined.
 
-    3. multiQC_input:
-        a. contamination - Percent_Contaminant_Reads_mqc.tsv with the percent of contaminant reads for each sample.
-        b. num_reads_report - Three reports, one with number of reads for each sample, other with reads length, and another with
+    3. contamination - Percent_Contaminant_Reads_mqc.tsv with the percent of contaminant reads for each sample.
+    
+    4. num_reads_report - Three reports, one with number of reads for each sample, other with reads length, and another with
                                 MAPQ and PHRED quality scores used to filter the files.
 
 
-    3. multiQC_output - MultiQC output files, most importantly the ".html" report showing summary statistics for all file.
+    5. multiQC_output - MultiQC output files, most importantly the ".html" report showing summary statistics for all file.
