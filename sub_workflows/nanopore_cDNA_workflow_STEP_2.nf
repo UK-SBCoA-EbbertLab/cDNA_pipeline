@@ -53,8 +53,7 @@ workflow NANOPORE_cDNA_STEP_2 {
 
         if ((params.ont_reads_txt != "None") || (params.path != "None")) {
             
-            PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai, quality_score,
-                    mapq, FILTER_BAM.out.QC)
+            PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai, quality_score, mapq)
             
             MAKE_QC_REPORT(PYCOQC.out.num_reads_report, quality_score)
 

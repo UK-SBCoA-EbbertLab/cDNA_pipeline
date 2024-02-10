@@ -17,54 +17,33 @@ process MAKE_QC_REPORT {
 
     script:
         """
-        echo "hi"
-
         reads_number_fastq_all=\$(jq '.["All Reads"].basecall.reads_number' "${json}")
-        
-        echo "hi"
-
+ 
         reads_number_aligned=\$(jq '.["All Reads"].alignment.reads_number' "${json}")
        
-        echo "hi"
-
         reads_number_aligned_filtered=\$(grep "primary mapped" "${flagstat}" | awk '{print \$1}')
        
-        echo "hi"
-
         N50_fastq=\$(jq '.["All Reads"].basecall.N50' "${json}")
-       
-        echo "hi"
 
         median_read_length_fastq=\$(jq '.["All Reads"].basecall.len_percentiles[50]' "${json}")
-       
-        echo "hi"
 
         N50_alignment=\$(jq '.["All Reads"].alignment.N50' "${json}")
        
-        echo "hi"
-
         median_read_length_alignment=\$(jq '.["All Reads"].alignment.len_percentiles[50]' "${json}")
        
-        echo "hi"
-
         echo "${id}\t\${reads_number_fastq_all}\t${num_trimmed_fastq}\t\${reads_number_aligned}\t\${reads_number_aligned_filtered}" > "${id}_num_reads.tsv"
        
-        echo "hi"
-
         echo "${id}\t\${N50_fastq}\t\${median_read_length_fastq}\t\${N50_alignment}\t\${median_read_length_alignment}" > "${id}_read_length.tsv"
        
-        echo "hi"
-
         echo "${id}\t${qscore_thresh}\t${mapq}" > "${id}_quality_thresholds.tsv"
        
-        echo "hi"
         """
 
 }
 
 process MERGE_QC_REPORT {
 
-    publishDir "results/${params.out_dir}/multiQC_input/reads_report/", pattern: "*", mode: "copy", overwrite: true
+    publishDir "results/${params.out_dir}/reads_report/", pattern: "*", mode: "copy", overwrite: true
 
     label 'small'
 
@@ -78,16 +57,24 @@ process MERGE_QC_REPORT {
 
     script:
         """
-
-        echo "Sample_ID\tAll_Reads\tFiltered_Reads\tAligned_Reads\tFiltered_Aligned_Reads\t" >> "Number_of_Reads_mqc.tsv"
+    
+        echo "# plot_type: 'table'" >> "Number_of_Reads_mqc.tsv"
+        echo "# id: 'number of reads custom'" >> "Number_of_Reads_mqc.tsv" 
+        echo "# section_name: 'Number of reads per sample'" >> "Number_of_Reads_mqc.tsv"
+        echo "Sample_ID\tAll Reads\tProcessed Pass Reads\tPrimary Alignments\tFiltered Primary Alignments (MAPQ)" >> "Number_of_Reads_mqc.tsv"
         cat $num_reads >> "Number_of_Reads_mqc.tsv"
 
 
-        echo "Sample_ID\tN50_FASTQ\tMedian_Read_Length_FASTQ\tN50_BAM\tMedian_Read_Length_BAM\t" >> "Read_Length_mqc.tsv"
+        echo "# plot_type: 'table'" >> "Read_Length_mqc.tsv"
+        echo "# id: 'read length custom'" >> "Read_Length_mqc.tsv" 
+        echo "# section_name: 'Read lengths per sample'" >> "Read_Length_mqc.tsv"
+        echo "Sample_ID\tN50 FASTQ\tMedian Read Length FASTQ\tN50 BAM\tMedian Read Length BAM" >> "Read_Length_mqc.tsv"
         cat $read_length >> "Read_Length_mqc.tsv"
 
-
-        echo "Sample_ID\tRead_Mean_Base_Quality_Score_Threshold_(PHRED)\tMapping_Quality_Threshold_(MAPQ)" >> "Quality_Thresholds_mqc.tsv"
+        echo "# plot_type: 'table'" >> "Quality_Thresholds_mqc.tsv"
+        echo "# id: 'quality threholds'" >> "Quality_Thresholds_mqc.tsv" 
+        echo "# section_name: 'Quality thresholds for each sample'" >> "Quality_Thresholds_mqc.tsv"
+        echo "Sample_ID\tRead Mean Base Quality Score Threshold (PHRED)\tMapping Quality Threshold (MAPQ)" >> "Quality_Thresholds_mqc.tsv"
         cat $qscore_thresh >> "Quality_Thresholds_mqc.tsv"
        
         """

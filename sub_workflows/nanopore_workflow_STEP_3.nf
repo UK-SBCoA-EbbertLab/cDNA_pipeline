@@ -2,7 +2,7 @@
 include {BAMBU_DISCOVERY; BAMBU_QUANT} from '../modules/bambu'
 include {GFFCOMPARE} from '../modules/gffcompare'
 include {MAKE_TRANSCRIPTOME} from '../modules/make_transcriptome'
-include {MULTIQC_GRCh38 ; MULTIQC_CHM13} from '../modules/multiqc'
+include {MULTIQC_GRCh38} from '../modules/multiqc'
 include {MAKE_CONTAMINATION_REPORT_2} from '../modules/make_contamination_report.nf'
 include {MERGE_QC_REPORT} from '../modules/num_reads_report.nf'
 
@@ -23,21 +23,13 @@ workflow NANOPORE_STEP_3 {
         quality_thresholds
 
     main:
-  
-
-        MAKE_CONTAMINATION_REPORT_2(contamination.collect()) 
+ 
+       
+        MAKE_CONTAMINATION_REPORT_2(contamination.collect())
+            
         MERGE_QC_REPORT(num_reads.collect(), read_length.collect(), quality_thresholds.collect())
-
-    
-        if (params.is_chm13 == true)
-        {
-            MULTIQC_CHM13(multiqc_input.collect(), multiqc_config, MAKE_CONTAMINATION_REPORT_2.out, MERGE_QC_REPORT.out)
-        }
-
-        else
-        {
-            MULTIQC_GRCh38(multiqc_input.collect(), multiqc_config, MAKE_CONTAMINATION_REPORT_2.out, MERGE_QC_REPORT.out)
-        }
+       
+        MULTIQC_GRCh38(multiqc_input.concat(MAKE_CONTAMINATION_REPORT_2.out.flatten(), MERGE_QC_REPORT.out.flatten()).collect(), multiqc_config)
         
         if (params.is_discovery == true)
         {

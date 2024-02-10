@@ -34,7 +34,7 @@ process MAKE_CONTAMINATION_REPORT_1 {
 
 process MAKE_CONTAMINATION_REPORT_2 {
 
-    publishDir "results/${params.out_dir}/multiQC_input/contamination/", mode: "copy", pattern: "*"
+    publishDir "results/${params.out_dir}/contamination/", mode: "copy", pattern: "*"
 
     label 'small'
 

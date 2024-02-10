@@ -12,17 +12,22 @@ process PYCOQC {
         path(total_bai)
         val(quality_score)
         val(mapq)
-        path(stats)
 
     output:
         path "*pycoqc*", emit: multiQC
-        tuple val("${id}"), env(num_reads_trimmed), val("${mapq}"), path("${id}_pycoqc.json"), path("${id}_mapq_${mapq}_new.flagstat"), emit: num_reads_report
+        tuple val("${id}"), env(num_reads_trimmed), val("${mapq}"), path("${id}_pycoqc.json"), path("*.flagstat"), emit: num_reads_report
 
     script:
         """
-        num_reads_trimmed=\$(fix_sequencing_summary_pychopper.py $fastq $seq_summary "${id}_sequencing_summary_pyco.txt")
+        
+        samtools view -b -q $mapq -F 2304 -@ 12 $total_bam > 'intermediate.bam'
+        samtools sort -@ 12 "intermediate.bam" -o '${id}_filtered_mapq_${mapq}.bam'
+        samtools index '${id}_filtered_mapq_${mapq}.bam'
+        samtools flagstat "${id}_filtered_mapq_${mapq}.bam" > "${id}_filtered_mapq_${mapq}.flagstat" 
+      
+        rm "intermediate.bam" '${id}_filtered_mapq_${mapq}.bam' '${id}_filtered_mapq_${mapq}.bam.bai'
 
-        cp *.flagstat "${id}_mapq_${mapq}_new.flagstat"    
+        num_reads_trimmed=\$(fix_sequencing_summary_pychopper.py $fastq $seq_summary "${id}_sequencing_summary_pyco.txt")
 
         pycoQC -f "${id}_sequencing_summary_pyco.txt" \
             -v \
@@ -48,20 +53,23 @@ process PYCOQC_dRNA {
         path(total_bai)
         val(quality_score)
         val(mapq)
-        path(stats)
 
     output:
         path "*pycoqc*", emit: multiQC
-        tuple val("${id}"), env(num_reads_trimmed), val("${mapq}"), path("${id}_pycoqc.json"), path("${id}_mapq_${mapq}_new.flagstat"), emit: num_reads_report 
+        tuple val("${id}"), env(num_reads_trimmed), val("${mapq}"), path("${id}_pycoqc.json"), path("*flagstat"), emit: num_reads_report 
         
 
     script:
         """
         
+        samtools view -b -q $mapq -F 2304 -@ 12 $total_bam > 'intermediate.bam'
+        samtools sort -@ 12 "intermediate.bam" -o '${id}_filtered_mapq_${mapq}.bam'
+        samtools index '${id}_filtered_mapq_${mapq}.bam'
+        samtools flagstat "${id}_filtered_mapq_${mapq}.bam" > "${id}_filtered_mapq_${mapq}.flagstat" 
+      
+        rm "intermediate.bam" '${id}_filtered_mapq_${mapq}.bam' '${id}_filtered_mapq_${mapq}.bam.bai'
+
         num_reads_trimmed=\$(fix_sequencing_summary_porechop.py $fastq $seq_summary "${id}_sequencing_summary_pyco.txt")
-
-        cp *.flagstat "${id}_mapq_${mapq}_new.flagstat"
-
 
         pycoQC -f "${id}_sequencing_summary_pyco.txt" \
             -v \

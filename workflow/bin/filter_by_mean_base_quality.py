@@ -1,9 +1,33 @@
 #!/usr/bin/env python3
 
 import sys
+from math import log
 
-def calculate_mean_quality(quality_string):
-    return sum(ord(char) - 33 for char in quality_string) / len(quality_string)
+
+def errs_tab(n):
+
+    """Generate list of error rates for qualities less than equal than n."""
+    return [10**(q / -10) for q in range(n + 1)]
+
+
+
+def calculate_mean_quality(quals, qround=False, tab=errs_tab(128)):
+    """Calculate average basecall quality of a read.
+    Receive the ascii quality scores of a read and return the average quality for that read
+    First convert Phred scores to probabilities,
+    calculate average error probability
+    convert average back to Phred scale
+    """
+    if quals:
+        mq = -10 * log(sum([tab[ord(q) - 33] for q in quals]) / len(quals), 10)
+
+        if qround:
+            return round(mq)
+        else:
+            return mq
+    else:
+        return 0.0 
+    
 
 def filter_fastq(input_file, threshold, output_file):
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:

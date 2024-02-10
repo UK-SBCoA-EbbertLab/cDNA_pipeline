@@ -13,12 +13,12 @@ process CONVERT_U_TO_T {
 
     script:
     """
-        
+       
         if [[ "${txt}" != "None" ]] &&  [[ "${txt}" != "${id}.txt" ]]; then
             cp "${txt}" "./${id}.txt"
-        else
+        elif [[ "${txt}" == "None" ]]; then
             touch "./${id}.txt"
-        fi 
+         fi
  
         ## convert U to T
         convert_U_to_T.py $fastq "${id}_U_to_T.fastq"

@@ -66,7 +66,7 @@ log.info """
  reference annotation                                                           : ${params.annotation}
 
  reference genome is CHM13                                                      : ${params.is_chm13}
- path to ERCC annotations (CHM13 only)                                          : ${params.err}
+ path to ERCC annotations (CHM13 only)                                          : ${params.ercc}
 
 
  MAPQ value for filtering bam file                                              : ${params.mapq}

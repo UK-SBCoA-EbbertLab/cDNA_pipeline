@@ -35,7 +35,7 @@ for line in Lines:
 
     
     ## If this is a sequence line
-    elif ((line_content[0] in ["C", "T", "G", "A"]) & (line_content.isalpha()) & (is_read_id)):
+    elif ((line_content[0] in ["C", "T", "G", "A", "U"]) & (line_content.isalpha()) & (is_read_id)):
         
         ## Get new read size after pychopper
         length = len(line_content)
