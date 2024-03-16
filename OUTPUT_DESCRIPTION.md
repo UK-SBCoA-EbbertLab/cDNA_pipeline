@@ -43,7 +43,7 @@ cDNA when the parameter `--is_dRNA` is set to `false` and `mapping_dRNA` will on
                         (no MAPQ filter, includes supplementary and secondary alignment)
 
     11. multiQC_input:
-        a. RseQC - RseQC 3' bias gene body coverage ".txt" and ".r" files for each sample.
+        a. RseQC - RseQC quality control files for each sample.
         b. minimap2 - Samtools ".flagstat" reports and ".idxstat" reports (no MAPQ filter, includes supplementary and secondary alignment).
         c. pychopper - Pychopper trimming statistics for each sample.
         d. pycoQC - Individual HTML and JSON files with quality control metrics for each sample.
