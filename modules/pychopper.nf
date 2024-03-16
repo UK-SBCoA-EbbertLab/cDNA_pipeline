@@ -16,6 +16,7 @@ process PYCHOPPER {
         path "${id}.txt", emit: txt     
         path "$fastq", emit: original_fastq
         path "*pychopper.stats", emit: multiQC
+        env(NUM_PASS_READS), emit: num_pass_reads
 
     script:
     
@@ -24,7 +25,9 @@ process PYCHOPPER {
         cp "${txt}" "./${id}.txt"
     elif [[ "${txt}" == "None" ]]; then 
         touch "./${id}.txt"
-    fi 
+    fi
+
+    NUM_PASS_READS=\$(filter_by_mean_base_quality.py "${fastq}" "${quality_score}" "${id}_qscore_${quality_score}.fastq")
     
     ## Pychopper does not have PCS114 primers yes, need to create them ##
     if [[ "${cdna_kit}" == "PCS114" ]]; then
@@ -47,7 +50,7 @@ process PYCHOPPER {
             -w "${id}_pychopper.rescued.fq" \
             -S "${id}_pychopper.stats" \
             -A "${id}_pychopper.scores" \
-            "${fastq}" "${id}_pychop.fq"
+            "${id}_qscore_${quality_score}.fastq" "${id}_pychop.fq"
 
     ## All other kits just use default settings ##
     else
@@ -61,9 +64,11 @@ process PYCHOPPER {
             -w "${id}_pychopper.rescued.fq" \
             -S "${id}_pychopper.stats" \
             -A "${id}_pychopper.scores" \
-            "${fastq}" "${id}_pychop.fq"
+            "${id}_qscore_${quality_score}.fastq" "${id}_pychop.fq"
     
     fi
+
+    rm "${id}_qscore_${quality_score}.fastq"
 
     """
 }

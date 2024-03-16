@@ -10,7 +10,7 @@ include {RSEQC} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
 include {MAP_CONTAMINATION_cDNA} from '../modules/contamination'
 include {MAKE_CONTAMINATION_REPORT_1} from '../modules/make_contamination_report.nf'
-include {MAKE_QC_REPORT} from '../modules/num_reads_report.nf'
+include {MAKE_QC_REPORT_TRIM} from '../modules/num_reads_report.nf'
 
 
 workflow NANOPORE_cDNA_STEP_2 {
@@ -32,8 +32,8 @@ workflow NANOPORE_cDNA_STEP_2 {
         MAKE_FAI(ref)
         MAKE_INDEX_cDNA(ref)
         PYCHOPPER(ont_reads_fq, ont_reads_txt, cdna_kit, quality_score)
-        MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out, PYCHOPPER.out.txt)
-        FILTER_BAM(MINIMAP2_cDNA.out.id, mapq, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai)
+        MINIMAP2_cDNA(PYCHOPPER.out.id, PYCHOPPER.out.fastq,  MAKE_INDEX_cDNA.out, PYCHOPPER.out.txt, PYCHOPPER.out.num_pass_reads)
+        FILTER_BAM(MINIMAP2_cDNA.out.id, mapq, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai, MINIMAP2_cDNA.out.fastq,  MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.num_pass_reads)
         
         if (params.contamination_ref != "None") {
 
@@ -53,9 +53,10 @@ workflow NANOPORE_cDNA_STEP_2 {
 
         if ((params.ont_reads_txt != "None") || (params.path != "None")) {
             
-            PYCOQC(MINIMAP2_cDNA.out.id, MINIMAP2_cDNA.out.fastq, MINIMAP2_cDNA.out.txt, MINIMAP2_cDNA.out.bam, MINIMAP2_cDNA.out.bai, quality_score, mapq)
+            PYCOQC(FILTER_BAM.out.id, FILTER_BAM.out.fastq, FILTER_BAM.out.txt, FILTER_BAM.out.bam_unfiltered, FILTER_BAM.out.bai_unfiltered, quality_score, mapq, FILTER_BAM.out.flagstat_unfiltered, 
+                    FILTER_BAM.out.flagstat_filtered, FILTER_BAM.out.num_pass_reads)
             
-            MAKE_QC_REPORT(PYCOQC.out.num_reads_report, quality_score)
+            MAKE_QC_REPORT_TRIM(PYCOQC.out.num_reads_report, quality_score)
 
         }
 
@@ -76,10 +77,10 @@ workflow NANOPORE_cDNA_STEP_2 {
 
         else if ((params.is_chm13 == false) && (params.housekeeping != "None"))
         {
-            RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam, FILTER_BAM.out.bai, housekeeping)
+            RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, housekeeping, annotation, mapq)
         }
         
         
-        BAMBU_PREP(FILTER_BAM.out.id, mapq, FILTER_BAM.out.bam, FILTER_BAM.out.bai, ref, annotation, MAKE_FAI.out, track_reads)
+        BAMBU_PREP(FILTER_BAM.out.id, mapq, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, ref, annotation, MAKE_FAI.out, track_reads)
 
 }

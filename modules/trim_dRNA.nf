@@ -7,11 +7,13 @@ process TRIM_dRNA {
     input:
         tuple val(id), file(fastq)
         val(txt)
+        val(num_pass_reads)
 
     output:
         tuple val("$id"), path("${id}.trimmed.fastq"), emit: fastq
         val("${txt}"), emit: txt
         path("*adapter_data*.txt"), emit: outty
+        val("${num_pass_reads}"), emit: num_pass_reads
     
     script:
     """

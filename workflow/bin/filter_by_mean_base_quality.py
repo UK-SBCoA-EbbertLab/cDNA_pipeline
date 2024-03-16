@@ -30,6 +30,9 @@ def calculate_mean_quality(quals, qround=False, tab=errs_tab(128)):
     
 
 def filter_fastq(input_file, threshold, output_file):
+
+    num_pass_thresh = 0
+
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
         while True:
             header = infile.readline().strip()
@@ -41,6 +44,9 @@ def filter_fastq(input_file, threshold, output_file):
 
             if calculate_mean_quality(quality) >= threshold:
                 outfile.write(f"{header}\n{sequence}\n{plus}\n{quality}\n")
+                num_pass_thresh = num_pass_thresh + 1
+    
+    return num_pass_thresh
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
@@ -51,5 +57,5 @@ if __name__ == "__main__":
     quality_threshold = float(sys.argv[2])
     output_fastq = sys.argv[3]
 
-    filter_fastq(input_fastq, quality_threshold, output_fastq)
-    print(f"Filtered FASTQ file saved to {output_fastq}")
+    num_pass_thresh = filter_fastq(input_fastq, quality_threshold, output_fastq)
+    print(num_pass_thresh)

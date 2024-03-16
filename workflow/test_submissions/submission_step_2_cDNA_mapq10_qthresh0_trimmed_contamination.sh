@@ -6,11 +6,10 @@ nextflow ../main.nf --step 2 \
     --ref "../../references/Homo_sapiens.GRCh38.dna.primary_assembly.fa" \
     --housekeeping "../../references/hg38.HouseKeepingGenes.bed" \
     --annotation "../../references/Homo_sapiens.GRCh38.107.gtf" \
-    --out_dir "./test_mapq0/" \
-    --cdna_kit "PCS111" \
+    --out_dir "./test_mapq10_qthresh0_cDNA_trimmed_contamination/" \
     --is_chm13 "False" \
     --track_reads "True" \
-    --mapq "0" \
-    --qscore_thresh "9" \
-    --is_dRNA "False" \
-    --trim_dRNA "False" 
+    --contamination_ref "../../references/master_contaminant_reference.fasta" \
+    --mapq "10" \
+    --qscore_thresh "0" \
+    --is_dRNA "False" 

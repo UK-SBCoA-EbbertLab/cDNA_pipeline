@@ -10,6 +10,7 @@ process CONVERT_U_TO_T {
     output:
         tuple val("$id"), path("${id}_U_to_T_qscore_${qscore}.fastq"), emit: fastq
         path "${id}.txt", emit: txt
+        env(NUM_PASS_READS), emit: num_pass_reads
 
     script:
     """
@@ -24,7 +25,7 @@ process CONVERT_U_TO_T {
         convert_U_to_T.py $fastq "${id}_U_to_T.fastq"
 
         ## Filter by mean base quality threshold
-        filter_by_mean_base_quality.py "${id}_U_to_T.fastq" "${qscore}" "${id}_U_to_T_qscore_${qscore}.fastq"
+        NUM_PASS_READS=\$(filter_by_mean_base_quality.py "${id}_U_to_T.fastq" "${qscore}" "${id}_U_to_T_qscore_${qscore}.fastq")
 
         ## Delete intermediate files
         rm "${id}_U_to_T.fastq"

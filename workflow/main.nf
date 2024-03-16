@@ -122,19 +122,19 @@ include {NANOPORE_STEP_3} from '../sub_workflows/nanopore_workflow_STEP_3'
 
 if (params.prefix == "None") {
 
-    fastq_path = Channel.fromPath("${params.path}/**/fastq_pass/*.fastq.gz").map{file -> tuple("sample_" + file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
-    txt_path = Channel.fromPath("${params.path}/**/*uencing_summary*.txt").map{file -> tuple("sample_" + file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[2..-1].join("_"), file)}.groupTuple()
+    fastq_path = Channel.fromPath("${params.path}/**.fastq.gz").map{file -> tuple("sample_" + file.parent.toString().split("/")[-3] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[-3..-2].join("_"), file)}.groupTuple()
+    txt_path = Channel.fromPath("${params.path}/**uencing_summary*.txt").map{file -> tuple("sample_" + file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[-3..-1].join("_"), file)}.groupTuple()
     ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple(file.baseName, file) }
     ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
-    fast5_path = Channel.fromPath("${params.basecall_path}/**.fast5").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
-    pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
+    fast5_path = Channel.fromPath("${params.basecall_path}/**.fast5").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[-3..-2].join("_"), file) }.groupTuple()
+    pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[-3..-2].join("_"), file) }.groupTuple()
     bam = Channel.fromPath(params.bam).map { file -> tuple(file.baseName, file) }
     bai = Channel.fromPath(params.bai)
 
 } else {
 
-    fastq_path = Channel.fromPath("${params.path}/**/fastq_pass/*.fastq.gz").map{file -> tuple("${params.prefix}_sample_" + file.parent.toString().split("/fastq_pass")[0].split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file)}.groupTuple()
-    txt_path = Channel.fromPath("${params.path}/**/*uencing_summary*.txt").map{file -> tuple("${params.prefix}_sample_" + file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[2..-1].join("_"), file)}.groupTuple()
+    fastq_path = Channel.fromPath("${params.path}/**.fastq.gz").map{file -> tuple("${params.prefix}_sample_" + file.parent.toString().split("/")[-3] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[-3..-2].join("_"), file)}.groupTuple()
+    txt_path = Channel.fromPath("${params.path}/**uencing_summary*.txt").map{file -> tuple("${params.prefix}_sample_" + file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[-3..-1].join("_"), file)}.groupTuple()
     ont_reads_fq = Channel.fromPath(params.ont_reads_fq).map { file -> tuple("${params.prefix}_" + file.baseName, file) }
     ont_reads_txt = Channel.fromPath(file(params.ont_reads_txt))
     fast5_path = Channel.fromPath("${params.basecall_path}/**.fast5").map{file -> tuple("${params.prefix}_" + file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()

@@ -46,7 +46,9 @@ process MAKE_CONTAMINATION_REPORT_2 {
 
     script:
         """
-        
+        echo "# plot_type: 'table'" >> "Percent_Contaminant_Reads_mqc.tsv"
+        echo "# id: 'contamination report'" >> "Percent_Contaminant_Reads_mqc.tsv"
+        echo "# section_name: 'Contamination Report'" >> "Percent_Contaminant_Reads_mqc.tsv"
         echo "Sample ID\tMapped to Target\tMapped to CHM13\tMapped to Contaminant\tUnmapped" >> "Percent_Contaminant_Reads_mqc.tsv"
         cat $report >> "Percent_Contaminant_Reads_mqc.tsv"
 
