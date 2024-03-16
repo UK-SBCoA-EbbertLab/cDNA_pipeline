@@ -114,15 +114,14 @@ fastq files because it allows more flexibility in downstream alignment and proce
                                         "ont_reads_fastq" parameters, in fact those will get ignored even if you pass them. The goal of this parameter is to
                                         make it easier on the user so that you don't have to manually unzip and concatenate files. It also automatically 
                                         matches the naming pattern for the fastq and the sequencing summary file. This parameter assumes that a directory with
-                                        the name of the sample is two directories below the "fastq_pass" directory, for example:
-                                        "/dir1/dir2/sample_1/unique_flowcell_id/fastq_pass/". The pipeline will still work if this is not the case and each
+                                        the name of the sample is two directories below the directory, where the sequencing summary file is, for example:
+                                        "/dir1/dir2/sample_1/unique_flowcell_id/seq_summary.txt". The pipeline will still work if this is not the case and each
                                         sample file will still have a unique ID, but the unique sample ID will be preappended with the whatever name the 
-                                        directory two steps below the "fastq_pass" directory is named. For example, if your directory structure is:
-                                        "/dir1/dir2/dir3/unique_flowcell_id/fastq_pass/", your files will be named "dir3_unique_flowcell_id.fastq"
-                                        and "dir3_unique_flowcell_id.txt" (sequencing summary file). The ".fastq.gz" files must be in a folder
-                                        named "fastq_pass" and the sequencing_summary.txt file must be in the same directory as the
-                                        "fastq_pass" directory... Not inside the "fastq_pass" directory, but in the same directory as
-                                        the "fastq_pass". Default: "None">
+                                        directory two steps below the sequencing_summary.txt file is named. For example, if your directory structure is:
+                                        "/dir1/dir2/dir3/unique_flowcell_id/sequencing_summary.txt", your files will be named "dir3_unique_flowcell_id.fastq"
+                                        and "dir3_unique_flowcell_id.txt" (sequencing summary file). The ".fastq.gz" files must be in a subdirectory located in the
+                                        same directory as the sequencing_summary.txt file, for example: "/dir1/dir2/sample_1/unique_flowcell_id/seq_summary.txt",
+                                        "/dir1/dir2/sample_1/unique_flowcell_id/fastq_pass/", "/dir1/dir2/sample_1/unique_flowcell_id/fastq_fail/". Default: "None">
           
           --ref                         <path to reference/assembly ".fa" file. if using ERCC make sure to concatenate it to the end of the file.
                                         Default: "None">
