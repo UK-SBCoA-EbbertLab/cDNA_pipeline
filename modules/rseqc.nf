@@ -1,6 +1,6 @@
 process RSEQC {
 
-    publishDir "results/${params.out_dir}/multiQC_input/RseQC/", mode: "copy", overwrite: true, pattern: "*RSEQC*"
+    publishDir "results/${params.out_dir}/multiQC_input/RseQC/", mode: "copy", overwrite: true, pattern: "${id}*"
 
  
     label "large"
@@ -14,7 +14,7 @@ process RSEQC {
         val(mapq)
 
     output:
-        path "*RSEQC*", emit: multiQC
+        path "${id}*", emit: multiQC
 
     script:
         """
@@ -27,7 +27,7 @@ process RSEQC {
        
         junction_saturation.py -i "${bam}" -o "${id}_RSEQC_junction_saturation" -r *.bed
 
-        tin.py -i "${bam}" -r *.bed > "${id}_RSEQC_TIN.txt"
+        tin.py -i "${bam}" -r *.bed > "${id}_RSEQC_tin.txt"
 
         bam_stat.py -i "${bam}" -q "${mapq}" > "${id}_RSEQC_bam_stat.txt"
 
