@@ -27,7 +27,7 @@ process RSEQC {
        
         junction_saturation.py -i "${bam}" -o "${id}_RSEQC_junction_saturation" -r *.bed
 
-        tin.py -i "${bam}" -r *.bed > "${id}_RSEQC_tin.txt"
+        tin.py -i "${bam}" -r *.bed > "${id}_RSEQC_TIN.txt" 
 
         bam_stat.py -i "${bam}" -q "${mapq}" > "${id}_RSEQC_bam_stat.txt"
 
