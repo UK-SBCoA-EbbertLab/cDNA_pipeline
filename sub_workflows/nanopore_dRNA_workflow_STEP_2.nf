@@ -5,7 +5,7 @@ include {MAKE_INDEX_dRNA as MAKE_INDEX_CONTAMINANTS} from '../modules/make_index
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {PYCOQC_dRNA} from '../modules/pycoqc'
 include {MINIMAP2_dRNA; FILTER_BAM} from '../modules/minimap2'
-include {RSEQC} from '../modules/rseqc'
+include {RSEQC_GENE_BODY_COVERAGE ; RSEQC_BAM_STAT ; RSEQC_READ_GC ; CONVERT_GTF_TO_BED12 ; RSEQC_JUNCTION_ANNOTATION ; RSEQC_JUNCTION_SATURATION ; RSEQC_TIN ; RSEQC_READ_DISTRIBUTION} from '../modules/rseqc'
 include {BAMBU_PREP} from '../modules/bambu'
 include {MAP_CONTAMINATION_dRNA} from '../modules/contamination'
 include {MAKE_CONTAMINATION_REPORT_1} from '../modules/make_contamination_report.nf'
@@ -97,7 +97,14 @@ workflow NANOPORE_dRNA_STEP_2 {
         }
         else if ((params.is_chm13 == false) && (params.housekeeping != "None"))
         {
-            RSEQC(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, housekeeping, annotation, mapq)
+            CONVERT_GTF_TO_BED12(annotation) 
+            RSEQC_GENE_BODY_COVERAGE(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, housekeeping)
+            RSEQC_BAM_STAT(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, mapq)
+            RSEQC_READ_GC(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, mapq)
+            RSEQC_JUNCTION_ANNOTATION(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed)
+            RSEQC_JUNCTION_SATURATION(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed)
+            RSEQC_TIN(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed)
+            RSEQC_READ_DISTRIBUTION(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed)
         }
        
         BAMBU_PREP(FILTER_BAM.out.id, mapq, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, ref, annotation, MAKE_FAI.out, track_reads)
