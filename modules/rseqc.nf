@@ -76,7 +76,7 @@ process CONVERT_GTF_TO_BED12 {
     publishDir "results/${params.out_dir}/bed_annotation/", mode: "copy", overwrite: true, pattern: "*.bed"
 
  
-    label "large"
+    label "tiny"
 
     input:
         path(annotation)
