@@ -146,7 +146,7 @@ process RSEQC_TIN {
     publishDir "results/${params.out_dir}/multiQC_input/RseQC/", mode: "copy", overwrite: true, pattern: "${id}*"
 
  
-    label "large"
+    label "rseqc"
 
     input:
         val(id)
