@@ -6,6 +6,18 @@ import sys
 import csv
 import numpy as np
 
+# Function to calculate block starts and sizes, ensuring alignment
+def calculate_blocks(x):
+    block_sizes = (x['end'] - x['start'] + 1).astype(str)
+    block_starts = (x['start'] - x['start'].min()).astype(str) 
+    
+    if x['strand'].iloc[0] == '-':
+        # For negative strand, reverse the order of both block sizes and starts
+        block_sizes = block_sizes.iloc[::-1]  # Reverse the order of block sizes
+        block_starts = block_starts.iloc[::-1] ## Reverse orders of block starts
+    return ','.join(block_sizes), ','.join(block_starts)
+
+
 def convert_gtf_to_bed12(gtf_path):
     # Define column names for the GTF file
     gtf_columns = ['seqname', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attributes']
@@ -14,14 +26,14 @@ def convert_gtf_to_bed12(gtf_path):
     gtf_df = pd.read_csv(gtf_path, sep='\t', comment='#', names=gtf_columns, low_memory=False)
     
     # Filter for exons and CDS
-    exon_df = gtf_df[gtf_df['feature'].isin(['exon', 'CDS'])].copy()
+    exon_df = gtf_df[gtf_df['feature'].isin(['exon', 'start_codon', 'stop_codon'])].copy()
     
     # Extract gene_id and transcript_id from attributes
     exon_df['gene_id'] = exon_df['attributes'].str.extract('gene_id "([^"]+)"')
     exon_df['transcript_id'] = exon_df['attributes'].str.extract('transcript_id "([^"]+)"')
     
     # Determine thickStart and thickEnd from CDS regions
-    cds_df = exon_df[exon_df['feature'] == 'CDS'].copy()
+    cds_df = exon_df[exon_df['feature'] != 'exon'].copy()
     thick_df = cds_df.groupby('transcript_id')[['start', 'end']].agg({'start': 'min', 'end': 'max'}).rename(columns={'start': 'thickStart', 'end': 'thickEnd'})
 
     # Focus on exons for the rest
@@ -40,11 +52,11 @@ def convert_gtf_to_bed12(gtf_path):
         'score': 0,
         'strand': x['strand'].iloc[0],
         'thickStart': np.nanmin(x['thickStart'].fillna(x['start']).values) - 1,  # Use CDS start if available, else exon start
-        'thickEnd': np.nanmax(x['thickEnd'].fillna(x['end']).values),  # Use CDS end if available, else exon end
+        'thickEnd': np.nanmax(x['thickEnd'].fillna(x['start']).values),  # Use CDS end if available, else exon end
         'itemRgb': '0,0,0',
         'blockCount': len(x),
-        'blockSizes': ','.join((x['end'] - x['start'] + 1).astype(str)),
-        'blockStarts': ','.join((x['start'] - x['start'].min()).astype(str)),
+        'blockSizes': calculate_blocks(x)[0],
+        'blockStarts': calculate_blocks(x)[1],
     })).reset_index(drop=True)
     
     # Select and reorder columns to match BED12 format
@@ -53,6 +65,8 @@ def convert_gtf_to_bed12(gtf_path):
     bed12_df = bed12_df[bed12_columns]
     
     bed12_df.sort_values(by=['chrom', 'chromStart', 'chromEnd', 'strand', 'name'], inplace=True)
+
+    bed12_df[['chromStart', 'chromEnd', 'thickStart', 'thickEnd', 'blockCount']] = bed12_df[['chromStart', 'chromEnd', 'thickStart', 'thickEnd', 'blockCount']].astype(int)
     
     return bed12_df
 
