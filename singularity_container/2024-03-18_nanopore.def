@@ -1,0 +1,89 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+
+
+        ## Make Shell Noninteractive ##
+        DEBIAN_FRONTEND=noninteractive
+
+        ## Install basic packages and get update
+        apt-get update && apt-get -y install wget locales sudo libarchive-dev gzip pigz parallel
+
+        ## Set timezone and language for container ##
+        ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
+
+        export LANGUAGE=en_US.UTF-8
+        export LANG=en_US.UTF-8
+        export LC_ALL=en_US.UTF-8
+        sudo locale-gen en_US.UTF-8
+
+        echo 'export LANGUAGE="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
+        echo 'export LANG="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
+        echo 'export LC_ALL="en_US.UTF8"' >> $SINGULARITY_ENVIRONMENT
+
+
+    	## Install miniconda ##
+	cd /
+	wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        bash Miniconda3-latest-Linux-x86_64.sh -bfp /conda
+	export PATH="/conda/bin:$PATH"
+    	echo 'export PATH="/conda/bin:$PATH"' >> $SINGULARITY_ENVIRONMENT
+	conda config --add channels bioconda
+	conda config --add channels conda-forge
+        conda config --add channels nanoporetech
+
+	## Install Mamba ##
+	conda install -c conda-forge --override-channels mamba
+	
+	## Install Python 3.10 ##
+	mamba install python=3.10.11
+
+	## Install specific pychopper dependency ##
+	mamba install -y -c bioconda parasail-python
+
+	## Install Pychopper ##
+	mamba install -y -c nanoporetech pychopper
+
+	## Install StringTie, GFFread, GFFcompare, SamTools, MiniMap2 porechop_ABI ##
+        mamba install -y -c bioconda gffread gffcompare samtools=1.19.2 minimap2 porechop_abi
+
+%test
+		
+	## Check if installations are on path and/or display their versions ##
+	conda --version
+	gffread --version
+	python --version
+	pip --version
+	samtools --version
+	minimap2 --version
+	which pychopper
+	gffcompare --version
+	porechop_abi --version
+	
+%labels
+	author Bernardo Aguzzoli Heberle
+	version v0.6.0
+
+%help
+
+	Software included in the container are:
+
+	conda==24.1.2
+	mamba==1.5.7
+	pip==24.0
+	python==3.10.11
+	pychopper==2.7.9
+	gffcompare==0.12.6
+	samtools==1.19.2
+	gffread==0.12.7
+	minimap2==2.27-r1193
+	porechop_abi==0.5.0
+	
+   	NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
+        TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND:  
+	
+	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/nanopore:sha256.df8b78d8644d58861e7ea5c82c218b76845559c0d71fdb45e58d271a349fd045
+
+	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
+
