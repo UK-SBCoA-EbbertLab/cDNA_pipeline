@@ -182,6 +182,10 @@ fastq files because it allows more flexibility in downstream alignment and proce
           --prefix                      <Will add a prefix to the beggining of your filenames, good
                                          when wanting to keep track of batches of data.
                                          Example: "Batch_1". Default value is "None" which does not add any prefixes>
+
+          --rseqc_tin                    <logical, set to "True" if you want to perform RSEQC TIN analysis. This is a time consuming
+                                          step. Setting it to "True" will only work if you also have passed a reference to the 
+                                          "housekeeping" parameter. Default: "False">
   
  
 
