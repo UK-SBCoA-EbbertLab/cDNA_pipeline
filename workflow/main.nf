@@ -46,6 +46,7 @@ log.info """
  Trim dRNA adapters?                                                            : ${params.trim_dRNA}
 
  Reference for contamination analysis                                           : ${params.contamination_ref}
+ Perform RSEQC TIN Analysis (time consuming)                                    : ${params.rseqc_tin}
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
