@@ -1,5 +1,8 @@
 # cDNA_pipeline
 
+#### A customizable pipeline to process Oxford Nanopore transcriptomic data from basecalling to counts matrices, generating thorough quality control reports.
+
+
 ## Getting Started
 
 ### 1) Have a functioning version of Nextflow in your Path.
