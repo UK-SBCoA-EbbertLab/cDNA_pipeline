@@ -5,7 +5,7 @@
 
 2024-03-18_bambu.def - definition file for singularity container used to run the Bambu R package on the Nextflow Pipeline.
 
-pull command: `singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/bambu:sha256.60e026bc0a2291b155023e560a88ca59373c368768727eddaaa105d36ebd3665`
+pull command: `singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/bambu:sha256.44e2b6d7282a488b95b132198b7c4ca659c9e8d6a83797493e746aa3a87ecfea`
 
 
 2024-03-18_dorado.def - definition file for singularity container used to run guppy basecaller... Was not used due to data being basecalled on the PromethION.
