@@ -3,7 +3,7 @@
 
 
 
-2024-03-18_bambu.def - definition file for singularity container used to run the Bambu R package on the Nextflow Pipeline.
+2024-04-24_bambu.def - definition file for singularity container used to run the Bambu R package on the Nextflow Pipeline.
 
 pull command: `singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/bambu:sha256.44e2b6d7282a488b95b132198b7c4ca659c9e8d6a83797493e746aa3a87ecfea`
 
