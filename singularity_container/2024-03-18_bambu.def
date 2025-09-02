@@ -56,7 +56,7 @@ From: ubuntu:22.04
 	NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
         TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND: 
 
-	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/bambu:sha256.60e026bc0a2291b155023e560a88ca59373c368768727eddaaa105d36ebd3665
+	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/bambu:sha256.44e2b6d7282a488b95b132198b7c4ca659c9e8d6a83797493e746aa3a87ecfea
 
 	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
 
