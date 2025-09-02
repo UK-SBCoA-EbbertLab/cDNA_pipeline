@@ -7,8 +7,11 @@ From: ubuntu:22.04
         ## Make Shell Noninteractive ##
         DEBIAN_FRONTEND=noninteractive
 
-        ## Install basic packages and get update
-        apt-get update && apt-get -y install wget time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev libcurl4-openssl-dev libxml2-dev
+	apt-get update && apt-get -y install wget git time lsb-release sudo gnupg curl unzip g++ make rsync vim locales libssl-dev \
+        	libcurl4-openssl-dev libxml2-dev libnlopt-dev cmake libblas-dev liblapack-dev gfortran libfreetype6-dev libfribidi-dev libharfbuzz-dev \
+                pandoc zlib1g-dev libicu-dev libfontconfig1-dev libjpeg-dev libpng-dev libtiff-dev libbz2-dev liblzma-dev libzmq3-dev libtiff5-dev \
+                build-essential
+
 
         ## Set timezone and language for container ##
         ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
@@ -31,8 +34,11 @@ From: ubuntu:22.04
 
 
 	## Install R Packages ##
-        R --slave -e 'install.packages("BiocManager")'
-        R --slave -e 'BiocManager::install("bambu")'
+	R --slave -e 'install.packages("devtools")'
+	R --slave -e 'install.packages("BiocManager")'
+	R --slave -e 'BiocManager::install(c("SummarizedExperiment", "S4Vectors", "BSgenome", "IRanges", "GenomeInfoDb", "GenomicAlignments", "GenomicFeatures", "GenomicRanges", "Rsamtools"))'
+	R --slave -e 'install.packages("tidyverse")'	
+	R --slave -e 'devtools::install_github("GoekeLab/bambu", upgrade=TRUE)'
 
 
 %test
@@ -50,13 +56,15 @@ From: ubuntu:22.04
 	
 	Software included in the container are:
 
-	R==4.3.3
-        bambu==3.4.0
+	R==4.4.0
+        bambu==3.5.1
+	tidyverse==2.0.0
 
 	NOTE THAT VERSIONS OF THE SOFTWARE INSTALLED WILL CHANGE THROUGH TIME IF YOU BUILD THE IMAGE FROM THE RECIPE FILE.
         TO GET THE ORIGINAL VERSION OF THIS CONTAINER PULL IT FROM THE SINGULARITY LIB WITH THE COMMAND: 
-
+	
 	singularity pull --arch amd64 library://ebbertlab/nanopore_cdna/bambu:sha256.44e2b6d7282a488b95b132198b7c4ca659c9e8d6a83797493e746aa3a87ecfea
 
-	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/cDNA_pipeline
+
+	For more information about the use of this singularity container access: https://github.com/UK-SBCoA-EbbertLab/AD_RNA_isoform_expression
 
