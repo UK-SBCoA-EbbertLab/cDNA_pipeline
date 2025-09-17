@@ -11,6 +11,9 @@ include {BAMBU_PREP} from '../modules/bambu'
 include {MAP_CONTAMINATION_cDNA} from '../modules/contamination'
 include {MAKE_CONTAMINATION_REPORT_1} from '../modules/make_contamination_report.nf'
 include {MAKE_QC_REPORT_TRIM} from '../modules/num_reads_report.nf'
+include {ISOQUANT} from '../modules/isoquant.nf'
+include {CTAT_LR_FUSION} from '../modules/ctat_lr_fusion.nf'
+
 
 
 workflow NANOPORE_cDNA_STEP_2 {
@@ -27,6 +30,8 @@ workflow NANOPORE_cDNA_STEP_2 {
         mapq
         contamination_ref
         quality_score
+	quantification_tool
+	ctat_lib_dir
 
     main:
         MAKE_FAI(ref)
@@ -93,8 +98,19 @@ workflow NANOPORE_cDNA_STEP_2 {
             } 
         
         }
-        
-        
-        BAMBU_PREP(FILTER_BAM.out.id, mapq, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, ref, annotation, MAKE_FAI.out, track_reads)
+
+	if (ctat_lib_dir != "None") {
+	    CTAT_LR_FUSION(PYCHOPPER.out.id, PYCHOPPER.out.fastq, ctat_lib_dir)
+	    //TODO: maybe add code to compare?
+	}
+
+	if (quantification_tool != "isoquant")
+	{
+	    BAMBU_PREP(FILTER_BAM.out.id, mapq, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, ref, annotation, MAKE_FAI.out, track_reads)
+	}
+
+	if (quantification_tool != "bambu")
+	    ISOQUANT(mapq, FILTER_BAM.out.bam_filtered.collect(), FILTER_BAM.out.bai_filtered.collect(), ref, annotation, MAKE_FAI.out)
+	}
 
 }

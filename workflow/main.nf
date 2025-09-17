@@ -39,6 +39,9 @@ log.info """
  reference genome is CHM13                                                      : ${params.is_chm13}
  path to ERCC annotations (CHM13 only)                                          : ${params.ercc}
 
+ quantification strategy (bambu, isoquant, or both)				: ${params.quantification_tool}
+ ctat-lr-fusion library directory						: ${params.ctat_lib_dir}
+
  quality score threshold for fastq reads                                        : ${params.qscore_thresh}
  MAPQ value for filtering bam file                                              : ${params.mapq}
 
@@ -68,10 +71,10 @@ log.info """
 
  reference genome is CHM13                                                      : ${params.is_chm13}
  path to ERCC annotations (CHM13 only)                                          : ${params.ercc}
-
+ 
+ quantification strategy (bambu, isoquant, or both)				: ${params.quantification_tool}
 
  MAPQ value for filtering bam file                                              : ${params.mapq}
-
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
@@ -97,6 +100,8 @@ log.info """
  NDR Value for Bambu (Novel Discovery Rate)                                     : ${params.NDR}
  Track read_ids with bambu?                                                     : ${params.track_reads}
  Path to pre-processed bambu RDS files                                          : ${params.bambu_rds}
+ 
+ quantification strategy (bambu, isoquant, or both)				: ${params.quantification_tool}
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
@@ -168,8 +173,8 @@ contamination = Channel.fromPath("${params.intermediate_qc}/contamination/*")
 num_reads = Channel.fromPath("${params.intermediate_qc}/number_of_reads/*")
 read_length = Channel.fromPath("${params.intermediate_qc}/read_length/*")
 quality_thresholds = Channel.fromPath("${params.intermediate_qc}/quality_score_thresholds/*")
-
-
+quantification_tool = Channel.value(params.quantification_tool)
+ctat_lib_dir = Channel.fromPath(params.ctat_lib_dir, type: 'dir')
 
 
 if (params.ercc != "None") {
@@ -209,7 +214,7 @@ workflow {
 
         if (params.is_dRNA == false) {
 
-            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
+            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, NANOPORE_UNZIP_AND_CONCATENATE.out[1], NANOPORE_UNZIP_AND_CONCATENATE.out[0], ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score, quantification_tool, ctat_lib_dir.first())
         
         } else {
         
@@ -228,7 +233,7 @@ workflow {
 
         if (params.is_dRNA == false) {
         
-            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score)
+            NANOPORE_cDNA_STEP_2(ref, annotation, housekeeping, ont_reads_txt, ont_reads_fq, ercc, cdna_kit, track_reads, mapq, contamination_ref, quality_score, quantification_tool, ctat_lib_dir.first())
         }
 
         else if (params.is_dRNA = true) {
@@ -241,13 +246,13 @@ workflow {
 
     else if ((params.step == 2) && (params.bam != "None") && (params.path == "None")) {
         
-        NANOPORE_STEP_2_BAM(ref, annotation, bam, bai, ercc, track_reads, mapq)
+        NANOPORE_STEP_2_BAM(ref, annotation, bam, bai, ercc, track_reads, mapq, quantification_tool)
 
     }
 
     else if(params.step == 3){
         
-        NANOPORE_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config, contamination, num_reads, read_length, quality_thresholds)
+        NANOPORE_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config, contamination, num_reads, read_length, quality_thresholds, quantification_tool)
     }
 
 }

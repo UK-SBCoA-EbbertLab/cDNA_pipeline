@@ -3,6 +3,7 @@ include {MAKE_FAI} from '../modules/make_fai.nf'
 include {CHM13_GTF; CHM13_GTF_ERCC} from '../modules/chm13_gff3_to_gtf'
 include {FILTER_BAM_ONLY} from '../modules/minimap2'
 include {BAMBU_PREP} from '../modules/bambu'
+include {ISOQUANT} from '../modules/isoquant.nf'
 
 workflow NANOPORE_STEP_2_BAM {
 
@@ -14,6 +15,7 @@ workflow NANOPORE_STEP_2_BAM {
         ercc
         track_reads
         mapq
+	quantification_tool
 
     main:
         
@@ -36,6 +38,13 @@ workflow NANOPORE_STEP_2_BAM {
             }
         }
 
-        BAMBU_PREP(FILTER_BAM_ONLY.out.id, mapq, FILTER_BAM_ONLY.out.bam, FILTER_BAM_ONLY.out.bai, ref, annotation, MAKE_FAI.out, track_reads)
+	if (quantification_tool != "isoquant") 
+	{
+	    BAMBU_PREP(FILTER_BAM_ONLY.out.id, mapq, FILTER_BAM_ONLY.out.bam, FILTER_BAM_ONLY.out.bai, ref, annotation, MAKE_FAI.out, track_reads)
+	}
 
+	if (quantification_tool != "bambu")
+	{
+	    ISOQUANT(mapq, FILTER_BAM_ONLY.out.bam.collect(), FILTER_BAM_ONLY.out.bai.collect(), ref, annotation, MAKE_FAI.out)
+	}
 }

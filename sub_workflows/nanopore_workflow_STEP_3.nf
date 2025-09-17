@@ -21,6 +21,7 @@ workflow NANOPORE_STEP_3 {
         num_reads
         read_length 
         quality_thresholds
+	quantification_tool
 
     main:
  
@@ -31,23 +32,25 @@ workflow NANOPORE_STEP_3 {
        
         MULTIQC_GRCh38(multiqc_input.concat(MAKE_CONTAMINATION_REPORT_2.out.flatten(), MERGE_QC_REPORT.out.flatten()).collect(), multiqc_config)
         
-        if (params.is_discovery == true)
-        {
+	if (quantification_tool != "isoquant") {
+	    if (params.is_discovery == true)
+            {
 
-            BAMBU_DISCOVERY(bambu_rds.collect(), ref, annotation, fai, NDR, track_reads)
-            new_annotation = BAMBU_DISCOVERY.out.gtf
-            GFFCOMPARE(new_annotation, annotation)
+            	BAMBU_DISCOVERY(bambu_rds.collect(), ref, annotation, fai, NDR, track_reads)
+            	new_annotation = BAMBU_DISCOVERY.out.gtf
+            	GFFCOMPARE(new_annotation, annotation)
 
-        }
+            }
 
-        else
-        {
+            else
+            {
             
-            BAMBU_QUANT(bambu_rds.collect(), ref, annotation, fai)
-            new_annotation = BAMBU_QUANT.out.gtf
+            	BAMBU_QUANT(bambu_rds.collect(), ref, annotation, fai)
+            	new_annotation = BAMBU_QUANT.out.gtf
 
-        }
+            }
 
-        MAKE_TRANSCRIPTOME(ref, fai, new_annotation)
+            MAKE_TRANSCRIPTOME(ref, fai, new_annotation)
+	}
         
 }
