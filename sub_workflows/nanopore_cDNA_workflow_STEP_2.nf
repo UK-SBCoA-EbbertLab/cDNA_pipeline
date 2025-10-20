@@ -84,13 +84,8 @@ workflow NANOPORE_cDNA_STEP_2 {
             RSEQC_READ_GC(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, mapq)
             RSEQC_JUNCTION_ANNOTATION(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed12)
             RSEQC_JUNCTION_SATURATION(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed12)
+            RSEQC_TIN(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed12)
             RSEQC_READ_DISTRIBUTION(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed12)        
-            
-            if (params.rseqc_tin == true) {
-
-                RSEQC_TIN(FILTER_BAM.out.id, FILTER_BAM.out.bam_filtered, FILTER_BAM.out.bai_filtered, CONVERT_GTF_TO_BED12.out.bed12)
-            
-            } 
         
         }
         

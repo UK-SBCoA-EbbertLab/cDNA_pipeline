@@ -99,7 +99,7 @@ process MERGE_QC_REPORT {
         path(qscore_thresh)
 
     output:
-        path("*")
+        path("*_mqc*")
 
     script:
         """

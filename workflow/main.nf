@@ -18,7 +18,7 @@ log.info """
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
- =====================================================================================================================================================================================
+=====================================================================================================================================================================================
  
  """
 } else if ((params.step == 2) && (params.bam == "None")) {
@@ -39,6 +39,7 @@ log.info """
  reference genome is CHM13                                                      : ${params.is_chm13}
  path to ERCC annotations (CHM13 only)                                          : ${params.ercc}
 
+
  quality score threshold for fastq reads                                        : ${params.qscore_thresh}
  MAPQ value for filtering bam file                                              : ${params.mapq}
 
@@ -46,11 +47,12 @@ log.info """
  Trim dRNA adapters?                                                            : ${params.trim_dRNA}
 
  Reference for contamination analysis                                           : ${params.contamination_ref}
- Perform RSEQC TIN Analysis (time consuming)                                    : ${params.rseqc_tin}
+
+ Track read_ids with bambu?                                                     : ${params.track_reads}
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
- =====================================================================================================================================================================================
+=====================================================================================================================================================================================
  
 """
 
@@ -69,13 +71,13 @@ log.info """
  reference genome is CHM13                                                      : ${params.is_chm13}
  path to ERCC annotations (CHM13 only)                                          : ${params.ercc}
 
-
  MAPQ value for filtering bam file                                              : ${params.mapq}
-
+ 
+ Track read_ids with bambu?                                                     : ${params.track_reads}
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
- =====================================================================================================================================================================================
+=====================================================================================================================================================================================
  
 """
 
@@ -84,7 +86,6 @@ log.info """
 log.info """
             OXFORD NANOPORE cDNA/dRNA SEQUENCING PIPELINE - STEP 3: Transcript Quantification and/or Discovery -  Bernardo Aguzzoli Heberle - EBBERT LAB - University of Kentucky
 ======================================================================================================================================================================================
- 
  reference genome                                                               : ${params.ref}
  reference annotation                                                           : ${params.annotation}
  reference genome is CHM13                                                      : ${params.is_chm13}
@@ -97,10 +98,11 @@ log.info """
  NDR Value for Bambu (Novel Discovery Rate)                                     : ${params.NDR}
  Track read_ids with bambu?                                                     : ${params.track_reads}
  Path to pre-processed bambu RDS files                                          : ${params.bambu_rds}
+ Prefix for gene and isoforms from bambu					: ${params.new_gene_and_isoform_prefix}
 
  step: 1 = basecalling, 2 = mapping, 3 = quantification                         : ${params.step}
  Output directory                                                               : ${params.out_dir}
- =====================================================================================================================================================================================
+=====================================================================================================================================================================================
  
 
 
@@ -168,7 +170,7 @@ contamination = Channel.fromPath("${params.intermediate_qc}/contamination/*")
 num_reads = Channel.fromPath("${params.intermediate_qc}/number_of_reads/*")
 read_length = Channel.fromPath("${params.intermediate_qc}/read_length/*")
 quality_thresholds = Channel.fromPath("${params.intermediate_qc}/quality_score_thresholds/*")
-
+prefix = Channel.value(params.prefix) 
 
 
 
@@ -190,7 +192,6 @@ if (params.ont_reads_fq != "None") {
     
     // Make sure files are in same order
     ont_reads_fq = ont_reads_fq.toSortedList( { a, b -> a[0] <=> b[0] } ).flatten().buffer(size:2)
-
     }
 
 if ((params.bam != "None") && (params.bai != "None")) {
@@ -247,7 +248,7 @@ workflow {
 
     else if(params.step == 3){
         
-        NANOPORE_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config, contamination, num_reads, read_length, quality_thresholds)
+        NANOPORE_STEP_3(ref, fai, annotation, NDR, track_reads, bambu_rds, multiqc_input, multiqc_config, contamination, num_reads, read_length, quality_thresholds, new_gene_and_isoform_prefix)
     }
 
 }
