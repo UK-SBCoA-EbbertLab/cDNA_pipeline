@@ -83,6 +83,7 @@ process FILTER_BAM {
 
     publishDir "results/${params.out_dir}/bam_filtering/", mode: "copy", pattern: "*filtered_mapq*.*stat", overwrite: true
     publishDir "results/${params.out_dir}/multiQC_input/minimap2/", mode: "copy", pattern: "*unfiltered.*stat", overwrite: true
+    publishDir "results/${params.out_dir}/bam_filtering/bams/", mode: "copy", pattern: "*_filtered_mapq_*.bam*", overwrite: true
 
    
     label 'medium_small'

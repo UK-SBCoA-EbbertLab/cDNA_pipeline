@@ -10,10 +10,10 @@ process GFFCOMPARE {
 
     output:
         path "*"
+	path "*.tracking", emit: tracking_file
 
     script:
         """
         gffcompare -r $reference_annotation $extended_annotation -o "gffcompare_output"
         """
 }
-

@@ -1,0 +1,37 @@
+Bootstrap: library 
+From: ebbertlab/ebbert_lab_base_environment/ebbert_lab_base_environment:sha256.4b7779c4e7a1d7e8a38159cfe302b5cdb025398f43537a4cc3b703f1fb4bf1b4
+
+%environment
+	. /opt/conda/etc/profile.d/conda.sh
+	conda activate
+
+%labels
+
+	AUTHOR madeline.page@uky.edu
+	Maintainer "Madeline Page"
+	Name IsoQuant 
+	Version v1.0.0
+
+%post
+
+    	## Install miniconda ##
+	wget https://repo.anaconda.com/miniconda/Miniconda3-py312_24.11.1-0-Linux-x86_64.sh
+	bash Miniconda3-py312_24.11.1-0-Linux-x86_64.sh -b -f -p /opt/conda
+	rm Miniconda3-py312_24.11.1-0-Linux-x86_64.sh
+
+	. /opt/conda/etc/profile.d/conda.sh
+
+	conda activate
+	conda install python=3.10.13
+	
+	echo "conda 24.11.3" >> /opt/conda/conda-meta/pinned
+
+	conda config --add channels bioconda
+	conda config --add channels conda-forge 
+
+	conda install biopython numpy pandas 
+	conda install -c conda-forge -c bioconda isoquant
+	conda update isoquant
+	pip install pybiolib polars mgzip pypgatk 
+
+

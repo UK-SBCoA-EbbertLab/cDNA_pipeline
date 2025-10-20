@@ -46,6 +46,7 @@ process BAMBU_DISCOVERY {
     output:
         path("./bambu_discovery/extended_annotations.gtf"), emit:gtf
         path("bambu_discovery/*"), emit: outty
+	path("bambu_discovery/*.tsv"), emit: counts_files
 
     shell:
         '''
@@ -81,6 +82,7 @@ process BAMBU_QUANT {
         path("*.rds"), emit: rds
         path("*fullLengthCounts_transcript.txt"), emit: full_transcripts_counts
         path("*uniqueCounts_transcript.txt"), emit: unique_transcripts_counts
+        path("*.txt"), emit: counts_files
 
     script:
         """

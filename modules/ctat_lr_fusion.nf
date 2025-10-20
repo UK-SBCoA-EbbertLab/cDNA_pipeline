@@ -11,9 +11,9 @@ process CTAT_LR_FUSION {
 
     output:
         path("ctat_LR_fusion_outdir_${id}/*")
-	path("${id}_ctat-LR-fusion.fusion_predictions.abridged.tsv")
-	path("${id}_ctat-LR-fusion.fusion_predictions.tsv")
-	path("${id}_ctat-LR-fusion.fusion_inspector_web.html")
+	path("${id}_ctat-LR-fusion.fusion_predictions.abridged.tsv"), emit:abridged_tsv
+	path("${id}_ctat-LR-fusion.fusion_predictions.tsv"), emit:predicitons_tsv
+	path("${id}_ctat-LR-fusion.fusion_inspector_web.html"), emit: html
 
     script:
 
@@ -31,3 +31,24 @@ process CTAT_LR_FUSION {
 
         """
 }
+
+process COMBINE_FUSION_OUTPUT_TSVS {
+
+    publishDir "results/${params.out_dir}/ctat_LR_fusion", mode: "copy", overwrite: true
+
+    label 'ctat_lr_fusion'
+
+    input:
+	path(tsvs)
+
+    output:
+	path("combined_ctat-LR-fusion.fusion_predictions.abridged.tsv")
+
+    script:
+
+	"""
+	ctat_lr_fusion_create_matrix.py
+	"""
+}
+	
+
