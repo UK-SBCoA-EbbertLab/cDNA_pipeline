@@ -24,25 +24,21 @@ workflow NANOPORE_STEP_3 {
         num_reads
         read_length 
         quality_thresholds
-        new_gene_and isoform_prefix
+        new_gene_and_isoform_prefix
 	quantification_tool
 
     main:
- 
-       
-	contamination.count { n ->
-	    if( n > 0 ) {
-	        MAKE_CONTAMINATION_REPORT_2(contamination.collect())
-	    } else {
-                MAKE_CONTAMINATION_REPORT_2 = 'None'
-            }
-    	}
 
+	contamination.view() 
+      
+ 
         if ((params.multiqc_input != 'None')) {
 	    MERGE_QC_REPORT(num_reads.collect(), read_length.collect(), quality_thresholds.collect())
-	   
-	    MULTIQC_GRCh38(multiqc_input.concat(MAKE_CONTAMINATION_REPORT_2.out.flatten(), MERGE_QC_REPORT.out.flatten()).collect(), multiqc_config)
         } 
+
+	MAKE_CONTAMINATION_REPORT_2(contamination.collect())
+	MULTIQC_GRCh38(multiqc_input.concat(MAKE_CONTAMINATION_REPORT_2.out.flatten(), MERGE_QC_REPORT.out.flatten()).collect(), multiqc_config)
+
 
 	if (quantification_tool != "isoquant") {
             if (params.is_discovery == true)

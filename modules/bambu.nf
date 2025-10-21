@@ -46,7 +46,6 @@ process BAMBU_DISCOVERY {
     output:
         path("./bambu_discovery/extended_annotations.gtf"), emit:gtf
         path("bambu_discovery/*"), emit: outty
-	path("bambu_discovery/*.tsv"), emit: counts_files
 
     shell:
         '''
