@@ -18,7 +18,9 @@ process NORMALIZE_COUNTS {
 	
         """
 
-	normalize_counts.R ${counts_file} .
+	mkdir normalization
+
+	normalize_counts.R . .
 
         """
 }

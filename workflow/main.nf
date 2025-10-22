@@ -141,7 +141,9 @@ if (params.prefix == "None") {
     pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple(file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[-3..-2].join("_"), file) }.groupTuple()
     bam = Channel.fromPath(params.bam).map { file -> tuple(file.baseName, file) }
     bai = Channel.fromPath(params.bai)
-    filtered_bam = Channel.fromFilePairs("${params.filtered_bam}/*.{bam,bam.bai}", checkIfExists: true)
+    if (params.filtered_bam != "None") {
+        filtered_bam = Channel.fromFilePairs("${params.filtered_bam}/*.{bam,bam.bai}", checkIfExists: true)
+    }
 
 } else {
 
@@ -153,7 +155,9 @@ if (params.prefix == "None") {
     pod5_path = Channel.fromPath("${params.basecall_path}/**.pod5").map{file -> tuple("${params.prefix}_" +  file.parent.toString().split("/")[-2] + "_" + file.simpleName.split('_')[0] + "_" + file.simpleName.split('_')[2..-2].join("_"), file) }.groupTuple()
     bam = Channel.fromPath(params.bam).map { file -> tuple("${params.prefix}_" + file.baseName, file) }
     bai = Channel.fromPath(params.bai).map { file -> file.parent.resolve("${params.prefix}_${file.name}") }
-    filtered_bam = Channel.fromFilePairs("${params.filtered_bam}/*.{bam,bam.bai}", checkIfExists: true).map { file -> file.parent.resolve("${params.prefix}_${file.name}") }
+    if (params.filtered_bam != "None") {
+        filtered_bam = Channel.fromFilePairs("${params.filtered_bam}/*.{bam,bam.bai}", checkIfExists: true).map { file -> file.parent.resolve("${params.prefix}_${file.name}") }
+    }
 
 }   
 

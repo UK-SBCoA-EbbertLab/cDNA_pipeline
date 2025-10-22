@@ -86,7 +86,7 @@ args = commandArgs(trailingOnly = TRUE)
 directory = args[1]
 output_directory = paste(args[2], "/normalization/", sep="")
 
-files <- list.files(path = directory, pattern = "\\.tsv$", full.names=TRUE)
+files <- list.files(path = directory, pattern = "\\.txt$", full.names=TRUE)
 
 is_transcript=FALSE
 
@@ -97,10 +97,10 @@ for (file in files) {
 
 	counts <- read.table(file, header=TRUE, sep="\t")
 
-	if ("TXNAME" %in% colnames(counts) {
+	if ("TXNAME" %in% colnames(counts)) {
 		colnames(counts)[colnames(counts) == "TXNAME"] <- "transcript_id"
 	}
-        if ("GENEID" %in% colnames(counts) {
+        if ("GENEID" %in% colnames(counts)) {
 		colnames(counts)[colnames(counts) == "GENEID"] <- "gene_id"
 	}	    
 	if ("transcript_id" %in% colnames(counts)) {
